@@ -60,20 +60,10 @@ namespace SuperAdventure
                 rtbMessages.AppendText("You receive " + _currentMonster.RewardExperiencePoints.ToString() + " experience points" + Environment.NewLine);
                 _player.Gold += _currentMonster.RewardGold;
                 rtbMessages.AppendText("You receive " + _currentMonster.RewardGold.ToString() + " gold" + Environment.NewLine);
+
                 List<InventoryItem> lootedItems = new List<InventoryItem>();
-
-                foreach (LootItem lootItem in _currentMonster.LootTable)
-                {
-                    if (RandomNumberGenerator.NumberBetween(1, 100) <= lootItem.DropPercentage) lootedItems.Add(new InventoryItem(lootItem.Details, 1));
-                }
-
-                if (lootedItems.Count == 0)
-                {
-                    foreach (LootItem lootItem in _currentMonster.LootTable)
-                    {
-                        if (lootItem.IsDefaultItem) lootedItems.Add(new InventoryItem(lootItem.Details, 1));
-                    }
-                }
+                _currentMonster.LootTable.Where(lootItem => RandomNumberGenerator.NumberBetween(1, 100) <= lootItem.DropPercentage).ToList().ForEach(lootItem => lootedItems.Add(new InventoryItem(lootItem.Details, 1)));
+                if (lootedItems.Count == 0) _currentMonster.LootTable.Where(lootItem => lootItem.IsDefaultItem).ToList().ForEach(lootItem => lootedItems.Add(new InventoryItem(lootItem.Details, 1)));
 
                 foreach (InventoryItem inventoryItem in lootedItems)
                 {
@@ -94,14 +84,8 @@ namespace SuperAdventure
             HealingPotion potion = (HealingPotion)cboPotions.SelectedItem;
             _player.CurrentHitPoints += potion.AmountToHeal;
             if (_player.CurrentHitPoints > _player.MaximumHitPoints) _player.CurrentHitPoints = _player.MaximumHitPoints;
-            foreach (InventoryItem item in _player.Inventory)
-            {
-                if (item.Details.ID == potion.ID)
-                {
-                    item.Quantity--;
-                    break;
-                }
-            }
+            InventoryItem item = _player.Inventory.SingleOrDefault(ii => ii.Details.ID == potion.ID);
+            if (item != null) item.Quantity--;
             rtbMessages.AppendText("You drink a " + potion.Name + Environment.NewLine);
             MonsterTakesTurn();
         }
@@ -194,10 +178,7 @@ namespace SuperAdventure
 
             Monster currentMonster = new Monster(standardMonster.ID, standardMonster.Name, standardMonster.MaximumDamage, standardMonster.RewardGold, standardMonster.RewardExperiencePoints, standardMonster.CurrentHitPoints, standardMonster.MaximumHitPoints);
 
-            foreach (LootItem lootItem in standardMonster.LootTable)
-            {
-                currentMonster.LootTable.Add(lootItem);
-            }
+            standardMonster.LootTable.ForEach(lootItem => currentMonster.LootTable.Add(lootItem));
 
             return currentMonster;
         }
@@ -213,10 +194,7 @@ namespace SuperAdventure
 
             dgvInventory.Rows.Clear();
 
-            foreach (InventoryItem item in _player.Inventory)
-            {
-                if (item.Quantity > 0) dgvInventory.Rows.Add([item.Details.Name, item.Quantity.ToString()]);
-            }
+            _player.Inventory.Where(item => item.Quantity > 0).ToList().ForEach(item => dgvInventory.Rows.Add([item.Details.Name, item.Quantity.ToString()]));
         }
 
         private void UpdateQuestListInUI()
@@ -230,20 +208,14 @@ namespace SuperAdventure
 
             dgvQuests.Rows.Clear();
 
-            foreach (PlayerQuest quest in _player.Quests)
-            {
-                dgvQuests.Rows.Add([quest.Details.Name, quest.IsCompleted.ToString()]);
-            }
+            _player.Quests.ForEach(quest => dgvQuests.Rows.Add([quest.Details.Name, quest.IsCompleted.ToString()]));
         }
 
         private void UpdateWeaponListInUI()
         {
             List<Weapon> weapons = new List<Weapon>();
 
-            foreach (InventoryItem item in _player.Inventory)
-            {
-                if (item.Details is Weapon && item.Quantity > 0) weapons.Add((Weapon)item.Details);
-            }
+            _player.Inventory.Where(item => item.Details is Weapon && item.Quantity > 0).ToList().ForEach(item => weapons.Add((Weapon)item.Details));
 
             if (weapons.Count == 0)
             {
@@ -263,10 +235,7 @@ namespace SuperAdventure
         {
             List<HealingPotion> healingPotions = new List<HealingPotion>();
 
-            foreach (InventoryItem item in _player.Inventory)
-            {
-                if (item.Details is HealingPotion && item.Quantity > 0) healingPotions.Add((HealingPotion)item.Details);
-            }
+            _player.Inventory.Where(item => item.Details is HealingPotion && item.Quantity > 0).ToList().ForEach(item => healingPotions.Add((HealingPotion)item.Details));
 
             if (healingPotions.Count == 0)
             {
