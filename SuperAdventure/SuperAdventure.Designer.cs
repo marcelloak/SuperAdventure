@@ -217,6 +217,7 @@
             // 
             // rtbMessages
             // 
+            rtbMessages.HideSelection = false;
             rtbMessages.Location = new Point(347, 130);
             rtbMessages.Name = "rtbMessages";
             rtbMessages.ReadOnly = true;
