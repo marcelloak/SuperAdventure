@@ -154,6 +154,7 @@
             btnUseWeapon.TabIndex = 11;
             btnUseWeapon.Text = "Use";
             btnUseWeapon.UseVisualStyleBackColor = true;
+            btnUseWeapon.Click += btnUseWeapon_Click;
             // 
             // btnUsePotion
             // 
@@ -163,6 +164,7 @@
             btnUsePotion.TabIndex = 12;
             btnUsePotion.Text = "Use";
             btnUsePotion.UseVisualStyleBackColor = true;
+            btnUsePotion.Click += btnUsePotion_Click;
             // 
             // btnNorth
             // 
