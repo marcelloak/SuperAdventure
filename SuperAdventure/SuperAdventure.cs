@@ -22,6 +22,10 @@ namespace SuperAdventure
         {
             InitializeComponent();
             _player = Player.CreateDefaultPlayer();
+            lblHitPoints.DataBindings.Add("Text", _player, "HitPoints");
+            lblGold.DataBindings.Add("Text", _player, "Gold");
+            lblExperience.DataBindings.Add("Text", _player, "ExperiencePoints");
+            lblLevel.DataBindings.Add("Text", _player, "Level");
             MoveTo(_player.CurrentLocation);
         }
 
@@ -56,7 +60,7 @@ namespace SuperAdventure
             {
                 rtbMessages.AppendText(Environment.NewLine);
                 rtbMessages.AppendText("You defeated the " + _currentMonster.Name + Environment.NewLine);
-                _player.ExperiencePoints += _currentMonster.RewardExperiencePoints;
+                _player.AddExperiencePoints(_currentMonster.RewardExperiencePoints);
                 rtbMessages.AppendText("You receive " + _currentMonster.RewardExperiencePoints.ToString() + " experience points" + Environment.NewLine);
                 _player.Gold += _currentMonster.RewardGold;
                 rtbMessages.AppendText("You receive " + _currentMonster.RewardGold.ToString() + " gold" + Environment.NewLine);
@@ -127,7 +131,6 @@ namespace SuperAdventure
             rtbLocation.Text += newLocation.Description + Environment.NewLine;
 
             _player.CurrentHitPoints = _player.MaximumHitPoints;
-            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
 
             if (newLocation.QuestAvailableHere != null)
             {
@@ -148,7 +151,7 @@ namespace SuperAdventure
                             rtbMessages.AppendText(newLocation.QuestAvailableHere.RewardItem.Name + Environment.NewLine);
                             rtbMessages.AppendText(Environment.NewLine);
 
-                            _player.ExperiencePoints += newLocation.QuestAvailableHere.RewardExperiencePoints;
+                            _player.AddExperiencePoints(newLocation.QuestAvailableHere.RewardExperiencePoints);
                             _player.Gold += newLocation.QuestAvailableHere.RewardGold;
 
                             _player.AddItemToInventory(newLocation.QuestAvailableHere.RewardItem);
@@ -285,10 +288,6 @@ namespace SuperAdventure
 
         private void RefreshUI(bool monsterLivingHere)
         {
-            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
-            lblGold.Text = _player.Gold.ToString();
-            lblExperience.Text = _player.ExperiencePoints.ToString();
-            lblLevel.Text = _player.Level.ToString();
             UpdateInventoryListInUI();
             UpdateQuestListInUI();
             UpdateWeaponListInUI(monsterLivingHere);
