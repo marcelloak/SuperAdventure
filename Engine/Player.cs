@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,8 +33,8 @@ namespace Engine
             }
         }
         public int Level { get { return (ExperiencePoints / 100) + 1; } }
-        public List<InventoryItem> Inventory { get; set; }
-        public List<PlayerQuest> Quests { get; set; }
+        public BindingList<InventoryItem> Inventory { get; set; }
+        public BindingList<PlayerQuest> Quests { get; set; }
         public Location CurrentLocation { get; set; }
         public Weapon CurrentWeapon { get; set; }
 
@@ -41,8 +42,8 @@ namespace Engine
         {
             Gold = gold;
             ExperiencePoints = experiencePoints;
-            Inventory = new List<InventoryItem>();
-            Quests = new List<PlayerQuest>();
+            Inventory = new BindingList<InventoryItem>();
+            Quests = new BindingList<PlayerQuest>();
         }
 
         public static Player CreateDefaultPlayer()
@@ -75,10 +76,7 @@ namespace Engine
                 {
                     int id = Convert.ToInt32(node.Attributes["ID"].Value);
                     int quantity = Convert.ToInt32(node.Attributes["Quantity"].Value);
-                    for (int i = 0; i < quantity; i++)
-                    {
-                        player.AddItemToInventory(World.ItemByID(id));
-                    }
+                    player.AddItemToInventory(World.ItemByID(id), quantity);
                 }
 
                 foreach (XmlNode node in playerData.SelectNodes("/Player/PlayerQuests/PlayerQuest"))
@@ -106,12 +104,12 @@ namespace Engine
         public bool HasRequiredItemToEnterThisLocation(Location location)
         {
             if (location.ItemRequiredToEnter == null) return true;
-            return Inventory.Exists(item => item.Details.ID == location.ItemRequiredToEnter.ID);
+            return Inventory.Any(item => item.Details.ID == location.ItemRequiredToEnter.ID);
         }
 
         public bool HasThisQuest(Quest quest)
         {
-            return Quests.Exists(playerQuest => playerQuest.Details.ID == quest.ID);
+            return Quests.Any(playerQuest => playerQuest.Details.ID == quest.ID);
         }
 
         public bool CompletedThisQuest(Quest quest)
@@ -125,25 +123,31 @@ namespace Engine
         {
             foreach (QuestCompletionItem questItem in quest.QuestCompletionItems)
             {
-                if (!Inventory.Exists(item => item.Details.ID == questItem.Details.ID && item.Quantity >= questItem.Quantity)) return false;
+                if (!Inventory.Any(item => item.Details.ID == questItem.Details.ID && item.Quantity >= questItem.Quantity)) return false;
             }
             return true;
         }
 
         public void RemoveQuestCompletionItems(Quest quest)
         {
-            foreach (QuestCompletionItem questItem in quest.QuestCompletionItems)
-            {
-                InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == questItem.Details.ID);
-                if (item != null) item.Quantity -= questItem.Quantity;
-            }
+            quest.QuestCompletionItems.ForEach(questItem => RemoveItemFromInventory(questItem.Details, questItem.Quantity));
         }
 
-        public void AddItemToInventory(Item itemToAdd)
+        public void AddItemToInventory(Item itemToAdd, int quantity)
         {
             InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToAdd.ID);
-            if (item == null) Inventory.Add(new InventoryItem(itemToAdd, 1));
-            else item.Quantity++;
+            if (item == null) Inventory.Add(new InventoryItem(itemToAdd, quantity));
+            else item.Quantity += quantity;
+        }
+
+        public void RemoveItemFromInventory(Item itemToRemove, int quantity)
+        {
+            InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToRemove.ID);
+            if (item != null)
+            {
+                item.Quantity -= quantity;
+                if (item.Quantity == 0) Inventory.Remove(item);
+            }
         }
 
         public void MarkQuestCompleted(Quest quest)
