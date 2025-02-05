@@ -22,7 +22,7 @@ namespace SuperAdventure
         {
             InitializeComponent();
             _player = Player.CreateDefaultPlayer();
-            RefreshUI();
+            MoveTo(_player.CurrentLocation);
         }
 
         private void btnNorth_Click(object sender, EventArgs e)
@@ -72,7 +72,7 @@ namespace SuperAdventure
                     else rtbMessages.AppendText("You loot " + inventoryItem.Quantity.ToString() + " " + inventoryItem.Details.NamePlural + Environment.NewLine);
                 }
 
-                RefreshUI();
+                RefreshUI(true);
                 rtbMessages.AppendText(Environment.NewLine);
                 MoveTo(_player.CurrentLocation);
             }
@@ -93,12 +93,19 @@ namespace SuperAdventure
         private void btnLoad_Click(object sender, EventArgs e)
         {
             if (File.Exists(PLAYER_DATA_FILE_NAME)) _player = Player.CreatePlayerFromXmlString(File.ReadAllText(PLAYER_DATA_FILE_NAME));
+            rtbMessages.AppendText("You have loaded a saved game." + Environment.NewLine);
             MoveTo(_player.CurrentLocation);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             File.WriteAllText(PLAYER_DATA_FILE_NAME, _player.ToXmlString());
+            rtbMessages.AppendText("You have saved the game." + Environment.NewLine);
+        }
+
+        private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
         }
 
         private void MoveTo(Location newLocation)
@@ -168,11 +175,6 @@ namespace SuperAdventure
 
             bool monsterLivingHere = (newLocation.MonsterLivingHere != null);
 
-            cboWeapons.Visible = monsterLivingHere;
-            cboPotions.Visible = monsterLivingHere;
-            btnUseWeapon.Visible = monsterLivingHere;
-            btnUsePotion.Visible = monsterLivingHere;
-
             if (monsterLivingHere)
             {
                 rtbMessages.AppendText("You see a " + newLocation.MonsterLivingHere.Name + Environment.NewLine);
@@ -180,7 +182,8 @@ namespace SuperAdventure
 
             }
             else _currentMonster = null;
-            RefreshUI();
+
+            RefreshUI(monsterLivingHere);
         }
 
         private Monster CreateMonsterInstance(Monster monster)
@@ -222,10 +225,16 @@ namespace SuperAdventure
             _player.Quests.ForEach(quest => dgvQuests.Rows.Add([quest.Details.Name, quest.IsCompleted.ToString()]));
         }
 
-        private void UpdateWeaponListInUI()
+        private void UpdateWeaponListInUI(bool monsterLivingHere)
         {
-            List<Weapon> weapons = new List<Weapon>();
+            if (!monsterLivingHere)
+            {
+                cboWeapons.Visible = false;
+                btnUseWeapon.Visible = false;
+                return;
+            }
 
+            List<Weapon> weapons = new List<Weapon>();
             _player.Inventory.Where(item => item.Details is Weapon && item.Quantity > 0).ToList().ForEach(item => weapons.Add((Weapon)item.Details));
 
             if (weapons.Count == 0)
@@ -235,17 +244,27 @@ namespace SuperAdventure
             }
             else
             {
+                cboWeapons.SelectedIndexChanged -= cboWeapons_SelectedIndexChanged;
                 cboWeapons.DataSource = weapons;
+                cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged;
                 cboWeapons.DisplayMember = "Name";
                 cboWeapons.ValueMember = "ID";
-                cboWeapons.SelectedIndex = 0;
+                cboWeapons.SelectedItem = _player.CurrentWeapon;
+                cboWeapons.Visible = true;
+                btnUseWeapon.Visible = true;
             }
         }
 
-        private void UpdatePotionListInUI()
+        private void UpdatePotionListInUI(bool monsterLivingHere)
         {
-            List<HealingPotion> healingPotions = new List<HealingPotion>();
+            if (!monsterLivingHere)
+            {
+                cboPotions.Visible = false;
+                btnUsePotion.Visible = false;
+                return;
+            }
 
+            List<HealingPotion> healingPotions = new List<HealingPotion>();
             _player.Inventory.Where(item => item.Details is HealingPotion && item.Quantity > 0).ToList().ForEach(item => healingPotions.Add((HealingPotion)item.Details));
 
             if (healingPotions.Count == 0)
@@ -259,10 +278,12 @@ namespace SuperAdventure
                 cboPotions.DisplayMember = "Name";
                 cboPotions.ValueMember = "ID";
                 cboPotions.SelectedIndex = 0;
+                cboPotions.Visible = true;
+                btnUsePotion.Visible = true;
             }
         }
 
-        private void RefreshUI()
+        private void RefreshUI(bool monsterLivingHere)
         {
             lblHitPoints.Text = _player.CurrentHitPoints.ToString();
             lblGold.Text = _player.Gold.ToString();
@@ -270,8 +291,8 @@ namespace SuperAdventure
             lblLevel.Text = _player.Level.ToString();
             UpdateInventoryListInUI();
             UpdateQuestListInUI();
-            UpdateWeaponListInUI();
-            UpdatePotionListInUI();
+            UpdateWeaponListInUI(monsterLivingHere);
+            UpdatePotionListInUI(monsterLivingHere);
         }
 
         private void MonsterTakesTurn()
@@ -279,7 +300,7 @@ namespace SuperAdventure
             int damageToPlayer = RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
             rtbMessages.AppendText("The " + _currentMonster.Name + " did " + damageToPlayer.ToString() + " points of damage." + Environment.NewLine);
             _player.CurrentHitPoints -= damageToPlayer;
-            RefreshUI();
+            RefreshUI(true);
             if (_player.CurrentHitPoints <= 0)
             {
                 rtbMessages.AppendText("The " + _currentMonster.Name + " killed you." + Environment.NewLine);
