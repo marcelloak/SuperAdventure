@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,13 +16,12 @@ namespace SuperAdventure
     {
         private Player _player;
         private Monster _currentMonster;
+        private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
 
         public SuperAdventure()
         {
             InitializeComponent();
-            _player = new Player(10, 10, 20, 0);
-            _player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
-            MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
+            _player = Player.CreateDefaultPlayer();
             RefreshUI();
         }
 
@@ -88,6 +88,17 @@ namespace SuperAdventure
             if (item != null) item.Quantity--;
             rtbMessages.AppendText("You drink a " + potion.Name + Environment.NewLine);
             MonsterTakesTurn();
+        }
+
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(PLAYER_DATA_FILE_NAME)) _player = Player.CreatePlayerFromXmlString(File.ReadAllText(PLAYER_DATA_FILE_NAME));
+            MoveTo(_player.CurrentLocation);
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            File.WriteAllText(PLAYER_DATA_FILE_NAME, _player.ToXmlString());
         }
 
         private void MoveTo(Location newLocation)

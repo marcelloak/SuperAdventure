@@ -49,6 +49,8 @@
             rtbMessages = new RichTextBox();
             dgvInventory = new DataGridView();
             dgvQuests = new DataGridView();
+            btnLoad = new Button();
+            btnSave = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvInventory).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvQuests).BeginInit();
             SuspendLayout();
@@ -257,11 +259,33 @@
             dgvQuests.Size = new Size(312, 189);
             dgvQuests.TabIndex = 20;
             // 
+            // btnLoad
+            // 
+            btnLoad.Location = new Point(241, 12);
+            btnLoad.Name = "btnLoad";
+            btnLoad.Size = new Size(75, 23);
+            btnLoad.TabIndex = 21;
+            btnLoad.Text = "Load";
+            btnLoad.UseVisualStyleBackColor = true;
+            btnLoad.Click += btnLoad_Click;
+            // 
+            // btnSave
+            // 
+            btnSave.Location = new Point(241, 46);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new Size(75, 23);
+            btnSave.TabIndex = 22;
+            btnSave.Text = "Save";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
+            // 
             // SuperAdventure
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(719, 651);
+            Controls.Add(btnSave);
+            Controls.Add(btnLoad);
             Controls.Add(dgvQuests);
             Controls.Add(dgvInventory);
             Controls.Add(rtbMessages);
@@ -314,5 +338,7 @@
         private RichTextBox rtbMessages;
         private DataGridView dgvInventory;
         private DataGridView dgvQuests;
+        private Button btnLoad;
+        private Button btnSave;
     }
 }
