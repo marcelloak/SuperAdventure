@@ -129,6 +129,37 @@ namespace SuperAdventure
             }
         }
 
+        private void SuperAdventure_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.W:
+                    e.Handled = true;
+                    btnNorth.PerformClick();
+                    break;
+                case Keys.S:
+                    e.Handled = true;
+                    btnSouth.PerformClick();
+                    break;
+                case Keys.A:
+                    e.Handled = true;
+                    btnWest.PerformClick();
+                    break;
+                case Keys.D:
+                    e.Handled = true;
+                    btnEast.PerformClick();
+                    break;
+                case Keys.Z:
+                    e.Handled = true;
+                    btnUseWeapon.PerformClick();
+                    break;
+                case Keys.X:
+                    e.Handled = true;
+                    btnUsePotion.PerformClick();
+                    break;
+            }
+        }
+
         private void MoveTo(Location newLocation)
         {
             if (!_player.HasRequiredItemToEnterThisLocation(newLocation))

@@ -307,8 +307,10 @@
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
+            KeyPreview = true;
             Name = "SuperAdventure";
             Text = "My Game";
+            KeyDown += SuperAdventure_KeyDown;
             ((System.ComponentModel.ISupportInitialize)dgvInventory).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvQuests).EndInit();
             ResumeLayout(false);
