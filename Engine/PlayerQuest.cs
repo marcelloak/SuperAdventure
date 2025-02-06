@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Engine
 {
-    public class PlayerQuest
+    public class PlayerQuest : INotifyPropertyChanged
     {
         public Quest Details { get; set; }
         private bool _isCompleted;
