@@ -37,6 +37,8 @@ namespace Engine
         public BindingList<PlayerQuest> Quests { get; set; }
         public Location CurrentLocation { get; set; }
         public Weapon CurrentWeapon { get; set; }
+        public List<Weapon> Weapons { get { return Inventory.Where(item => item.Details is Weapon).Select(item => item.Details as Weapon).ToList(); } }
+        public List<HealingPotion> Potions { get { return Inventory.Where(item => item.Details is HealingPotion).Select(item => item.Details as HealingPotion).ToList(); } }
 
         private Player(int currentHitPoints, int maximumHitPoints, int gold, int experiencePoints) : base(currentHitPoints, maximumHitPoints)
         {
@@ -133,21 +135,31 @@ namespace Engine
             quest.QuestCompletionItems.ForEach(questItem => RemoveItemFromInventory(questItem.Details, questItem.Quantity));
         }
 
-        public void AddItemToInventory(Item itemToAdd, int quantity)
+        public void AddItemToInventory(Item itemToAdd, int quantity = 1)
         {
             InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToAdd.ID);
             if (item == null) Inventory.Add(new InventoryItem(itemToAdd, quantity));
             else item.Quantity += quantity;
+            RaiseInventoryChangedEvent(itemToAdd);
         }
 
-        public void RemoveItemFromInventory(Item itemToRemove, int quantity)
+        public void RemoveItemFromInventory(Item itemToRemove, int quantity = 1)
         {
             InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToRemove.ID);
             if (item != null)
             {
                 item.Quantity -= quantity;
+                if (item.Quantity < 0) item.Quantity = 0; // Might want to raise an error instead
                 if (item.Quantity == 0) Inventory.Remove(item);
+                RaiseInventoryChangedEvent(itemToRemove);
             }
+            // Might want to raise an error for if item is null
+        }
+
+        private void RaiseInventoryChangedEvent(Item item)
+        {
+            if (item is Weapon) OnPropertyChanged("Weapons");
+            else if (item is HealingPotion) OnPropertyChanged("Potions");
         }
 
         public void MarkQuestCompleted(Quest quest)
