@@ -61,10 +61,15 @@ namespace SuperAdventure
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            if (File.Exists(PLAYER_DATA_FILE_NAME)) _player = Player.CreatePlayerFromXmlString(File.ReadAllText(PLAYER_DATA_FILE_NAME));
-            rtbMessages.AppendText("You have loaded a saved game." + Environment.NewLine);
-            bindUI();
-            _player.MoveTo(_player.CurrentLocation);
+            if (File.Exists(PLAYER_DATA_FILE_NAME))
+            {
+                _player = Player.CreatePlayerFromXmlString(File.ReadAllText(PLAYER_DATA_FILE_NAME));
+                rtbMessages.AppendText("You have loaded a saved game." + Environment.NewLine);
+                clearUI();
+                bindUI();
+                _player.MoveTo(_player.CurrentLocation);
+            }
+            else rtbMessages.AppendText("Failed to load game." + Environment.NewLine);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -154,13 +159,22 @@ namespace SuperAdventure
             _keyBindings.Add(Keys.F5, btnLoad);
         }
 
-        private void bindUI()
+        private void clearUI()
         {
             lblHitPoints.DataBindings.Clear();
             lblGold.DataBindings.Clear();
             lblExperience.DataBindings.Clear();
             lblLevel.DataBindings.Clear();
 
+            dgvInventory.Columns.Clear();
+            dgvQuests.Columns.Clear();
+
+            _player.PropertyChanged -= PlayerOnPropertyChanged;
+            _player.OnMessage -= DisplayMessage;
+        }
+
+        private void bindUI()
+        {
             lblHitPoints.DataBindings.Add("Text", _player, "HitPoints");
             lblGold.DataBindings.Add("Text", _player, "Gold");
             lblExperience.DataBindings.Add("Text", _player, "ExperiencePoints");
@@ -168,7 +182,6 @@ namespace SuperAdventure
 
             dgvInventory.RowHeadersVisible = false;
             dgvInventory.AutoGenerateColumns = false;
-            dgvInventory.Columns.Clear();
             dgvInventory.DataSource = _player.Inventory;
             dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
             {
@@ -184,7 +197,6 @@ namespace SuperAdventure
 
             dgvQuests.RowHeadersVisible = false;
             dgvQuests.AutoGenerateColumns = false;
-            dgvQuests.Columns.Clear();
             dgvQuests.DataSource = _player.Quests;
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
             {
@@ -198,7 +210,6 @@ namespace SuperAdventure
                 DataPropertyName = "IsCompleted"
             });
 
-            _player.PropertyChanged -= PlayerOnPropertyChanged;
             cboWeapons.DataSource = _player.Weapons;
             cboWeapons.DisplayMember = "Name";
             cboWeapons.ValueMember = "ID";
@@ -208,9 +219,8 @@ namespace SuperAdventure
             cboPotions.DataSource = _player.Potions;
             cboPotions.DisplayMember = "Name";
             cboPotions.ValueMember = "ID";
-            _player.PropertyChanged += PlayerOnPropertyChanged;
 
-            _player.OnMessage -= DisplayMessage;
+            _player.PropertyChanged += PlayerOnPropertyChanged;
             _player.OnMessage += DisplayMessage;
         }
     }
