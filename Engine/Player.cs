@@ -33,7 +33,7 @@ namespace Engine
             }
         }
         public int Level { get { return (ExperiencePoints / 100) + 1; } }
-        public BindingList<InventoryItem> Inventory { get; set; }
+        public BindingList<InventoryItem> Inventory { get; set; } // TODO: See if possible to filter out unsellable items for trade screen
         public BindingList<PlayerQuest> Quests { get; set; }
         private Location _currentLocation;
         public Location CurrentLocation

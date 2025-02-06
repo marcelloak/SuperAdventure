@@ -16,14 +16,14 @@ namespace SuperAdventure
     public partial class SuperAdventure : Form
     {
         private Player _player;
-        Dictionary<System.Windows.Forms.Keys, Button> _keyBindings;
+        Dictionary<Keys, Button> _keyBindings;
         private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
 
         public SuperAdventure()
         {
             InitializeComponent();
             _player = Player.CreateDefaultPlayer();
-            _keyBindings = new Dictionary<System.Windows.Forms.Keys, Button>();
+            _keyBindings = new Dictionary<Keys, Button>();
             bindKeys();
             bindUI();
             _player.MoveTo(_player.CurrentLocation);
@@ -78,6 +78,13 @@ namespace SuperAdventure
             rtbMessages.AppendText("You have saved the game." + Environment.NewLine);
         }
 
+        private void btnTrade_Click(object sender, EventArgs e)
+        {
+            TradingScreen tradingScreen = new TradingScreen(_player);
+            tradingScreen.StartPosition = FormStartPosition.CenterParent;
+            tradingScreen.ShowDialog(this);
+        }
+
         private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
         {
             _player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
@@ -109,6 +116,7 @@ namespace SuperAdventure
                 btnEast.Visible = (_player.CurrentLocation.LocationToEast != null);
                 btnSouth.Visible = (_player.CurrentLocation.LocationToSouth != null);
                 btnWest.Visible = (_player.CurrentLocation.LocationToWest != null);
+                btnTrade.Visible = (_player.CurrentLocation.VendorWorkingHere != null);
 
                 rtbLocation.Text = _player.CurrentLocation.Name + Environment.NewLine;
                 rtbLocation.Text += _player.CurrentLocation.Description + Environment.NewLine;
@@ -138,13 +146,9 @@ namespace SuperAdventure
 
         private void SuperAdventure_KeyDown(object sender, KeyEventArgs e)
         {
+            e.Handled = true;
             if (e.KeyCode == Keys.Escape) Application.Exit();
-            else
-            {
-                e.Handled = true;
-                _keyBindings[e.KeyCode].PerformClick();
-            }
-
+            if (_keyBindings.ContainsKey(e.KeyCode)) _keyBindings[e.KeyCode].PerformClick();
         }
 
         private void bindKeys()
@@ -155,6 +159,7 @@ namespace SuperAdventure
             _keyBindings.Add(Keys.D, btnEast);
             _keyBindings.Add(Keys.Z, btnUseWeapon);
             _keyBindings.Add(Keys.X, btnUsePotion);
+            _keyBindings.Add(Keys.T, btnTrade);
             _keyBindings.Add(Keys.F4, btnSave);
             _keyBindings.Add(Keys.F5, btnLoad);
         }

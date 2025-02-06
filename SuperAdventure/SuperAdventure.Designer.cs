@@ -51,6 +51,7 @@
             dgvQuests = new DataGridView();
             btnLoad = new Button();
             btnSave = new Button();
+            btnTrade = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvInventory).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvQuests).BeginInit();
             SuspendLayout();
@@ -279,11 +280,22 @@
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
             // 
+            // btnTrade
+            // 
+            btnTrade.Location = new Point(493, 620);
+            btnTrade.Name = "btnTrade";
+            btnTrade.Size = new Size(75, 23);
+            btnTrade.TabIndex = 23;
+            btnTrade.Text = "Trade";
+            btnTrade.UseVisualStyleBackColor = true;
+            btnTrade.Click += btnTrade_Click;
+            // btnTrade
             // SuperAdventure
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(719, 651);
+            Controls.Add(btnTrade);
             Controls.Add(btnSave);
             Controls.Add(btnLoad);
             Controls.Add(dgvQuests);
@@ -342,5 +354,6 @@
         private DataGridView dgvQuests;
         private Button btnLoad;
         private Button btnSave;
+        private Button btnTrade;
     }
 }
