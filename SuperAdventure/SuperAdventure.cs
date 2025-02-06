@@ -16,12 +16,15 @@ namespace SuperAdventure
     public partial class SuperAdventure : Form
     {
         private Player _player;
+        Dictionary<System.Windows.Forms.Keys, Button> _keyBindings;
         private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
 
         public SuperAdventure()
         {
             InitializeComponent();
             _player = Player.CreateDefaultPlayer();
+            _keyBindings = new Dictionary<System.Windows.Forms.Keys, Button>();
+            bindKeys();
             bindUI();
             _player.MoveTo(_player.CurrentLocation);
         }
@@ -130,41 +133,25 @@ namespace SuperAdventure
 
         private void SuperAdventure_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode)
+            if (e.KeyCode == Keys.Escape) Application.Exit();
+            else
             {
-                case Keys.W:
-                    e.Handled = true;
-                    btnNorth.PerformClick();
-                    break;
-                case Keys.S:
-                    e.Handled = true;
-                    btnSouth.PerformClick();
-                    break;
-                case Keys.A:
-                    e.Handled = true;
-                    btnWest.PerformClick();
-                    break;
-                case Keys.D:
-                    e.Handled = true;
-                    btnEast.PerformClick();
-                    break;
-                case Keys.Z:
-                    e.Handled = true;
-                    btnUseWeapon.PerformClick();
-                    break;
-                case Keys.X:
-                    e.Handled = true;
-                    btnUsePotion.PerformClick();
-                    break;
-                case Keys.F4:
-                    e.Handled = true;
-                    btnSave.PerformClick();
-                    break;
-                case Keys.F5:
-                    e.Handled = true;
-                    btnLoad.PerformClick();
-                    break;
+                e.Handled = true;
+                _keyBindings[e.KeyCode].PerformClick();
             }
+
+        }
+
+        private void bindKeys()
+        {
+            _keyBindings.Add(Keys.W, btnNorth);
+            _keyBindings.Add(Keys.S, btnSouth);
+            _keyBindings.Add(Keys.A, btnWest);
+            _keyBindings.Add(Keys.D, btnEast);
+            _keyBindings.Add(Keys.Z, btnUseWeapon);
+            _keyBindings.Add(Keys.X, btnUsePotion);
+            _keyBindings.Add(Keys.F4, btnSave);
+            _keyBindings.Add(Keys.F5, btnLoad);
         }
 
         private void bindUI()
