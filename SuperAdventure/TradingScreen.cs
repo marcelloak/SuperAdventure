@@ -108,7 +108,7 @@ namespace SuperAdventure
             });
             dgvMyItems.Columns.Add(new DataGridViewButtonColumn
             {
-                HeaderText = "Sell 1",
+                Text = "Sell 1",
                 UseColumnTextForButtonValue = true,
                 Width = 50,
                 DataPropertyName = "ItemID"
@@ -145,7 +145,7 @@ namespace SuperAdventure
             });
             dgvVendorItems.Columns.Add(new DataGridViewButtonColumn
             {
-                HeaderText = "Buy 1",
+                Text = "Buy 1",
                 UseColumnTextForButtonValue = true,
                 Width = 50,
                 DataPropertyName = "ItemID"
