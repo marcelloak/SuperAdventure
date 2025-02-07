@@ -8,6 +8,7 @@
         public Item ItemRequiredToEnter { get; set; }
         public int LevelRequiredToEnter { get; set; }
         public Quest QuestAvailableHere { get; set; }
+        public bool HasAQuest { get { return QuestAvailableHere != null; } }
         public Monster MonsterLivingHere { get; set; }
         public Location LocationToNorth { get; set; }
         public Location LocationToEast { get; set; }
@@ -24,6 +25,11 @@
             QuestAvailableHere = questAvailableHere;
             MonsterLivingHere = monsterLivingHere;
             LevelRequiredToEnter = levelRequiredToEnter;
+        }
+
+        public Monster NewInstanceOfMonsterLivingHere()
+        {
+            return MonsterLivingHere == null ? null : MonsterLivingHere.NewInstanceOfMonster();
         }
     }
 }

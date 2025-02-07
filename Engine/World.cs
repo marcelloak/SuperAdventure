@@ -183,52 +183,27 @@
 
         public static Item ItemByID(int id)
         {
-            foreach (Item item in Items)
-            {
-                if (item.ID == id) return item;
-            }
-
-            return null;
+            return Items.SingleOrDefault(item => item.ID == id);
         }
 
         public static Monster MonsterByID(int id)
         {
-            foreach (Monster monster in Monsters)
-            {
-                if (monster.ID == id) return monster;
-            }
-
-            return null;
+            return Monsters.SingleOrDefault(monster => monster.ID == id);
         }
 
         public static Quest QuestByID(int id)
         {
-            foreach (Quest quest in Quests)
-            {
-                if (quest.ID == id) return quest;
-            }
-
-            return null;
+            return Quests.SingleOrDefault(quest => quest.ID == id);
         }
 
         public static Location LocationByID(int id)
         {
-            foreach (Location location in Locations)
-            {
-                if (location.ID == id) return location;
-            }
-
-            return null;
+            return Locations.SingleOrDefault(location => location.ID == id);
         }
 
         public static Vendor VendorByID(int id)
         {
-            foreach (Vendor vendor in Vendors)
-            {
-                if (vendor.ID == id) return vendor;
-            }
-
-            return null;
+            return Vendors.SingleOrDefault(vendor => vendor.ID == id);
         }
     }
 }

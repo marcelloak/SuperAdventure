@@ -19,7 +19,7 @@ namespace Engine
         public int ExperiencePoints
         {
             get { return _experiencePoints; }
-            set
+            private set
             {
                 _experiencePoints = value;
                 OnPropertyChanged("ExperiencePoints");
@@ -27,7 +27,7 @@ namespace Engine
             }
         }
         public int Level { get { return (ExperiencePoints / 100) + 1; } }
-        public BindingList<InventoryItem> Inventory { get; set; } // TODO: See if possible to filter out unsellable items for trade screen
+        public BindingList<InventoryItem> Inventory { get; set; }
         public List<InventoryItem> SellableInventory { get { return Inventory.Where(item => item.Details.Price >= 0).ToList(); } }
         public BindingList<PlayerQuest> Quests { get; set; }
         private Location _currentLocation;
@@ -209,66 +209,61 @@ namespace Engine
             CurrentLocation = newLocation;
             CurrentHitPoints = MaximumHitPoints;
 
-            if (newLocation.QuestAvailableHere != null)
+            if (newLocation.HasAQuest)
             {
                 if (HasThisQuest(newLocation.QuestAvailableHere))
                 {
-                    if (!CompletedThisQuest(newLocation.QuestAvailableHere) && HasAllQuestCompletionItems(newLocation.QuestAvailableHere))
-                    {
-                        RaiseMessage("");
-                        RaiseMessage("You completed the '" + newLocation.QuestAvailableHere.Name + "' quest.");
-
-                        RemoveQuestCompletionItems(newLocation.QuestAvailableHere);
-
-                        RaiseMessage("You receive: ");
-                        RaiseMessage(newLocation.QuestAvailableHere.RewardExperiencePoints.ToString() + " experience points");
-                        RaiseMessage(newLocation.QuestAvailableHere.RewardGold.ToString() + " gold");
-                        RaiseMessage(newLocation.QuestAvailableHere.RewardItem.Name, true);
-
-                        AddExperiencePoints(newLocation.QuestAvailableHere.RewardExperiencePoints);
-                        Gold += newLocation.QuestAvailableHere.RewardGold;
-
-                        AddItemToInventory(newLocation.QuestAvailableHere.RewardItem);
-                        MarkQuestCompleted(newLocation.QuestAvailableHere);
-                    }
+                    if (!CompletedThisQuest(newLocation.QuestAvailableHere) && HasAllQuestCompletionItems(newLocation.QuestAvailableHere)) CompleteQuest(newLocation.QuestAvailableHere);
                 }
-                else
-                {
-                    RaiseMessage("You receive the " + newLocation.QuestAvailableHere.Name + " quest.");
-                    RaiseMessage(newLocation.QuestAvailableHere.Description);
-                    RaiseMessage("To complete it, return with:");
-                    newLocation.QuestAvailableHere.QuestCompletionItems.ForEach(questItem => RaiseMessage(questItem.Quantity.ToString() + " " + questItem.Description));
-                    RaiseMessage("");
-
-                    Quests.Add(new PlayerQuest(newLocation.QuestAvailableHere));
-                }
+                else AddQuest(newLocation.QuestAvailableHere);
             }
 
-            if (newLocation.MonsterLivingHere != null)
-            {
-                RaiseMessage("You see a " + newLocation.MonsterLivingHere.Name);
-                CurrentMonster = CreateMonsterInstance(newLocation.MonsterLivingHere);
-
-            }
-            else CurrentMonster = null;
+            CurrentMonster = newLocation.NewInstanceOfMonsterLivingHere();
+            if (CurrentMonster != null) RaiseMessage("You see a " + newLocation.MonsterLivingHere.Name);
         }
 
-        private Monster CreateMonsterInstance(Monster monster)
+        private void AddQuest(Quest quest)
         {
-            Monster standardMonster = World.MonsterByID(monster.ID);
-            Monster currentMonster = new Monster(standardMonster.ID, standardMonster.Name, standardMonster.MaximumDamage, standardMonster.RewardGold, standardMonster.RewardExperiencePoints, standardMonster.CurrentHitPoints, standardMonster.MaximumHitPoints);
-            standardMonster.LootTable.ForEach(lootItem => currentMonster.LootTable.Add(lootItem));
-            return currentMonster;
+            RaiseMessage("You receive the " + quest.Name + " quest.");
+            RaiseMessage(quest.Description);
+            RaiseMessage("To complete it, return with:");
+            quest.QuestCompletionItems.ForEach(questItem => RaiseMessage(questItem.Quantity.ToString() + " " + questItem.Description));
+            RaiseMessage("");
+
+            Quests.Add(new PlayerQuest(quest));
+        }
+
+        private void CompleteQuest(Quest quest)
+        {
+            RaiseMessage("");
+            RaiseMessage("You completed the '" + quest.Name + "' quest.");
+
+            RemoveQuestCompletionItems(quest);
+
+            RaiseMessage("You receive: ");
+            RaiseMessage(quest.RewardExperiencePoints.ToString() + " experience points");
+            RaiseMessage(quest.RewardGold.ToString() + " gold");
+            RaiseMessage(quest.RewardItem.Name, true);
+
+            AddExperiencePoints(quest.RewardExperiencePoints);
+            Gold += quest.RewardGold;
+
+            AddItemToInventory(quest.RewardItem);
+            MarkQuestCompleted(quest);
         }
 
         public void UseWeapon(Weapon currentWeapon)
         {
-            int damageToMonster = RandomNumberGenerator.NumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
-            CurrentMonster.CurrentHitPoints -= damageToMonster;
-            RaiseMessage("You hit the " + CurrentMonster.Name + " for " + damageToMonster.ToString() + " points.");
+            int damage = RandomNumberGenerator.NumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
+            if (damage == 0) RaiseMessage("You missed the " + CurrentMonster.Name);
+            else
+            {
+                CurrentMonster.CurrentHitPoints -= damage;
+                RaiseMessage("You hit the " + CurrentMonster.Name + " for " + damage.ToString() + " points.");
+            }
 
-            if (CurrentHitPoints <= 0) PlayerDies();
-            else if (CurrentMonster.CurrentHitPoints <= 0) MonsterDies();
+            if (IsDead) PlayerDies();
+            else if (CurrentMonster.IsDead) MonsterDies();
             else MonsterTakesTurn();
         }
 
@@ -279,19 +274,23 @@ namespace Engine
             RemoveItemFromInventory(potion);
             RaiseMessage("You drink a " + potion.Name + " and heal for " + potion.AmountToHeal + " points.");
 
-            if (CurrentHitPoints <= 0) PlayerDies();
-            else if (CurrentMonster.CurrentHitPoints <= 0) MonsterDies();
+            if (IsDead) PlayerDies();
+            else if (CurrentMonster.IsDead) MonsterDies();
             else MonsterTakesTurn();
         }
 
         private void MonsterTakesTurn()
         {
-            int damageToPlayer = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
-            RaiseMessage("The " + CurrentMonster.Name + " did " + damageToPlayer.ToString() + " points of damage.");
-            CurrentHitPoints -= damageToPlayer;
+            int damage = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
+            if (damage == 0) RaiseMessage("The " + CurrentMonster.Name + " missed.");
+            else
+            {
+                CurrentHitPoints -= damage;
+                RaiseMessage("The " + CurrentMonster.Name + " did " + damage.ToString() + " points of damage.");
+            }
 
-            if (CurrentHitPoints <= 0) PlayerDies();
-            else if (CurrentMonster.CurrentHitPoints <= 0) MonsterDies();
+            if (IsDead) PlayerDies();
+            else if (CurrentMonster.IsDead) MonsterDies();
         }
 
         private void PlayerDies()
@@ -309,11 +308,7 @@ namespace Engine
             Gold += CurrentMonster.RewardGold;
             RaiseMessage("You receive " + CurrentMonster.RewardGold.ToString() + " gold");
 
-            List<InventoryItem> lootedItems = new List<InventoryItem>();
-            CurrentMonster.LootTable.Where(lootItem => RandomNumberGenerator.NumberBetween(1, 100) <= lootItem.DropPercentage).ToList().ForEach(lootItem => lootedItems.Add(new InventoryItem(lootItem.Details, 1)));
-            if (lootedItems.Count == 0) CurrentMonster.LootTable.Where(lootItem => lootItem.IsDefaultItem).ToList().ForEach(lootItem => lootedItems.Add(new InventoryItem(lootItem.Details, 1)));
-
-            foreach (InventoryItem inventoryItem in lootedItems)
+            foreach (InventoryItem inventoryItem in CurrentMonster.LootItems)
             {
                 AddItemToInventory(inventoryItem.Details);
                 RaiseMessage("You loot " + inventoryItem.Quantity.ToString() + " " + inventoryItem.Description);

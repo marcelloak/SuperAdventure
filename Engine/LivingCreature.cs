@@ -2,7 +2,7 @@
 
 namespace Engine
 {
-    public class LivingCreature :INotifyPropertyChanged
+    public class LivingCreature : INotifyPropertyChanged
     {
         private int _currentHitPoints;
         public int CurrentHitPoints
@@ -26,6 +26,7 @@ namespace Engine
         }
 
         public string HitPoints { get { return _currentHitPoints.ToString() + "/" + _maximumHitPoints.ToString(); } }
+        public bool IsDead {  get { return CurrentHitPoints <= 0; } }
 
         public LivingCreature(int currentHitPoints, int maximumHitPoints)
         {

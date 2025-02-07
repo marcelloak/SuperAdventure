@@ -6,7 +6,7 @@ namespace Engine
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public BindingList<InventoryItem> Inventory { get; private set; }
+        public BindingList<InventoryItem> Inventory { get; set; }
 
         public Vendor(int id, string name)
         {
