@@ -34,6 +34,7 @@ namespace Engine
         }
         public int Level { get { return (ExperiencePoints / 100) + 1; } }
         public BindingList<InventoryItem> Inventory { get; set; } // TODO: See if possible to filter out unsellable items for trade screen
+        public List<InventoryItem> SellableInventory { get { return Inventory.Where(item => item.Details.Price >= 0).ToList(); } }
         public BindingList<PlayerQuest> Quests { get; set; }
         private Location _currentLocation;
         public Location CurrentLocation
@@ -46,8 +47,8 @@ namespace Engine
             }
         }
         public Weapon CurrentWeapon { get; set; }
-        public List<Weapon> Weapons { get { return Inventory.Where(item => item.Details is Weapon).Select(item => item.Details as Weapon).ToList(); } }
-        public List<HealingPotion> Potions { get { return Inventory.Where(item => item.Details is HealingPotion).Select(item => item.Details as HealingPotion).ToList(); } }
+        public List<Weapon> Weapons { get { return Inventory.Where(item => item.Details is Weapon).Select(item => item.Details as Weapon).ToList().Where(weapon => Level >= weapon.MinimumLevel).ToList(); } }
+        public List<HealingPotion> Potions { get { return Inventory.Where(item => item.Details is HealingPotion).Select(item => item.Details as HealingPotion).ToList().Where(potion => Level >= potion.MinimumLevel).ToList(); } }
         private Monster CurrentMonster;
         public event EventHandler<MessageEventArgs> OnMessage;
 
@@ -133,6 +134,11 @@ namespace Engine
             return Inventory.Any(item => item.Details.ID == location.ItemRequiredToEnter.ID);
         }
 
+        public bool HasRequiredLevelToEnterThisLocation(Location location)
+        {
+            return Level >= location.LevelRequiredToEnter;
+        }
+
         public bool HasThisQuest(Quest quest)
         {
             return Quests.Any(playerQuest => playerQuest.Details.ID == quest.ID);
@@ -197,6 +203,12 @@ namespace Engine
             if (!HasRequiredItemToEnterThisLocation(newLocation))
             {
                 RaiseMessage("You must have a " + newLocation.ItemRequiredToEnter.Name + " to enter this location.");
+                return;
+            }
+
+            if (!HasRequiredLevelToEnterThisLocation(newLocation))
+            {
+                RaiseMessage("You must be level " + newLocation.LevelRequiredToEnter + " or higher to enter this location.");
                 return;
             }
 

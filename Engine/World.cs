@@ -25,6 +25,7 @@ namespace Engine
         public const int ITEM_ID_SPIDER_SILK = 9;
         public const int ITEM_ID_ADVENTURER_PASS = 10;
 
+        public const int WORTHLESS_ITEM_PRICE = 0;
         public const int UNSELLABLE_ITEM_PRICE = -1;
 
         public const int MONSTER_ID_RAT = 1;
@@ -66,7 +67,7 @@ namespace Engine
             Items.Add(new HealingPotion(ITEM_ID_HEALING_POTION, "Healing potion", "Healing potions", 5, 3));
             Items.Add(new Item(ITEM_ID_SPIDER_FANG, "Spider fang", "Spider fangs", 1));
             Items.Add(new Item(ITEM_ID_SPIDER_SILK, "Spider silk", "Spider silks", 1));
-            Items.Add(new Item(ITEM_ID_ADVENTURER_PASS, "Adventurer pass", "Adventurer passes"));
+            Items.Add(new Item(ITEM_ID_ADVENTURER_PASS, "Adventurer pass", "Adventurer passes", UNSELLABLE_ITEM_PRICE));
         }
 
         private static void PopulateMonsters()
@@ -130,8 +131,8 @@ namespace Engine
             Location townSquare = new Location(LOCATION_ID_TOWN_SQUARE, "Town square", "You see a fountain.");
             townSquare.VendorWorkingHere = VendorByID(VENDOR_ID_BOB_THE_RAT_CATCHER);
 
-
             Location alchemistHut = new Location(LOCATION_ID_ALCHEMIST_HUT, "Alchemist's hut", "There are many strange plants on the shelves.");
+            alchemistHut.LevelRequiredToEnter = 2;
             alchemistHut.QuestAvailableHere = QuestByID(QUEST_ID_CLEAR_ALCHEMIST_GARDEN);
 
             Location alchemistsGarden = new Location(LOCATION_ID_ALCHEMISTS_GARDEN, "Alchemist's garden", "Many plants are growing here.");

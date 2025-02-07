@@ -12,6 +12,7 @@ namespace Engine
         public string Name { get; set; }
         public string Description { get; set; }
         public Item ItemRequiredToEnter { get; set; }
+        public int LevelRequiredToEnter { get; set; }
         public Quest QuestAvailableHere { get; set; }
         public Monster MonsterLivingHere { get; set; }
         public Location LocationToNorth { get; set; }
@@ -20,7 +21,7 @@ namespace Engine
         public Location LocationToWest { get; set; }
         public Vendor VendorWorkingHere { get; set; }
 
-        public Location(int id, string name, string description, Item itemRequiredToEnter = null, Quest questAvailableHere = null, Monster monsterLivingHere = null)
+        public Location(int id, string name, string description, Item itemRequiredToEnter = null, Quest questAvailableHere = null, Monster monsterLivingHere = null, int levelRequiredToEnter = 1)
         {
             ID = id;
             Name = name;
@@ -28,6 +29,7 @@ namespace Engine
             ItemRequiredToEnter = itemRequiredToEnter;
             QuestAvailableHere = questAvailableHere;
             MonsterLivingHere = monsterLivingHere;
+            LevelRequiredToEnter = levelRequiredToEnter;
         }
     }
 }

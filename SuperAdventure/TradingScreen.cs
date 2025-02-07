@@ -39,8 +39,10 @@ namespace SuperAdventure
             else
             {
                 _currentPlayer.RemoveItemFromInventory(itemBeingSold);
-                _currentPlayer.Gold += (int)itemBeingSold.Price;
+                _currentPlayer.Gold += itemBeingSold.Price;
                 _currentPlayer.CurrentLocation.VendorWorkingHere.AddItemToInventory(itemBeingSold);
+                clearUI();
+                bindUI();
             }
         }
 
@@ -52,8 +54,10 @@ namespace SuperAdventure
             if (_currentPlayer.Gold >= itemBeingBought.Price)
             {
                 _currentPlayer.AddItemToInventory(itemBeingBought);
-                _currentPlayer.Gold -= (int)itemBeingBought.Price;
+                _currentPlayer.Gold -= itemBeingBought.Price;
                 _currentPlayer.CurrentLocation.VendorWorkingHere.RemoveItemFromInventory(itemBeingBought);
+                clearUI();
+                bindUI();
             }
             else MessageBox.Show("You do not have enough gold to buy the " + itemBeingBought.Name);
         }
@@ -67,6 +71,16 @@ namespace SuperAdventure
         private void bindKeys()
         {
             _keyBindings.Add(Keys.Escape, btnClose);
+        }
+
+        private void clearUI()
+        {
+            dgvMyItems.DataSource = null;
+            dgvMyItems.Columns.Clear();
+            dgvVendorItems.DataSource = null;
+            dgvVendorItems.Columns.Clear();
+            dgvMyItems.CellClick -= dgvMyItems_CellClick;
+            dgvVendorItems.CellClick -= dgvVendorItems_CellClick;
         }
 
         private void bindUI()
@@ -108,7 +122,7 @@ namespace SuperAdventure
                 Width = 50,
                 DataPropertyName = "ItemID"
             });
-            dgvMyItems.DataSource = _currentPlayer.Inventory;
+            dgvMyItems.DataSource = _currentPlayer.SellableInventory;
             dgvMyItems.CellClick += dgvMyItems_CellClick;
 
             dgvVendorItems.RowHeadersVisible = false;

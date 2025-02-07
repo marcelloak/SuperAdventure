@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Engine
 {
-    public class Weapon : Item
+    public class Weapon : UsableItem
     {
         public int MinimumDamage { get; set; }
         public int MaximumDamage { get; set; }
 
-        public Weapon(int id, string name, string namePlural, int minimumDamage, int maximumDamage, int? price = null) : base(id, name, namePlural, price)
+        public Weapon(int id, string name, string namePlural, int minimumDamage, int maximumDamage, int price, int minimumLevel = 1) : base(id, name, namePlural, price, minimumLevel)
         {
             MinimumDamage = minimumDamage;
             MaximumDamage = maximumDamage;
