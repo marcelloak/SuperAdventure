@@ -12,6 +12,7 @@ namespace Engine
         public static readonly List<Monster> Monsters = new List<Monster>();
         public static readonly List<Quest> Quests = new List<Quest>();
         public static readonly List<Location> Locations = new List<Location>();
+        public static readonly List<Vendor> Vendors = new List<Vendor>();
 
         public const int ITEM_ID_RUSTY_SWORD = 1;
         public const int ITEM_ID_RAT_TAIL = 2;
@@ -33,6 +34,8 @@ namespace Engine
         public const int QUEST_ID_CLEAR_ALCHEMIST_GARDEN = 1;
         public const int QUEST_ID_CLEAR_FARMERS_FIELD = 2;
 
+        public const int VENDOR_ID_BOB_THE_RAT_CATCHER = 1;
+
         public const int LOCATION_ID_HOME = 1;
         public const int LOCATION_ID_TOWN_SQUARE = 2;
         public const int LOCATION_ID_GUARD_POST = 3;
@@ -48,8 +51,8 @@ namespace Engine
             PopulateItems();
             PopulateMonsters();
             PopulateQuests();
-            PopulateLocations();
             PopulateVendors();
+            PopulateLocations();
         }
 
         private static void PopulateItems()
@@ -111,11 +114,22 @@ namespace Engine
             Quests.Add(clearFarmersField);
         }
 
+        private static void PopulateVendors()
+        {
+            Vendor bobTheRatCatcher = new Vendor(VENDOR_ID_BOB_THE_RAT_CATCHER, "Bob the Rat-Catcher");
+            bobTheRatCatcher.AddItemToInventory(ItemByID(ITEM_ID_PIECE_OF_FUR), 5);
+            bobTheRatCatcher.AddItemToInventory(ItemByID(ITEM_ID_RAT_TAIL), 3);
+
+            Vendors.Add(bobTheRatCatcher);
+        }
+
         private static void PopulateLocations()
         {
             Location home = new Location(LOCATION_ID_HOME, "Home", "Your house. You really need to clean up the place.");
 
             Location townSquare = new Location(LOCATION_ID_TOWN_SQUARE, "Town square", "You see a fountain.");
+            townSquare.VendorWorkingHere = VendorByID(VENDOR_ID_BOB_THE_RAT_CATCHER);
+
 
             Location alchemistHut = new Location(LOCATION_ID_ALCHEMIST_HUT, "Alchemist's hut", "There are many strange plants on the shelves.");
             alchemistHut.QuestAvailableHere = QuestByID(QUEST_ID_CLEAR_ALCHEMIST_GARDEN);
@@ -172,14 +186,6 @@ namespace Engine
             Locations.Add(spiderField);
         }
 
-        private static void PopulateVendors()
-        {
-            Vendor bobTheRatCatcher = new Vendor("Bob the Rat-Catcher");
-            bobTheRatCatcher.AddItemToInventory(ItemByID(ITEM_ID_PIECE_OF_FUR), 5);
-            bobTheRatCatcher.AddItemToInventory(ItemByID(ITEM_ID_RAT_TAIL), 3);
-            LocationByID(LOCATION_ID_TOWN_SQUARE).VendorWorkingHere = bobTheRatCatcher;
-        }
-
         public static Item ItemByID(int id)
         {
             foreach (Item item in Items)
@@ -215,6 +221,16 @@ namespace Engine
             foreach (Location location in Locations)
             {
                 if (location.ID == id) return location;
+            }
+
+            return null;
+        }
+
+        public static Vendor VendorByID(int id)
+        {
+            foreach (Vendor vendor in Vendors)
+            {
+                if (vendor.ID == id) return vendor;
             }
 
             return null;

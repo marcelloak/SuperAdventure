@@ -92,6 +92,19 @@ namespace Engine
                     player.AddItemToInventory(World.ItemByID(id), quantity);
                 }
 
+                foreach (XmlNode node in playerData.SelectNodes("/Player/VendorInventories"))
+                {
+                    int vendorId = Convert.ToInt32(node.SelectSingleNode(".//VendorID").InnerText);
+                    Vendor vendor = World.VendorByID(vendorId);
+                    vendor.ClearInventory();
+                    foreach (XmlNode item in node.SelectNodes(".//InventoryItem"))
+                    {
+                        int id = Convert.ToInt32(item.Attributes["ID"].Value);
+                        int quantity = Convert.ToInt32(item.Attributes["Quantity"].Value);
+                        vendor.AddItemToInventory(World.ItemByID(id), quantity);
+                    }
+                }
+
                 foreach (XmlNode node in playerData.SelectNodes("/Player/PlayerQuests/PlayerQuest"))
                 {
                     int id = Convert.ToInt32(node.Attributes["ID"].Value);
@@ -355,6 +368,29 @@ namespace Engine
                 quantityAttribute.Value = item.Quantity.ToString();
                 inventoryItem.Attributes.Append(quantityAttribute);
                 inventoryItems.AppendChild(inventoryItem);
+            }
+
+            XmlNode vendorInventories = playerData.CreateElement("VendorInventories");
+            player.AppendChild(vendorInventories);
+
+            foreach (Vendor v in World.Vendors)
+            {
+                XmlNode vendor = playerData.CreateElement("Vendor");
+                vendorInventories.AppendChild(vendor);
+                XmlNode vendorID = playerData.CreateElement("VendorID");
+                vendorID.AppendChild(playerData.CreateTextNode(v.ID.ToString()));
+                vendor.AppendChild(vendorID);
+                foreach (InventoryItem item in v.Inventory)
+                {
+                    XmlNode inventoryItem = playerData.CreateElement("InventoryItem");
+                    XmlAttribute idAttribute = playerData.CreateAttribute("ID");
+                    idAttribute.Value = item.Details.ID.ToString();
+                    inventoryItem.Attributes.Append(idAttribute);
+                    XmlAttribute quantityAttribute = playerData.CreateAttribute("Quantity");
+                    quantityAttribute.Value = item.Quantity.ToString();
+                    inventoryItem.Attributes.Append(quantityAttribute);
+                    vendor.AppendChild(inventoryItem);
+                }
             }
 
             XmlNode playerQuests = playerData.CreateElement("PlayerQuests");

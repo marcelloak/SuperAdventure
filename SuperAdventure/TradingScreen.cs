@@ -40,18 +40,20 @@ namespace SuperAdventure
             {
                 _currentPlayer.RemoveItemFromInventory(itemBeingSold);
                 _currentPlayer.Gold += (int)itemBeingSold.Price;
+                _currentPlayer.CurrentLocation.VendorWorkingHere.AddItemToInventory(itemBeingSold);
             }
         }
 
         private void dgvVendorItems_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex != 3) return;
+            if (e.ColumnIndex != 4) return;
             var itemID = dgvVendorItems.Rows[e.RowIndex].Cells[0].Value;
             Item itemBeingBought= World.ItemByID(Convert.ToInt32(itemID));
             if (_currentPlayer.Gold >= itemBeingBought.Price)
             {
                 _currentPlayer.AddItemToInventory(itemBeingBought);
                 _currentPlayer.Gold -= (int)itemBeingBought.Price;
+                _currentPlayer.CurrentLocation.VendorWorkingHere.RemoveItemFromInventory(itemBeingBought);
             }
             else MessageBox.Show("You do not have enough gold to buy the " + itemBeingBought.Name);
         }
@@ -121,6 +123,13 @@ namespace SuperAdventure
                 HeaderText = "Name",
                 Width = 100,
                 DataPropertyName = "Description"
+            });
+            dgvVendorItems.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Qty",
+                Width = 30,
+                DefaultCellStyle = rightAlignedCellStyle,
+                DataPropertyName = "Quantity"
             });
             dgvVendorItems.Columns.Add(new DataGridViewTextBoxColumn
             {

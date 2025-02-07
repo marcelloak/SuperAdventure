@@ -10,11 +10,13 @@ namespace Engine
 {
     public class Vendor : INotifyPropertyChanged
     {
+        public int ID { get; set; }
         public string Name { get; set; }
         public BindingList<InventoryItem> Inventory { get; private set; }
 
-        public Vendor(string name)
+        public Vendor(int id, string name)
         {
+            ID = id;
             Name = name;
             Inventory = new BindingList<InventoryItem>();
         }
@@ -38,6 +40,11 @@ namespace Engine
                 OnPropertyChanged("Inventory");
             }
             // TODO: Might want to raise an error for if item is null
+        }
+
+        public void ClearInventory()
+        {
+            Inventory.Clear();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
