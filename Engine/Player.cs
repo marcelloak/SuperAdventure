@@ -219,7 +219,7 @@ namespace Engine
             }
 
             CurrentMonster = newLocation.NewInstanceOfMonsterLivingHere();
-            if (CurrentMonster != null) RaiseMessage("You see a " + newLocation.MonsterLivingHere.Name);
+            if (CurrentMonster != null) RaiseMessage("You see a " + CurrentMonster.Name);
         }
 
         private void AddQuest(Quest quest)

@@ -111,20 +111,19 @@ namespace SuperAdventure
                 rtbLocation.Text = _player.CurrentLocation.Name + Environment.NewLine;
                 rtbLocation.Text += _player.CurrentLocation.Description + Environment.NewLine;
 
-                if (_player.CurrentLocation.MonsterLivingHere == null)
-                {
-                    cboWeapons.Visible = false;
-                    cboPotions.Visible = false;
-                    btnUseWeapon.Visible = false;
-                    btnUsePotion.Visible = false;
-
-                }
-                else
+                if (_player.CurrentLocation.HasAMonster)
                 {
                     cboWeapons.Visible = _player.Weapons.Any();
                     cboPotions.Visible = _player.Potions.Any();
                     btnUseWeapon.Visible = _player.Weapons.Any();
                     btnUsePotion.Visible = _player.Potions.Any();
+                }
+                else
+                {
+                    cboWeapons.Visible = false;
+                    cboPotions.Visible = false;
+                    btnUseWeapon.Visible = false;
+                    btnUsePotion.Visible = false;
                 }
             }
         }

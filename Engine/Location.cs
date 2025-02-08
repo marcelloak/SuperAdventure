@@ -9,7 +9,8 @@
         public int LevelRequiredToEnter { get; set; }
         public Quest QuestAvailableHere { get; set; }
         public bool HasAQuest { get { return QuestAvailableHere != null; } }
-        public Monster MonsterLivingHere { get; set; }
+        private readonly SortedList<int, int> _monstersAtLocation = new SortedList<int, int>();
+        public bool HasAMonster { get { return _monstersAtLocation.Count > 0; } }
         public Location LocationToNorth { get; set; }
         public Location LocationToEast { get; set; }
         public Location LocationToSouth { get; set; }
@@ -23,13 +24,36 @@
             Description = description;
             ItemRequiredToEnter = itemRequiredToEnter;
             QuestAvailableHere = questAvailableHere;
-            MonsterLivingHere = monsterLivingHere;
             LevelRequiredToEnter = levelRequiredToEnter;
+        }
+
+        public void AddMonster(int monsterID, int percentageOfAppearance)
+        {
+            if (_monstersAtLocation.ContainsKey(monsterID)) _monstersAtLocation[monsterID] = percentageOfAppearance;
+            else _monstersAtLocation.Add(monsterID, percentageOfAppearance);
+        }
+
+        public void RemoveMonster(int monsterID)
+        {
+            _monstersAtLocation.Remove(monsterID);
         }
 
         public Monster NewInstanceOfMonsterLivingHere()
         {
-            return MonsterLivingHere == null ? null : MonsterLivingHere.NewInstanceOfMonster();
+            if (!HasAMonster) return null;
+
+            int totalPercentages = _monstersAtLocation.Values.Sum();
+            int randomNumber = RandomNumberGenerator.NumberBetween(1, totalPercentages);
+
+            int runningTotal = 0;
+
+            foreach (var monsterKeyValuePair in _monstersAtLocation)
+            {
+                runningTotal += monsterKeyValuePair.Value;
+                if (randomNumber <=  runningTotal) return World.MonsterByID(monsterKeyValuePair.Key).NewInstanceOfMonster();
+            }
+
+            return World.MonsterByID(_monstersAtLocation.Keys.Last()).NewInstanceOfMonster();
         }
     }
 }
