@@ -52,6 +52,7 @@
             btnLoad = new Button();
             btnSave = new Button();
             btnTrade = new Button();
+            btnMap = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvInventory).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvQuests).BeginInit();
             SuspendLayout();
@@ -127,7 +128,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(617, 531);
+            label5.Location = new Point(617, 527);
             label5.Name = "label5";
             label5.Size = new Size(74, 15);
             label5.TabIndex = 8;
@@ -136,7 +137,7 @@
             // cboWeapons
             // 
             cboWeapons.FormattingEnabled = true;
-            cboWeapons.Location = new Point(369, 559);
+            cboWeapons.Location = new Point(369, 555);
             cboWeapons.Name = "cboWeapons";
             cboWeapons.Size = new Size(121, 23);
             cboWeapons.TabIndex = 9;
@@ -144,14 +145,14 @@
             // cboPotions
             // 
             cboPotions.FormattingEnabled = true;
-            cboPotions.Location = new Point(369, 593);
+            cboPotions.Location = new Point(369, 589);
             cboPotions.Name = "cboPotions";
             cboPotions.Size = new Size(121, 23);
             cboPotions.TabIndex = 10;
             // 
             // btnUseWeapon
             // 
-            btnUseWeapon.Location = new Point(620, 559);
+            btnUseWeapon.Location = new Point(620, 555);
             btnUseWeapon.Name = "btnUseWeapon";
             btnUseWeapon.Size = new Size(75, 23);
             btnUseWeapon.TabIndex = 11;
@@ -161,7 +162,7 @@
             // 
             // btnUsePotion
             // 
-            btnUsePotion.Location = new Point(620, 593);
+            btnUsePotion.Location = new Point(620, 589);
             btnUsePotion.Name = "btnUsePotion";
             btnUsePotion.Size = new Size(75, 23);
             btnUsePotion.TabIndex = 12;
@@ -171,7 +172,7 @@
             // 
             // btnNorth
             // 
-            btnNorth.Location = new Point(493, 433);
+            btnNorth.Location = new Point(492, 433);
             btnNorth.Name = "btnNorth";
             btnNorth.Size = new Size(75, 23);
             btnNorth.TabIndex = 13;
@@ -181,7 +182,7 @@
             // 
             // btnEast
             // 
-            btnEast.Location = new Point(573, 457);
+            btnEast.Location = new Point(572, 460);
             btnEast.Name = "btnEast";
             btnEast.Size = new Size(75, 23);
             btnEast.TabIndex = 14;
@@ -191,7 +192,7 @@
             // 
             // btnSouth
             // 
-            btnSouth.Location = new Point(493, 487);
+            btnSouth.Location = new Point(492, 487);
             btnSouth.Name = "btnSouth";
             btnSouth.Size = new Size(75, 23);
             btnSouth.TabIndex = 15;
@@ -201,7 +202,7 @@
             // 
             // btnWest
             // 
-            btnWest.Location = new Point(412, 457);
+            btnWest.Location = new Point(412, 460);
             btnWest.Name = "btnWest";
             btnWest.Size = new Size(75, 23);
             btnWest.TabIndex = 16;
@@ -262,7 +263,7 @@
             // 
             // btnLoad
             // 
-            btnLoad.Location = new Point(241, 12);
+            btnLoad.Location = new Point(182, 12);
             btnLoad.Name = "btnLoad";
             btnLoad.Size = new Size(75, 23);
             btnLoad.TabIndex = 21;
@@ -272,7 +273,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(241, 46);
+            btnSave.Location = new Point(262, 12);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 23);
             btnSave.TabIndex = 22;
@@ -282,19 +283,30 @@
             // 
             // btnTrade
             // 
-            btnTrade.Location = new Point(493, 620);
+            btnTrade.Location = new Point(492, 619);
             btnTrade.Name = "btnTrade";
             btnTrade.Size = new Size(75, 23);
             btnTrade.TabIndex = 23;
             btnTrade.Text = "Trade";
             btnTrade.UseVisualStyleBackColor = true;
             btnTrade.Click += btnTrade_Click;
-            // btnTrade
+            // 
+            // btnMap
+            // 
+            btnMap.Location = new Point(492, 460);
+            btnMap.Name = "btnMap";
+            btnMap.Size = new Size(75, 23);
+            btnMap.TabIndex = 24;
+            btnMap.Text = "Map";
+            btnMap.UseVisualStyleBackColor = true;
+            btnMap.Click += btnMap_Click;
+            // 
             // SuperAdventure
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(719, 651);
+            Controls.Add(btnMap);
             Controls.Add(btnTrade);
             Controls.Add(btnSave);
             Controls.Add(btnLoad);
@@ -355,5 +367,6 @@
         private Button btnLoad;
         private Button btnSave;
         private Button btnTrade;
+        private Button btnMap;
     }
 }
