@@ -223,7 +223,19 @@ namespace Engine
             {
                 if (HasThisQuest(newLocation.QuestAvailableHere))
                 {
-                    if (!CompletedThisQuest(newLocation.QuestAvailableHere) && HasAllQuestCompletionItems(newLocation.QuestAvailableHere)) CompleteQuest(newLocation.QuestAvailableHere);
+                    if (CompletedThisQuest(newLocation.QuestAvailableHere))
+                    {
+                        if (newLocation.QuestAvailableHere.IsRepeatable) ResetQuest(newLocation.QuestAvailableHere);
+                    }
+                    else
+                    {
+                        if (HasAllQuestCompletionItems(newLocation.QuestAvailableHere)) CompleteQuest(newLocation.QuestAvailableHere);
+                        else PrintQuestDescription(newLocation.QuestAvailableHere, "already have");
+                    }
+                }
+                else if (newLocation.QuestHereHasAPrerequisite)
+                {
+                    if (CompletedThisQuest(newLocation.QuestAvailableHere.Prerequisite)) AddQuest(newLocation.QuestAvailableHere);
                 }
                 else AddQuest(newLocation.QuestAvailableHere);
             }
@@ -234,13 +246,29 @@ namespace Engine
 
         private void AddQuest(Quest quest)
         {
-            RaiseMessage("You receive the " + quest.Name + " quest.");
+            PrintQuestDescription(quest);
+            Quests.Add(new PlayerQuest(quest));
+        }
+
+        private void ResetQuest(Quest quest)
+        {
+            PlayerQuest playerQuest = Quests.SingleOrDefault(pq => pq.Details.ID == quest.ID);
+            if (playerQuest == null) AddQuest(quest);
+            else
+            {
+                PrintQuestDescription(quest, "reset");
+                playerQuest.IsCompleted = false;
+            }
+            
+        }
+
+        private void PrintQuestDescription(Quest quest, string verb = "receive")
+        {
+            RaiseMessage("You " + verb  + " the '" + quest.Name + "' quest.");
             RaiseMessage(quest.Description);
             RaiseMessage("To complete it, return with:");
             quest.QuestCompletionItems.ForEach(questItem => RaiseMessage(questItem.Quantity.ToString() + " " + questItem.Description));
             RaiseMessage("");
-
-            Quests.Add(new PlayerQuest(quest));
         }
 
         private void CompleteQuest(Quest quest)
@@ -260,17 +288,19 @@ namespace Engine
 
             AddItemToInventory(quest.RewardItem);
             MarkQuestCompleted(quest);
+
+            if (quest.IsRepeatable) RaiseMessage("This quest is repeatable. Return here to reset it.");
         }
 
         public void UseWeapon(Weapon currentWeapon)
         {
-            int damage = RandomNumberGenerator.NumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
+            bool hit = RandomNumberGenerator.NumberBetween(0, 100) < currentWeapon.HitChance + Level * 5 - CurrentMonster.Defence;
+            int damage = 0;
+
+            if (hit) damage = RandomNumberGenerator.NumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
             if (damage == 0) RaiseMessage("You missed the " + CurrentMonster.Name);
-            else
-            {
-                CurrentMonster.CurrentHitPoints -= damage;
-                RaiseMessage("You hit the " + CurrentMonster.Name + " for " + damage.ToString() + " points.");
-            }
+            else RaiseMessage("You hit the " + CurrentMonster.Name + " for " + damage.ToString() + " points.");
+            CurrentMonster.CurrentHitPoints -= damage;
 
             if (IsDead) PlayerDies();
             else if (CurrentMonster.IsDead) MonsterDies();
@@ -291,13 +321,13 @@ namespace Engine
 
         private void MonsterTakesTurn()
         {
-            int damage = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
+            bool hit = RandomNumberGenerator.NumberBetween(0, 100) < CurrentMonster.HitChance - Level * 5;
+            int damage = 0;
+
+            if (hit) damage = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
             if (damage == 0) RaiseMessage("The " + CurrentMonster.Name + " missed.");
-            else
-            {
-                CurrentHitPoints -= damage;
-                RaiseMessage("The " + CurrentMonster.Name + " did " + damage.ToString() + " points of damage.");
-            }
+            else RaiseMessage("The " + CurrentMonster.Name + " did " + damage.ToString() + " points of damage.");
+            CurrentHitPoints -= damage;
 
             if (IsDead) PlayerDies();
             else if (CurrentMonster.IsDead) MonsterDies();

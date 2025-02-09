@@ -9,6 +9,7 @@
         public int LevelRequiredToEnter { get; set; }
         public Quest QuestAvailableHere { get; set; }
         public bool HasAQuest { get { return QuestAvailableHere != null; } }
+        public bool QuestHereHasAPrerequisite { get { return QuestAvailableHere.Prerequisite != null; } }
         private readonly SortedList<int, int> _monstersAtLocation = new SortedList<int, int>();
         public bool HasAMonster { get { return _monstersAtLocation.Count > 0; } }
         public Location LocationToNorth { get; set; }

@@ -1,0 +1,31 @@
+Add player attributes (strength, dexterity, etc.)
+Use attributes in battle: who attacks first, amount of damage, etc.
+
+Add armor and jewelry
+Makes it more difficult for the monster to hit the player
+Has special benefits: increased chance to hit, increased damage, etc.
+
+Add crafting skills the player can acquire
+Add crafting recipes the player use
+Require the appropriate skill
+Requires components (inventory items)
+
+Add magic scrolls
+
+Add spells
+Level requirements for the spells
+Spells require components to cast (maybe?)
+
+Add more potions
+More powerful healing potions
+Potions to improve player’s “to hit” chances, or damage
+
+Add poisons to use in battle
+Add pets
+Help the player in battle by attacking opponents
+Help the player in battle by healing the player
+
+Add stores/vendors
+Player can sell useless items and buy new equipment, scrolls, potions, poisons, and crafting/spell components
+
+Add current location on map and/or center map on current location
