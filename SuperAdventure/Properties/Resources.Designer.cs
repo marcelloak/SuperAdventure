@@ -113,6 +113,16 @@ namespace SuperAdventure.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap FogLocation {
+            get {
+                object obj = ResourceManager.GetObject("FogLocation", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap GuardPost {
             get {
                 object obj = ResourceManager.GetObject("GuardPost", resourceCulture);
