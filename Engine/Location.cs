@@ -17,12 +17,14 @@
         public Location LocationToSouth { get; set; }
         public Location LocationToWest { get; set; }
         public Vendor VendorWorkingHere { get; set; }
+        public string ImageSource { get; set; }
 
-        public Location(int id, string name, string description, Item itemRequiredToEnter = null, Quest questAvailableHere = null, Monster monsterLivingHere = null, int levelRequiredToEnter = 1)
+        public Location(int id, string name, string description, string imageSource, Item itemRequiredToEnter = null, Quest questAvailableHere = null, Monster monsterLivingHere = null, int levelRequiredToEnter = 1)
         {
             ID = id;
             Name = name;
             Description = description;
+            ImageSource = imageSource;
             ItemRequiredToEnter = itemRequiredToEnter;
             QuestAvailableHere = questAvailableHere;
             LevelRequiredToEnter = levelRequiredToEnter;

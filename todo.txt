@@ -28,4 +28,4 @@ Help the player in battle by healing the player
 Add stores/vendors
 Player can sell useless items and buy new equipment, scrolls, potions, poisons, and crafting/spell components
 
-Add current location on map and/or center map on current location
+Add lines between location connections
