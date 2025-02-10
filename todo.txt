@@ -1,5 +1,5 @@
-Add player attributes (strength, dexterity, etc.)
-Use attributes in battle: who attacks first, amount of damage, etc.
+Add level up screen to add to attributes
+Change experience points required per level to be based on current level
 
 Add armor and jewelry
 Makes it more difficult for the monster to hit the player

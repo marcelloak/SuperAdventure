@@ -67,14 +67,18 @@
         private static void PopulateMonsters()
         {
             Monster rat = new Monster(MONSTER_ID_RAT, "Rat", 5, 3, 10, 3, 3, 60, 0);
+            Attributes ratAttributes = new Attributes(1, 1, 1, 1);
+            rat.Attributes = ratAttributes;
             rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_PIECE_OF_FUR), 75, true));
             rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_RAT_TAIL), 75, false));
 
-            Monster snake = new Monster(MONSTER_ID_SNAKE, "Snake", 5, 3, 10, 3, 3, 80, 20);
+            Monster snake = new Monster(MONSTER_ID_SNAKE, "Snake", 5, 5, 20, 4, 4, 80, 20);
+            Attributes snakeAttributes = new Attributes(3, 3, 3, 3);
+            snake.Attributes = snakeAttributes;
             snake.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SNAKESKIN), 75, true));
             snake.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SNAKE_FANG), 75, false));
 
-            Monster giantSpider = new Monster(MONSTER_ID_GIANT_SPIDER, "Giant Spider", 20, 5, 40, 10, 10, 100, 50);
+            Monster giantSpider = new Monster(MONSTER_ID_GIANT_SPIDER, "Giant Spider", 20, 10, 40, 10, 10, 100, 50);
             giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SPIDER_FANG), 75, true));
             giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SPIDER_SILK), 25, false));
             giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_CLUB), 25, false));

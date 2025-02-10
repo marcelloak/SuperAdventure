@@ -5,6 +5,7 @@ namespace Engine
 {
     public class Player : LivingCreature
     {
+        public int ExperiencePointsPerLevel = 100;
         private int _gold;
         public int Gold
         {
@@ -26,7 +27,8 @@ namespace Engine
                 OnPropertyChanged("Level");
             }
         }
-        public int Level { get { return (ExperiencePoints / 100) + 1; } }
+        public int Level { get { return (ExperiencePoints / ExperiencePointsPerLevel) + 1; } }
+        public int ExperiencePointsToNextLevel { get { return ExperiencePointsPerLevel - ExperiencePoints % ExperiencePointsPerLevel; } }
         public BindingList<InventoryItem> Inventory { get; set; }
         public List<InventoryItem> SellableInventory { get { return Inventory.Where(item => item.Details.Price >= 0).ToList(); } }
         public BindingList<PlayerQuest> Quests { get; set; }
@@ -46,6 +48,7 @@ namespace Engine
         public List<Weapon> Weapons { get { return Inventory.Where(item => item.Details is Weapon).Select(item => item.Details as Weapon).ToList().Where(weapon => Level >= weapon.MinimumLevel).ToList(); } }
         public List<HealingPotion> Potions { get { return Inventory.Where(item => item.Details is HealingPotion).Select(item => item.Details as HealingPotion).ToList().Where(potion => Level >= potion.MinimumLevel).ToList(); } }
         private Monster CurrentMonster;
+        private bool IsFasterThanCurrentMonster { get { return Attributes.Dexterity >= CurrentMonster.Attributes.Dexterity; } }
         public event EventHandler<MessageEventArgs> OnMessage;
 
         private Player(int currentHitPoints, int maximumHitPoints, int gold, int experiencePoints) : base(currentHitPoints, maximumHitPoints)
@@ -127,8 +130,19 @@ namespace Engine
 
         public void AddExperiencePoints(int experiencePointsToAdd)
         {
+            while (ExperiencePointsToNextLevel <= experiencePointsToAdd)
+            {
+                int experienceUsed = ExperiencePointsToNextLevel;
+                experiencePointsToAdd -= experienceUsed;
+                ExperiencePoints += experienceUsed;
+                LevelUp();
+            }
             ExperiencePoints += experiencePointsToAdd;
-            MaximumHitPoints = (Level * 10);
+        }
+
+        public void LevelUp()
+        {
+            MaximumHitPoints += Attributes.Vitality;
         }
 
         public bool HasRequiredItemToEnterThisLocation(Location location)
@@ -292,31 +306,59 @@ namespace Engine
             if (quest.IsRepeatable) RaiseMessage("This quest is repeatable. Return here to reset it.");
         }
 
-        public void UseWeapon(Weapon currentWeapon)
+        public void UseItem(Action<UsableItem> function, UsableItem currentItem)
         {
+            if (IsFasterThanCurrentMonster)
+            {
+                function(currentItem);
+                if (DoesBattleEnd()) return;
+                MonsterTakesTurn();
+            }
+            else
+            {
+                MonsterTakesTurn();
+                if (DoesBattleEnd()) return;
+                function(currentItem);
+            }
+            ResolveTurn();
+        }
+
+        public void Attack(UsableItem currentItem)
+        {
+            Weapon currentWeapon = currentItem as Weapon;
             bool hit = RandomNumberGenerator.NumberBetween(0, 100) < currentWeapon.HitChance + Level * 5 - CurrentMonster.Defence;
             int damage = 0;
 
             if (hit) damage = RandomNumberGenerator.NumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
             if (damage == 0) RaiseMessage("You missed the " + CurrentMonster.Name);
-            else RaiseMessage("You hit the " + CurrentMonster.Name + " for " + damage.ToString() + " points.");
+            else
+            {
+                damage += Attributes.Strength / 5;
+                RaiseMessage("You hit the " + CurrentMonster.Name + " for " + damage.ToString() + " points.");
+            }
             CurrentMonster.CurrentHitPoints -= damage;
-
-            if (IsDead) PlayerDies();
-            else if (CurrentMonster.IsDead) MonsterDies();
-            else MonsterTakesTurn();
         }
 
-        public void UsePotion(HealingPotion potion)
+        public void Drink(UsableItem currentItem)
         {
+            HealingPotion potion = currentItem as HealingPotion;
             CurrentHitPoints += potion.AmountToHeal;
             if (CurrentHitPoints > MaximumHitPoints) CurrentHitPoints = MaximumHitPoints;
             RemoveItemFromInventory(potion);
             RaiseMessage("You drink a " + potion.Name + " and heal for " + potion.AmountToHeal + " points.");
+        }
 
+        private bool DoesBattleEnd()
+        {
+            if (IsDead) return PlayerDies();
+            else if (CurrentMonster.IsDead) return MonsterDies();
+            else return false;
+        }
+
+        private void ResolveTurn()
+        {
             if (IsDead) PlayerDies();
             else if (CurrentMonster.IsDead) MonsterDies();
-            else MonsterTakesTurn();
         }
 
         private void MonsterTakesTurn()
@@ -326,20 +368,22 @@ namespace Engine
 
             if (hit) damage = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
             if (damage == 0) RaiseMessage("The " + CurrentMonster.Name + " missed.");
-            else RaiseMessage("The " + CurrentMonster.Name + " did " + damage.ToString() + " points of damage.");
+            else
+            {
+                damage += CurrentMonster.Attributes.Strength / 5;
+                RaiseMessage("The " + CurrentMonster.Name + " did " + damage.ToString() + " points of damage.");
+            }
             CurrentHitPoints -= damage;
-
-            if (IsDead) PlayerDies();
-            else if (CurrentMonster.IsDead) MonsterDies();
         }
 
-        private void PlayerDies()
+        private bool PlayerDies()
         {
             RaiseMessage("The " + CurrentMonster.Name + " killed you.");
             MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
+            return true;
         }
 
-        private void MonsterDies()
+        private bool MonsterDies()
         {
             RaiseMessage("");
             RaiseMessage("You defeated the " + CurrentMonster.Name);
@@ -356,6 +400,7 @@ namespace Engine
 
             RaiseMessage("");
             MoveTo(CurrentLocation);
+            return true;
         }
 
         private void RaiseMessage(string message, bool addExtraNewLine = false)

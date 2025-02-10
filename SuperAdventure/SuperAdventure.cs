@@ -41,12 +41,12 @@ namespace SuperAdventure
 
         private void btnUseWeapon_Click(object sender, EventArgs e)
         {
-            _player.UseWeapon((Weapon)cboWeapons.SelectedItem);
+            _player.UseItem(_player.Attack, (UsableItem)cboWeapons.SelectedItem);
         }
 
         private void btnUsePotion_Click(object sender, EventArgs e)
         {
-            _player.UsePotion((HealingPotion)cboPotions.SelectedItem);
+            _player.UseItem(_player.Drink, (UsableItem)cboPotions.SelectedItem);
         }
 
         private void btnLoad_Click(object sender, EventArgs e)

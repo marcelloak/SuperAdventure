@@ -26,12 +26,14 @@ namespace Engine
         }
 
         public string HitPoints { get { return _currentHitPoints.ToString() + "/" + _maximumHitPoints.ToString(); } }
+        public Attributes Attributes { get; set; }
         public bool IsDead {  get { return CurrentHitPoints <= 0; } }
 
         public LivingCreature(int currentHitPoints, int maximumHitPoints)
         {
             CurrentHitPoints = currentHitPoints;
             MaximumHitPoints = maximumHitPoints;
+            Attributes = new Attributes();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
