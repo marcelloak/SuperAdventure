@@ -314,18 +314,24 @@ namespace Engine
 
         public void UseItem(Action<UsableItem> function, UsableItem currentItem)
         {
-            if (IsFasterThanCurrentMonster)
-            {
-                function(currentItem);
-                if (DoesBattleEnd()) return;
-                MonsterTakesTurn();
-            }
+            bool turnSkipped = CheckForBeforeStatus(this);
+            if (turnSkipped) MonsterTakesTurn();
             else
             {
-                MonsterTakesTurn();
-                if (DoesBattleEnd()) return;
-                function(currentItem);
+                if (IsFasterThanCurrentMonster)
+                {
+                    function(currentItem);
+                    if (DoesBattleEnd()) return;
+                    MonsterTakesTurn();
+                }
+                else
+                {
+                    MonsterTakesTurn();
+                    if (DoesBattleEnd()) return;
+                    function(currentItem);
+                }
             }
+            CheckForAfterStatus(this);
             ResolveTurn();
         }
 
@@ -354,6 +360,22 @@ namespace Engine
             RaiseMessage("You drink a " + potion.Name + " and heal for " + potion.AmountToHeal + " points.");
         }
 
+        public void ThrowStatusItem(UsableItem currentItem)
+        {
+            Status status = (currentItem as StatusItem).StatusApplied;
+            if (status.Turns == 1)
+            {
+                CurrentMonster.CurrentHitPoints -= status.Value;
+                RaiseMessage("You throw a " + currentItem.Name + " and deal " + status.Value + " damage to the " + CurrentMonster.Name);
+            }
+            else
+            {
+                CurrentMonster.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns);
+                RaiseMessage("You throw a " + currentItem.Name + " and " + status.Name + " the " + CurrentMonster.Name + " for " + status.Turns + " turns.");
+            }
+            RemoveItemFromInventory(currentItem);
+        }
+
         private bool DoesBattleEnd()
         {
             if (IsDead) return PlayerDies();
@@ -369,17 +391,58 @@ namespace Engine
 
         private void MonsterTakesTurn()
         {
-            bool hit = RandomNumberGenerator.NumberBetween(0, 100) < CurrentMonster.HitChance - Level * 5;
-            int damage = 0;
-
-            if (hit) damage = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
-            if (damage == 0) RaiseMessage("The " + CurrentMonster.Name + " missed.");
-            else
+            bool turnSkipped = CheckForBeforeStatus(CurrentMonster);
+            if (!turnSkipped)
             {
-                damage += CurrentMonster.Attributes.Strength / 5;
-                RaiseMessage("The " + CurrentMonster.Name + " did " + damage.ToString() + " points of damage.");
+                bool hit = RandomNumberGenerator.NumberBetween(0, 100) < CurrentMonster.HitChance - Level * 5;
+                int damage = 0;
+
+                if (hit) damage = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
+                if (damage == 0) RaiseMessage("The " + CurrentMonster.Name + " missed.");
+                else
+                {
+                    damage += CurrentMonster.Attributes.Strength / 5;
+                    RaiseMessage("The " + CurrentMonster.Name + " did " + damage.ToString() + " points of damage.");
+                }
+                CurrentHitPoints -= damage;
             }
-            CurrentHitPoints -= damage;
+            CheckForAfterStatus(CurrentMonster);
+        }
+
+        private bool CheckForBeforeStatus(LivingCreature livingCreature)
+        {
+            if (livingCreature.HasAStatus)
+            {
+                if (livingCreature.CurrentStatus.ID == World.STATUS_ID_POISON) return false;
+            }
+            return false;
+        }
+
+        private void CheckForAfterStatus(LivingCreature livingCreature)
+        {
+            if (livingCreature.HasAStatus)
+            {
+                String identifier = "You";
+                if (livingCreature is Monster)
+                {
+                    Monster currentMonster = livingCreature as Monster;
+                    identifier = "The " + currentMonster.Name;
+                }
+                RaiseMessage(identifier + " is " + livingCreature.CurrentStatus.Description);
+
+                if (livingCreature.CurrentStatus.ID == World.STATUS_ID_POISON)
+                {
+                    livingCreature.CurrentHitPoints -= livingCreature.CurrentStatus.Value;
+                    RaiseMessage(identifier + " lost " + livingCreature.CurrentStatus.Value + " health to poison.");
+                }
+
+                if (livingCreature.CurrentStatus.Turns == 1)
+                {
+                    RaiseMessage(identifier + " is no longer " + livingCreature.CurrentStatus.Description);
+                    livingCreature.CurrentStatus = null;
+                }
+                else livingCreature.CurrentStatus.Turns--;
+            }
         }
 
         private bool PlayerDies()

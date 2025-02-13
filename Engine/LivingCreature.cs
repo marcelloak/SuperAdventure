@@ -28,11 +28,14 @@ namespace Engine
         public string HitPoints { get { return _currentHitPoints.ToString() + "/" + _maximumHitPoints.ToString(); } }
         public Attributes Attributes { get; set; }
         public bool IsDead {  get { return CurrentHitPoints <= 0; } }
+        public Status CurrentStatus { get; set; }
+        public bool HasAStatus { get { return CurrentStatus != null; } }
 
-        public LivingCreature(int currentHitPoints, int maximumHitPoints)
+        public LivingCreature(int currentHitPoints, int maximumHitPoints, Status currentStatus = null)
         {
             CurrentHitPoints = currentHitPoints;
             MaximumHitPoints = maximumHitPoints;
+            CurrentStatus = currentStatus;
             Attributes = new Attributes();
         }
 

@@ -2,11 +2,14 @@
 {
     public static class World
     {
+        public static readonly List<Status> Statuses = new List<Status>();
         public static readonly List<Item> Items = new List<Item>();
         public static readonly List<Monster> Monsters = new List<Monster>();
         public static readonly List<Quest> Quests = new List<Quest>();
         public static readonly List<Location> Locations = new List<Location>();
         public static readonly List<Vendor> Vendors = new List<Vendor>();
+
+        public const int STATUS_ID_POISON = 1;
 
         public const int ITEM_ID_RUSTY_SWORD = 1;
         public const int ITEM_ID_RAT_TAIL = 2;
@@ -18,6 +21,7 @@
         public const int ITEM_ID_SPIDER_FANG = 8;
         public const int ITEM_ID_SPIDER_SILK = 9;
         public const int ITEM_ID_ADVENTURER_PASS = 10;
+        public const int ITEM_ID_POISON = 11;
 
         public const int WORTHLESS_ITEM_PRICE = 0;
         public const int UNSELLABLE_ITEM_PRICE = -1;
@@ -43,11 +47,17 @@
 
         static World()
         {
+            PopulateStatuses();
             PopulateItems();
             PopulateMonsters();
             PopulateQuests();
             PopulateVendors();
             PopulateLocations();
+        }
+
+        private static void PopulateStatuses()
+        {
+            Statuses.Add(new Status(STATUS_ID_POISON, "Poison", "Poisoned"));
         }
 
         private static void PopulateItems()
@@ -62,6 +72,11 @@
             Items.Add(new Item(ITEM_ID_SPIDER_FANG, "Spider fang", "Spider fangs", 1));
             Items.Add(new Item(ITEM_ID_SPIDER_SILK, "Spider silk", "Spider silks", 1));
             Items.Add(new Item(ITEM_ID_ADVENTURER_PASS, "Adventurer pass", "Adventurer passes", UNSELLABLE_ITEM_PRICE));
+
+            StatusItem poison = new StatusItem(ITEM_ID_POISON, "Poison", "Poisons", 3);
+            Status poisonStatus = StatusByID(STATUS_ID_POISON).NewInstanceOfStatus(1, 3);
+            poison.StatusApplied = poisonStatus;
+            Items.Add(poison);
         }
 
         private static void PopulateMonsters()
@@ -185,6 +200,11 @@
             Locations.Add(guardPost);
             Locations.Add(bridge);
             Locations.Add(spiderField);
+        }
+
+        public static Status StatusByID(int id)
+        {
+            return Statuses.SingleOrDefault(status => status.ID == id);
         }
 
         public static Item ItemByID(int id)

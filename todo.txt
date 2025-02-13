@@ -1,30 +1,28 @@
 Change experience points required per level to be based on current level
 
-Add armor and jewelry
-Makes it more difficult for the monster to hit the player
-Has special benefits: increased chance to hit, increased damage, etc.
+Add equipment
+Increases stats
 
 Add crafting skills the player can acquire
 Add crafting recipes the player use
 Require the appropriate skill
 Requires components (inventory items)
 
-Add magic scrolls
-
 Add spells
-Level requirements for the spells
-Spells require components to cast (maybe?)
+Level/stat requirements for the spells
 
-Add more potions
-More powerful healing potions
-Potions to improve player’s “to hit” chances, or damage
+Add magic scrolls
+Spells without stat requirements
 
-Add poisons to use in battle
+Add more potions/poisons
+More powerful potions/poisons
+Potions/poisons to improve/reduce player/monster accuracy or damage
+
+Add other status effects (paralyze, sleep, dark, frozen, burn, haste, death)
+
 Add pets
-Help the player in battle by attacking opponents
-Help the player in battle by healing the player
+Help the player in battle by attacking opponents or healing the player
 
-Add stores/vendors
-Player can sell useless items and buy new equipment, scrolls, potions, poisons, and crafting/spell components
+Add more vendors
 
 Add lines between location connections
