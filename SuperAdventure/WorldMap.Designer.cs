@@ -347,11 +347,13 @@
             Controls.Add(pic_0_2);
             Controls.Add(pic_0_1);
             Controls.Add(pic_0_0);
+            KeyPreview = true;
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "WorldMap";
             SizeGripStyle = SizeGripStyle.Hide;
             Text = "World Map";
+            KeyDown += WorldMap_KeyDown;
             ((System.ComponentModel.ISupportInitialize)pic_0_0).EndInit();
             ((System.ComponentModel.ISupportInitialize)pic_0_1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pic_0_2).EndInit();

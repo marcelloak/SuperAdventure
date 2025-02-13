@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using System.Reflection;
+﻿using System.Reflection;
 using Engine;
 
 namespace SuperAdventure
@@ -119,6 +118,12 @@ namespace SuperAdventure
             {
                 pb.Visible = false;
             }
+        }
+
+        private void WorldMap_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+            if (e.KeyCode == Keys.Escape) Close();
         }
     }
 }

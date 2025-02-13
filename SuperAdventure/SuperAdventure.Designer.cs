@@ -28,15 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
+            descHitPoints = new Label();
+            descGold = new Label();
+            descLevel = new Label();
             lblHitPoints = new Label();
             lblGold = new Label();
-            lblExperience = new Label();
             lblLevel = new Label();
-            label5 = new Label();
+            descSelectAction = new Label();
             cboWeapons = new ComboBox();
             cboPotions = new ComboBox();
             btnUseWeapon = new Button();
@@ -53,45 +51,37 @@
             btnSave = new Button();
             btnTrade = new Button();
             btnMap = new Button();
+            btnStats = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvInventory).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvQuests).BeginInit();
             SuspendLayout();
             // 
-            // label1
+            // descHitPoints
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(18, 20);
-            label1.Name = "label1";
-            label1.Size = new Size(62, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Hit Points:";
+            descHitPoints.AutoSize = true;
+            descHitPoints.Location = new Point(18, 20);
+            descHitPoints.Name = "descHitPoints";
+            descHitPoints.Size = new Size(62, 15);
+            descHitPoints.TabIndex = 0;
+            descHitPoints.Text = "Hit Points:";
             // 
-            // label2
+            // descGold
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(18, 46);
-            label2.Name = "label2";
-            label2.Size = new Size(35, 15);
-            label2.TabIndex = 1;
-            label2.Text = "Gold:";
+            descGold.AutoSize = true;
+            descGold.Location = new Point(18, 46);
+            descGold.Name = "descGold";
+            descGold.Size = new Size(35, 15);
+            descGold.TabIndex = 1;
+            descGold.Text = "Gold:";
             // 
-            // label3
+            // descLevel
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(18, 74);
-            label3.Name = "label3";
-            label3.Size = new Size(66, 15);
-            label3.TabIndex = 2;
-            label3.Text = "Experience:";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(18, 100);
-            label4.Name = "label4";
-            label4.Size = new Size(37, 15);
-            label4.TabIndex = 3;
-            label4.Text = "Level:";
+            descLevel.AutoSize = true;
+            descLevel.Location = new Point(18, 74);
+            descLevel.Name = "descLevel";
+            descLevel.Size = new Size(37, 15);
+            descLevel.TabIndex = 3;
+            descLevel.Text = "Level:";
             // 
             // lblHitPoints
             // 
@@ -109,30 +99,22 @@
             lblGold.Size = new Size(0, 15);
             lblGold.TabIndex = 5;
             // 
-            // lblExperience
-            // 
-            lblExperience.AutoSize = true;
-            lblExperience.Location = new Point(110, 73);
-            lblExperience.Name = "lblExperience";
-            lblExperience.Size = new Size(0, 15);
-            lblExperience.TabIndex = 6;
-            // 
             // lblLevel
             // 
             lblLevel.AutoSize = true;
-            lblLevel.Location = new Point(110, 99);
+            lblLevel.Location = new Point(110, 73);
             lblLevel.Name = "lblLevel";
             lblLevel.Size = new Size(0, 15);
             lblLevel.TabIndex = 7;
             // 
-            // label5
+            // descSelectAction
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(617, 527);
-            label5.Name = "label5";
-            label5.Size = new Size(74, 15);
-            label5.TabIndex = 8;
-            label5.Text = "Select action";
+            descSelectAction.AutoSize = true;
+            descSelectAction.Location = new Point(617, 527);
+            descSelectAction.Name = "descSelectAction";
+            descSelectAction.Size = new Size(74, 15);
+            descSelectAction.TabIndex = 8;
+            descSelectAction.Text = "Select action";
             // 
             // cboWeapons
             // 
@@ -301,11 +283,22 @@
             btnMap.UseVisualStyleBackColor = true;
             btnMap.Click += btnMap_Click;
             // 
+            // btnStats
+            // 
+            btnStats.Location = new Point(18, 101);
+            btnStats.Name = "btnStats";
+            btnStats.Size = new Size(75, 23);
+            btnStats.TabIndex = 25;
+            btnStats.Text = "Stats";
+            btnStats.UseVisualStyleBackColor = true;
+            btnStats.Click += btnStats_Click;
+            // 
             // SuperAdventure
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(719, 651);
+            Controls.Add(btnStats);
             Controls.Add(btnMap);
             Controls.Add(btnTrade);
             Controls.Add(btnSave);
@@ -322,15 +315,13 @@
             Controls.Add(btnUseWeapon);
             Controls.Add(cboPotions);
             Controls.Add(cboWeapons);
-            Controls.Add(label5);
+            Controls.Add(descSelectAction);
             Controls.Add(lblLevel);
-            Controls.Add(lblExperience);
             Controls.Add(lblGold);
             Controls.Add(lblHitPoints);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(descLevel);
+            Controls.Add(descGold);
+            Controls.Add(descHitPoints);
             KeyPreview = true;
             Name = "SuperAdventure";
             Text = "My Game";
@@ -343,15 +334,13 @@
 
         #endregion
 
-        private Label label1;
-        private Label label2;
-        private Label label3;
-        private Label label4;
+        private Label descHitPoints;
+        private Label descGold;
+        private Label descLevel;
         private Label lblHitPoints;
         private Label lblGold;
-        private Label lblExperience;
         private Label lblLevel;
-        private Label label5;
+        private Label descSelectAction;
         private ComboBox cboWeapons;
         private ComboBox cboPotions;
         private Button btnUseWeapon;
@@ -368,5 +357,6 @@
         private Button btnSave;
         private Button btnTrade;
         private Button btnMap;
+        private Button btnStats;
     }
 }

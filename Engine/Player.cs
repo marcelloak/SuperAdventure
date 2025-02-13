@@ -23,12 +23,14 @@ namespace Engine
             private set
             {
                 _experiencePoints = value;
-                OnPropertyChanged("ExperiencePoints");
+                OnPropertyChanged("ExperiencePointsDescription");
                 OnPropertyChanged("Level");
             }
         }
         public int Level { get { return (ExperiencePoints / ExperiencePointsPerLevel) + 1; } }
         public int ExperiencePointsToNextLevel { get { return ExperiencePointsPerLevel - ExperiencePoints % ExperiencePointsPerLevel; } }
+        public string ExperiencePointsDescription { get { return _experiencePoints.ToString() + "/" + (_experiencePoints + ExperiencePointsToNextLevel).ToString(); } }
+        public int AttributePointsToSpend { get; set; }
         public BindingList<InventoryItem> Inventory { get; set; }
         public List<InventoryItem> SellableInventory { get { return Inventory.Where(item => item.Details.Price >= 0).ToList(); } }
         public BindingList<PlayerQuest> Quests { get; set; }
@@ -45,7 +47,7 @@ namespace Engine
 
         public List<int> LocationsVisited { get; set; }
         public Weapon CurrentWeapon { get; set; }
-        public List<Weapon> Weapons { get { return Inventory.Where(item => item.Details is Weapon).Select(item => item.Details as Weapon).ToList().Where(weapon => Level >= weapon.MinimumLevel).ToList(); } }
+        public List<Weapon> Weapons { get { return Inventory.Where(item => item.Details is Weapon).Select(item => item.Details as Weapon).ToList().Where(weapon => Level >= weapon.MinimumLevel && Attributes.Strength >= weapon.StrengthRequired && Attributes.Dexterity >= weapon.DexterityRequired).ToList(); } }
         public List<HealingPotion> Potions { get { return Inventory.Where(item => item.Details is HealingPotion).Select(item => item.Details as HealingPotion).ToList().Where(potion => Level >= potion.MinimumLevel).ToList(); } }
         private Monster CurrentMonster;
         private bool IsFasterThanCurrentMonster { get { return Attributes.Dexterity >= CurrentMonster.Attributes.Dexterity; } }
@@ -55,6 +57,7 @@ namespace Engine
         {
             Gold = gold;
             ExperiencePoints = experiencePoints;
+            AttributePointsToSpend = 0;
             Inventory = new BindingList<InventoryItem>();
             Quests = new BindingList<PlayerQuest>();
             LocationsVisited = new List<int>();
@@ -79,10 +82,12 @@ namespace Engine
                 int maximumHitPoints = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/MaximumHitPoints").InnerText);
                 int gold = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/Gold").InnerText);
                 int experiencePoints = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/ExperiencePoints").InnerText);
+                int attributePointsToSpend = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/AttributePointsToSpend").InnerText);
                 int currentLocationID = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentLocation").InnerText);
                 int currentWeaponID = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentWeapon").InnerText);
 
                 Player player = new Player(currentHitPoints, maximumHitPoints, gold, experiencePoints);
+                player.AttributePointsToSpend = attributePointsToSpend;
                 player.CurrentLocation = World.LocationByID(currentLocationID);
                 player.CurrentWeapon = (Weapon)World.ItemByID(currentWeaponID);
 
@@ -143,6 +148,7 @@ namespace Engine
         public void LevelUp()
         {
             MaximumHitPoints += Attributes.Vitality;
+            AttributePointsToSpend++;
         }
 
         public bool HasRequiredItemToEnterThisLocation(Location location)
@@ -432,6 +438,10 @@ namespace Engine
             XmlNode experiencePoints = playerData.CreateElement("ExperiencePoints");
             experiencePoints.AppendChild(playerData.CreateTextNode(ExperiencePoints.ToString()));
             stats.AppendChild(experiencePoints);
+
+            XmlNode attributePointsToSpend = playerData.CreateElement("AttributePointsToSpend");
+            attributePointsToSpend.AppendChild(playerData.CreateTextNode(AttributePointsToSpend.ToString()));
+            stats.AppendChild(attributePointsToSpend);
 
             XmlNode currentLocation = playerData.CreateElement("CurrentLocation");
             currentLocation.AppendChild(playerData.CreateTextNode(CurrentLocation.ID.ToString()));

@@ -82,6 +82,13 @@ namespace SuperAdventure
             mapScreen.ShowDialog(this);
         }
 
+        private void btnStats_Click(object sender, EventArgs e)
+        {
+            PlayerStats statscreen = new PlayerStats(_player);
+            statscreen.StartPosition = FormStartPosition.CenterParent;
+            statscreen.ShowDialog(this);
+        }
+
         private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
         {
             _player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
@@ -156,6 +163,7 @@ namespace SuperAdventure
             _keyBindings.Add(Keys.Z, btnUseWeapon);
             _keyBindings.Add(Keys.X, btnUsePotion);
             _keyBindings.Add(Keys.T, btnTrade);
+            _keyBindings.Add(Keys.C, btnStats);
             _keyBindings.Add(Keys.F4, btnSave);
             _keyBindings.Add(Keys.F5, btnLoad);
         }
@@ -164,7 +172,6 @@ namespace SuperAdventure
         {
             lblHitPoints.DataBindings.Clear();
             lblGold.DataBindings.Clear();
-            lblExperience.DataBindings.Clear();
             lblLevel.DataBindings.Clear();
 
             dgvInventory.Columns.Clear();
@@ -178,7 +185,6 @@ namespace SuperAdventure
         {
             lblHitPoints.DataBindings.Add("Text", _player, "HitPoints");
             lblGold.DataBindings.Add("Text", _player, "Gold");
-            lblExperience.DataBindings.Add("Text", _player, "ExperiencePoints");
             lblLevel.DataBindings.Add("Text", _player, "Level");
 
             dgvInventory.RowHeadersVisible = false;

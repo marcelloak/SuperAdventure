@@ -1,4 +1,3 @@
-Add level up screen to add to attributes
 Change experience points required per level to be based on current level
 
 Add armor and jewelry
