@@ -44,9 +44,9 @@ namespace SuperAdventure
             _player.UseItem(_player.Attack, (UsableItem)cboWeapons.SelectedItem);
         }
 
-        private void btnUsePotion_Click(object sender, EventArgs e)
+        private void btnUseItem_Click(object sender, EventArgs e)
         {
-            _player.UseItem(_player.Drink, (UsableItem)cboPotions.SelectedItem);
+            if (cboUsableItems.SelectedItem is HealingPotion) _player.UseItem(_player.Drink, (UsableItem)cboUsableItems.SelectedItem);
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
@@ -105,13 +105,13 @@ namespace SuperAdventure
                     btnUseWeapon.Visible = false;
                 }
             }
-            else if (propertyChangedEventArgs.PropertyName == "Potions")
+            else if (propertyChangedEventArgs.PropertyName == "UsableItems")
             {
-                cboPotions.DataSource = _player.Potions;
-                if (!_player.Potions.Any())
+                cboUsableItems.DataSource = _player.UsableItems;
+                if (!_player.UsableItems.Any())
                 {
-                    cboPotions.Visible = false;
-                    btnUsePotion.Visible = false;
+                    cboUsableItems.Visible = false;
+                    btnUseItem.Visible = false;
                 }
             }
             else if (propertyChangedEventArgs.PropertyName == "CurrentLocation")
@@ -128,16 +128,16 @@ namespace SuperAdventure
                 if (_player.CurrentLocation.HasAMonster)
                 {
                     cboWeapons.Visible = _player.Weapons.Any();
-                    cboPotions.Visible = _player.Potions.Any();
+                    cboUsableItems.Visible = _player.UsableItems.Any();
                     btnUseWeapon.Visible = _player.Weapons.Any();
-                    btnUsePotion.Visible = _player.Potions.Any();
+                    btnUseItem.Visible = _player.UsableItems.Any();
                 }
                 else
                 {
                     cboWeapons.Visible = false;
-                    cboPotions.Visible = false;
+                    cboUsableItems.Visible = false;
                     btnUseWeapon.Visible = false;
-                    btnUsePotion.Visible = false;
+                    btnUseItem.Visible = false;
                 }
             }
         }
@@ -161,7 +161,7 @@ namespace SuperAdventure
             _keyBindings.Add(Keys.A, btnWest);
             _keyBindings.Add(Keys.D, btnEast);
             _keyBindings.Add(Keys.Z, btnUseWeapon);
-            _keyBindings.Add(Keys.X, btnUsePotion);
+            _keyBindings.Add(Keys.X, btnUseItem);
             _keyBindings.Add(Keys.T, btnTrade);
             _keyBindings.Add(Keys.C, btnStats);
             _keyBindings.Add(Keys.F4, btnSave);
@@ -223,9 +223,9 @@ namespace SuperAdventure
             cboWeapons.SelectedItem = _player.CurrentWeapon;
             cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged;
 
-            cboPotions.DataSource = _player.Potions;
-            cboPotions.DisplayMember = "Name";
-            cboPotions.ValueMember = "ID";
+            cboUsableItems.DataSource = _player.UsableItems;
+            cboUsableItems.DisplayMember = "Name";
+            cboUsableItems.ValueMember = "ID";
 
             _player.PropertyChanged += PlayerOnPropertyChanged;
             _player.OnMessage += DisplayMessage;

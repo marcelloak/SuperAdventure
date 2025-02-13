@@ -48,7 +48,7 @@ namespace Engine
         public List<int> LocationsVisited { get; set; }
         public Weapon CurrentWeapon { get; set; }
         public List<Weapon> Weapons { get { return Inventory.Where(item => item.Details is Weapon).Select(item => item.Details as Weapon).ToList().Where(weapon => Level >= weapon.MinimumLevel && Attributes.Strength >= weapon.StrengthRequired && Attributes.Dexterity >= weapon.DexterityRequired).ToList(); } }
-        public List<HealingPotion> Potions { get { return Inventory.Where(item => item.Details is HealingPotion).Select(item => item.Details as HealingPotion).ToList().Where(potion => Level >= potion.MinimumLevel).ToList(); } }
+        public List<UsableItem> UsableItems { get { return Inventory.Where(item => item.Details is UsableItem && !(item.Details is Weapon)).Select(item => item.Details as UsableItem).ToList().Where(item => Level >= item.MinimumLevel).ToList(); } }
         private Monster CurrentMonster;
         private bool IsFasterThanCurrentMonster { get { return Attributes.Dexterity >= CurrentMonster.Attributes.Dexterity; } }
         public event EventHandler<MessageEventArgs> OnMessage;
@@ -212,7 +212,7 @@ namespace Engine
         private void RaiseInventoryChangedEvent(Item item)
         {
             if (item is Weapon) OnPropertyChanged("Weapons");
-            else if (item is HealingPotion) OnPropertyChanged("Potions");
+            else if (item is UsableItem) OnPropertyChanged("UsableItems");
         }
 
         public void MarkQuestCompleted(Quest quest)

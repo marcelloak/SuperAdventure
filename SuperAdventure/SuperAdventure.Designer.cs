@@ -36,9 +36,9 @@
             lblLevel = new Label();
             descSelectAction = new Label();
             cboWeapons = new ComboBox();
-            cboPotions = new ComboBox();
+            cboUsableItems = new ComboBox();
             btnUseWeapon = new Button();
-            btnUsePotion = new Button();
+            btnUseItem = new Button();
             btnNorth = new Button();
             btnEast = new Button();
             btnSouth = new Button();
@@ -124,13 +124,13 @@
             cboWeapons.Size = new Size(121, 23);
             cboWeapons.TabIndex = 9;
             // 
-            // cboPotions
+            // cboUsableItems
             // 
-            cboPotions.FormattingEnabled = true;
-            cboPotions.Location = new Point(369, 589);
-            cboPotions.Name = "cboPotions";
-            cboPotions.Size = new Size(121, 23);
-            cboPotions.TabIndex = 10;
+            cboUsableItems.FormattingEnabled = true;
+            cboUsableItems.Location = new Point(369, 589);
+            cboUsableItems.Name = "cboUsableItems";
+            cboUsableItems.Size = new Size(121, 23);
+            cboUsableItems.TabIndex = 10;
             // 
             // btnUseWeapon
             // 
@@ -142,15 +142,15 @@
             btnUseWeapon.UseVisualStyleBackColor = true;
             btnUseWeapon.Click += btnUseWeapon_Click;
             // 
-            // btnUsePotion
+            // btnUseItem
             // 
-            btnUsePotion.Location = new Point(620, 589);
-            btnUsePotion.Name = "btnUsePotion";
-            btnUsePotion.Size = new Size(75, 23);
-            btnUsePotion.TabIndex = 12;
-            btnUsePotion.Text = "Use";
-            btnUsePotion.UseVisualStyleBackColor = true;
-            btnUsePotion.Click += btnUsePotion_Click;
+            btnUseItem.Location = new Point(620, 589);
+            btnUseItem.Name = "btnUseItem";
+            btnUseItem.Size = new Size(75, 23);
+            btnUseItem.TabIndex = 12;
+            btnUseItem.Text = "Use";
+            btnUseItem.UseVisualStyleBackColor = true;
+            btnUseItem.Click += btnUseItem_Click;
             // 
             // btnNorth
             // 
@@ -311,9 +311,9 @@
             Controls.Add(btnSouth);
             Controls.Add(btnEast);
             Controls.Add(btnNorth);
-            Controls.Add(btnUsePotion);
+            Controls.Add(btnUseItem);
             Controls.Add(btnUseWeapon);
-            Controls.Add(cboPotions);
+            Controls.Add(cboUsableItems);
             Controls.Add(cboWeapons);
             Controls.Add(descSelectAction);
             Controls.Add(lblLevel);
@@ -342,9 +342,9 @@
         private Label lblLevel;
         private Label descSelectAction;
         private ComboBox cboWeapons;
-        private ComboBox cboPotions;
+        private ComboBox cboUsableItems;
         private Button btnUseWeapon;
-        private Button btnUsePotion;
+        private Button btnUseItem;
         private Button btnNorth;
         private Button btnEast;
         private Button btnSouth;
