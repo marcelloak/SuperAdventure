@@ -1,5 +1,5 @@
 Change experience points required per level to be based on current level
-Add spells as third option in combat
+Add spells and wait as options in combat
 Add spellbook screen
 Add item, quest and spell details popup screen when clicking on them in lists
 
@@ -15,7 +15,7 @@ Add more potions/poisons
 More powerful potions/poisons
 Potions/poisons to improve/reduce player/monster accuracy or damage
 
-Add other status effects (paralyze, sleep, dark, frozen, burn, haste, death)
+Add other status effects (paralyze, dark, frozen, burn, haste, death)
 
 Add pets
 Help the player in battle by attacking opponents or healing the player

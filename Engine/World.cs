@@ -11,10 +11,12 @@
         public static readonly List<Vendor> Vendors = new List<Vendor>();
 
         public const int STATUS_ID_POISON = 1;
+        public const int STATUS_ID_SLEEP = 2;
 
         public const int SPELL_ID_HEAL = 1;
         public const int SPELL_ID_FIREBALL = 2;
         public const int SPELL_ID_POISON = 3;
+        public const int SPELL_ID_SLEEP = 4;
 
         public const int ITEM_ID_RUSTY_SWORD = 1;
         public const int ITEM_ID_RAT_TAIL = 2;
@@ -30,6 +32,7 @@
         public const int ITEM_ID_HEAL_SCROLL = 12;
         public const int ITEM_ID_FIREBALL_SCROLL = 13;
         public const int ITEM_ID_POISON_SCROLL = 14;
+        public const int ITEM_ID_SLEEP_SCROLL = 15;
 
         public const int WORTHLESS_ITEM_PRICE = 0;
         public const int UNSELLABLE_ITEM_PRICE = -1;
@@ -67,6 +70,7 @@
         private static void PopulateStatuses()
         {
             Statuses.Add(new Status(STATUS_ID_POISON, "Poison", "Poisoned"));
+            Statuses.Add(new Status(STATUS_ID_SLEEP, "Sleep", "Asleep"));
         }
 
         private static void PopulateSpells()
@@ -74,7 +78,7 @@
             Spells.Add(new HealingSpell(SPELL_ID_HEAL, "Heal", "Self", 3, 3));
 
             StatusSpell fireball = new StatusSpell(SPELL_ID_FIREBALL, "Fireball", "Enemy", 3);
-            Status poisonStatus = StatusByID(STATUS_ID_POISON).NewInstanceOfStatus(3, 1);
+            Status poisonStatus = StatusByID(STATUS_ID_POISON).NewInstanceOfStatus(3);
             fireball.StatusApplied = poisonStatus;
             Spells.Add(fireball);
 
@@ -82,6 +86,11 @@
             poisonStatus = StatusByID(STATUS_ID_POISON).NewInstanceOfStatus(1, 3);
             poison.StatusApplied = poisonStatus;
             Spells.Add(poison);
+
+            StatusSpell sleep = new StatusSpell(SPELL_ID_SLEEP, "Sleep", "Enemy", 3);
+            Status sleepStatus = StatusByID(STATUS_ID_SLEEP).NewInstanceOfStatus(0, Int32.MaxValue, 100, 25);
+            sleep.StatusApplied = sleepStatus;
+            Spells.Add(sleep);
         }
 
         private static void PopulateItems()
@@ -113,6 +122,10 @@
             Scroll poisonScroll = new Scroll(ITEM_ID_POISON_SCROLL, "Poison scroll", "Poison scrolls", 5);
             poisonScroll.SpellContained = SpellByID(SPELL_ID_POISON);
             Items.Add(poisonScroll);
+
+            Scroll sleepScroll = new Scroll(ITEM_ID_SLEEP_SCROLL, "Sleep scroll", "Sleep scrolls", 5);
+            sleepScroll.SpellContained = SpellByID(SPELL_ID_SLEEP);
+            Items.Add(sleepScroll);
         }
 
         private static void PopulateMonsters()

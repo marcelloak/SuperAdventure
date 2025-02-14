@@ -363,7 +363,7 @@ namespace Engine
             if (quest.IsRepeatable) RaiseMessage("This quest is repeatable. Return here to reset it.");
         }
 
-        public void UseItem(Action<UsableItem> function, UsableItem currentItem)
+        public void TakeTurn(Action<UsableItem> function, UsableItem currentItem)
         {
             bool turnSkipped = CheckForBeforeStatus(this);
             if (turnSkipped) MonsterTakesTurn();
@@ -389,7 +389,7 @@ namespace Engine
         public void Attack(UsableItem currentItem)
         {
             Weapon currentWeapon = currentItem as Weapon;
-            bool hit = RandomNumberGenerator.NumberBetween(0, 100) < currentWeapon.HitChance + Level * 5 - CurrentMonster.Defence;
+            bool hit = RandomNumberGenerator.NumberBetween(1, 100) <= currentWeapon.HitChance + Level * 5 - CurrentMonster.Defence;
             int damage = 0;
 
             if (hit) damage = RandomNumberGenerator.NumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
@@ -421,7 +421,7 @@ namespace Engine
             }
             else
             {
-                CurrentMonster.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns);
+                CurrentMonster.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure);
                 RaiseMessage("You throw a " + currentItem.Name + " and " + status.Name + " the " + CurrentMonster.Name + " for " + status.Turns + " turns.");
             }
             RemoveItemFromInventory(currentItem);
@@ -476,8 +476,8 @@ namespace Engine
                 }
                 else
                 {
-                    CurrentMonster.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns);
-                    RaiseMessage(identifier + (target == this ? " are " : " is ") + status.Description + " for " + status.Turns + " turns.");
+                    CurrentMonster.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure);
+                    RaiseMessage(identifier + (target == this ? " are " : " is ") + status.Description + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turns."));
                 }
             }
         }
@@ -500,7 +500,7 @@ namespace Engine
             bool turnSkipped = CheckForBeforeStatus(CurrentMonster);
             if (!turnSkipped)
             {
-                bool hit = RandomNumberGenerator.NumberBetween(0, 100) < CurrentMonster.HitChance - Level * 5;
+                bool hit = RandomNumberGenerator.NumberBetween(1, 100) <= CurrentMonster.HitChance - Level * 5;
                 int damage = 0;
 
                 if (hit) damage = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
@@ -519,7 +519,24 @@ namespace Engine
         {
             if (livingCreature.HasAStatus)
             {
-                if (livingCreature.CurrentStatus.ID == World.STATUS_ID_POISON) return false;
+                String identifier = "You";
+                if (livingCreature is Monster)
+                {
+                    Monster currentMonster = livingCreature as Monster;
+                    identifier = "The " + currentMonster.Name;
+                }
+
+                bool activated = true;
+                if (livingCreature.CurrentStatus.ChanceToActivate < 100) activated = RandomNumberGenerator.NumberBetween(1, 100) <= livingCreature.CurrentStatus.ChanceToActivate;
+
+                if (activated)
+                {
+                    if (livingCreature.CurrentStatus.ID == World.STATUS_ID_SLEEP)
+                    {
+                        RaiseMessage(identifier + " missed " + (livingCreature == this ? "your" : "their") + " turn because " + (livingCreature == this ? "you" : "they") + " were " + livingCreature.CurrentStatus.Description);
+                        return true;
+                    }
+                }  
             }
             return false;
         }
@@ -536,19 +553,32 @@ namespace Engine
                 }
                 RaiseMessage(identifier + (livingCreature == this ? " are " : " is ") + livingCreature.CurrentStatus.Description);
 
-                if (livingCreature.CurrentStatus.ID == World.STATUS_ID_POISON)
+                bool activated = true;
+                if (livingCreature.CurrentStatus.ChanceToActivate < 100) activated = RandomNumberGenerator.NumberBetween(1, 100) <= livingCreature.CurrentStatus.ChanceToActivate;
+
+                if (activated)
                 {
-                    livingCreature.CurrentHitPoints -= livingCreature.CurrentStatus.Value;
-                    RaiseMessage(identifier + (livingCreature == this ? " lose " : " lost ") + livingCreature.CurrentStatus.Value + " health to poison.");
+                    if (livingCreature.CurrentStatus.ID == World.STATUS_ID_POISON)
+                    {
+                        livingCreature.CurrentHitPoints -= livingCreature.CurrentStatus.Value;
+                        RaiseMessage(identifier + (livingCreature == this ? " lose " : " lost ") + livingCreature.CurrentStatus.Value + " health to poison.");
+                    }
                 }
 
-                if (livingCreature.CurrentStatus.Turns == 1)
+                if (livingCreature.CurrentStatus.Turns == 1) ClearStatus(livingCreature, identifier);
+                else if (livingCreature.CurrentStatus.ChanceToCure > 0)
                 {
-                    RaiseMessage(identifier + (livingCreature == this ? " are" : " is") + " no longer " + livingCreature.CurrentStatus.Description);
-                    livingCreature.CurrentStatus = null;
+                    bool cured = RandomNumberGenerator.NumberBetween(1, 100) <= livingCreature.CurrentStatus.ChanceToCure;
+                    if (cured) ClearStatus(livingCreature, identifier);
                 }
-                else livingCreature.CurrentStatus.Turns--;
+                else if (livingCreature.CurrentStatus.Turns != Int32.MaxValue) livingCreature.CurrentStatus.Turns--;
             }
+        }
+
+        private void ClearStatus(LivingCreature livingCreature, String identifier)
+        {
+            RaiseMessage(identifier + (livingCreature == this ? " are" : " is") + " no longer " + livingCreature.CurrentStatus.Description);
+            livingCreature.CurrentStatus = null;
         }
 
         private bool PlayerDies()

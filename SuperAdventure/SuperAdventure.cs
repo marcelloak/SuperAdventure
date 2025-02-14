@@ -41,14 +41,14 @@ namespace SuperAdventure
 
         private void btnUseWeapon_Click(object sender, EventArgs e)
         {
-            _player.UseItem(_player.Attack, (UsableItem)cboWeapons.SelectedItem);
+            _player.TakeTurn(_player.Attack, (UsableItem)cboWeapons.SelectedItem);
         }
 
         private void btnUseItem_Click(object sender, EventArgs e)
         {
-            if (cboUsableItems.SelectedItem is HealingItem) _player.UseItem(_player.UseHealingItem, (UsableItem)cboUsableItems.SelectedItem);
-            else if (cboUsableItems.SelectedItem is StatusItem) _player.UseItem(_player.UseStatusItem, (UsableItem)cboUsableItems.SelectedItem);
-            else if (cboUsableItems.SelectedItem is Scroll) _player.UseItem(_player.UseScroll, (UsableItem)cboUsableItems.SelectedItem);
+            if (cboUsableItems.SelectedItem is HealingItem) _player.TakeTurn(_player.UseHealingItem, (UsableItem)cboUsableItems.SelectedItem);
+            else if (cboUsableItems.SelectedItem is StatusItem) _player.TakeTurn(_player.UseStatusItem, (UsableItem)cboUsableItems.SelectedItem);
+            else if (cboUsableItems.SelectedItem is Scroll) _player.TakeTurn(_player.UseScroll, (UsableItem)cboUsableItems.SelectedItem);
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
