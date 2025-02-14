@@ -28,15 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            label1 = new Label();
+            descExperiencePoints = new Label();
             lblExperiencePoints = new Label();
-            label3 = new Label();
+            descStrength = new Label();
             lblStrength = new Label();
-            label5 = new Label();
+            descIntelligence = new Label();
             lblIntelligence = new Label();
-            label7 = new Label();
+            descDexterity = new Label();
             lblDexterity = new Label();
-            label9 = new Label();
+            descVitality = new Label();
             lblVitality = new Label();
             btnStrengthMinus = new Button();
             btnStrengthPlus = new Button();
@@ -50,14 +50,14 @@
             btnApply = new Button();
             SuspendLayout();
             // 
-            // label1
+            // descExperiencePoints
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(31, 32);
-            label1.Name = "label1";
-            label1.Size = new Size(102, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Experience Points:";
+            descExperiencePoints.AutoSize = true;
+            descExperiencePoints.Location = new Point(31, 32);
+            descExperiencePoints.Name = "descExperiencePoints";
+            descExperiencePoints.Size = new Size(102, 15);
+            descExperiencePoints.TabIndex = 0;
+            descExperiencePoints.Text = "Experience Points:";
             // 
             // lblExperiencePoints
             // 
@@ -67,14 +67,14 @@
             lblExperiencePoints.Size = new Size(0, 15);
             lblExperiencePoints.TabIndex = 1;
             // 
-            // label3
+            // descStrength
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(31, 79);
-            label3.Name = "label3";
-            label3.Size = new Size(52, 15);
-            label3.TabIndex = 2;
-            label3.Text = "Strength";
+            descStrength.AutoSize = true;
+            descStrength.Location = new Point(31, 79);
+            descStrength.Name = "descStrength";
+            descStrength.Size = new Size(52, 15);
+            descStrength.TabIndex = 2;
+            descStrength.Text = "Strength";
             // 
             // lblStrength
             // 
@@ -84,14 +84,14 @@
             lblStrength.Size = new Size(0, 15);
             lblStrength.TabIndex = 3;
             // 
-            // label5
+            // descIntelligence
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(31, 110);
-            label5.Name = "label5";
-            label5.Size = new Size(68, 15);
-            label5.TabIndex = 4;
-            label5.Text = "Intelligence";
+            descIntelligence.AutoSize = true;
+            descIntelligence.Location = new Point(31, 110);
+            descIntelligence.Name = "descIntelligence";
+            descIntelligence.Size = new Size(68, 15);
+            descIntelligence.TabIndex = 4;
+            descIntelligence.Text = "Intelligence";
             // 
             // lblIntelligence
             // 
@@ -101,14 +101,14 @@
             lblIntelligence.Size = new Size(0, 15);
             lblIntelligence.TabIndex = 5;
             // 
-            // label7
+            // descDexterity
             // 
-            label7.AutoSize = true;
-            label7.Location = new Point(31, 138);
-            label7.Name = "label7";
-            label7.Size = new Size(53, 15);
-            label7.TabIndex = 6;
-            label7.Text = "Dexterity";
+            descDexterity.AutoSize = true;
+            descDexterity.Location = new Point(31, 138);
+            descDexterity.Name = "descDexterity";
+            descDexterity.Size = new Size(53, 15);
+            descDexterity.TabIndex = 6;
+            descDexterity.Text = "Dexterity";
             // 
             // lblDexterity
             // 
@@ -118,14 +118,14 @@
             lblDexterity.Size = new Size(0, 15);
             lblDexterity.TabIndex = 7;
             // 
-            // label9
+            // descVitality
             // 
-            label9.AutoSize = true;
-            label9.Location = new Point(31, 167);
-            label9.Name = "label9";
-            label9.Size = new Size(43, 15);
-            label9.TabIndex = 8;
-            label9.Text = "Vitality";
+            descVitality.AutoSize = true;
+            descVitality.Location = new Point(31, 167);
+            descVitality.Name = "descVitality";
+            descVitality.Size = new Size(43, 15);
+            descVitality.TabIndex = 8;
+            descVitality.Text = "Vitality";
             // 
             // lblVitality
             // 
@@ -251,15 +251,15 @@
             Controls.Add(btnStrengthPlus);
             Controls.Add(btnStrengthMinus);
             Controls.Add(lblVitality);
-            Controls.Add(label9);
+            Controls.Add(descVitality);
             Controls.Add(lblDexterity);
-            Controls.Add(label7);
+            Controls.Add(descDexterity);
             Controls.Add(lblIntelligence);
-            Controls.Add(label5);
+            Controls.Add(descIntelligence);
             Controls.Add(lblStrength);
-            Controls.Add(label3);
+            Controls.Add(descStrength);
             Controls.Add(lblExperiencePoints);
-            Controls.Add(label1);
+            Controls.Add(descExperiencePoints);
             KeyPreview = true;
             Name = "PlayerStats";
             Text = "PlayerStats";
@@ -270,15 +270,15 @@
 
         #endregion
 
-        private Label label1;
+        private Label descExperiencePoints;
         private Label lblExperiencePoints;
-        private Label label3;
+        private Label descStrength;
         private Label lblStrength;
-        private Label label5;
+        private Label descIntelligence;
         private Label lblIntelligence;
-        private Label label7;
+        private Label descDexterity;
         private Label lblDexterity;
-        private Label label9;
+        private Label descVitality;
         private Label lblVitality;
         private Button btnStrengthMinus;
         private Button btnStrengthPlus;

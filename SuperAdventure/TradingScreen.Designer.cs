@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            label1 = new Label();
-            label2 = new Label();
+            descInventory = new Label();
+            descVendorInventory = new Label();
             dgvMyItems = new DataGridView();
             dgvVendorItems = new DataGridView();
             btnClose = new Button();
@@ -37,23 +37,23 @@
             ((System.ComponentModel.ISupportInitialize)dgvVendorItems).BeginInit();
             SuspendLayout();
             // 
-            // label1
+            // descInventory
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(99, 13);
-            label1.Name = "label1";
-            label1.Size = new Size(77, 15);
-            label1.TabIndex = 0;
-            label1.Text = "My Inventory";
+            descInventory.AutoSize = true;
+            descInventory.Location = new Point(99, 13);
+            descInventory.Name = "descInventory";
+            descInventory.Size = new Size(77, 15);
+            descInventory.TabIndex = 0;
+            descInventory.Text = "My Inventory";
             // 
-            // label2
+            // descVendorInventory
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(349, 13);
-            label2.Name = "label2";
-            label2.Size = new Size(105, 15);
-            label2.TabIndex = 1;
-            label2.Text = "Vendor's Inventory";
+            descVendorInventory.AutoSize = true;
+            descVendorInventory.Location = new Point(349, 13);
+            descVendorInventory.Name = "descVendorInventory";
+            descVendorInventory.Size = new Size(105, 15);
+            descVendorInventory.TabIndex = 1;
+            descVendorInventory.Text = "Vendor's Inventory";
             // 
             // dgvMyItems
             // 
@@ -89,8 +89,8 @@
             Controls.Add(btnClose);
             Controls.Add(dgvVendorItems);
             Controls.Add(dgvMyItems);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(descVendorInventory);
+            Controls.Add(descInventory);
             KeyPreview = true;
             Name = "TradingScreen";
             Text = "Trade";
@@ -103,8 +103,8 @@
 
         #endregion
 
-        private Label label1;
-        private Label label2;
+        private Label descInventory;
+        private Label descVendorInventory;
         private DataGridView dgvMyItems;
         private DataGridView dgvVendorItems;
         private Button btnClose;
