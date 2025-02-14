@@ -3,6 +3,7 @@
     public static class World
     {
         public static readonly List<Status> Statuses = new List<Status>();
+        public static readonly List<Spell> Spells = new List<Spell>();
         public static readonly List<Item> Items = new List<Item>();
         public static readonly List<Monster> Monsters = new List<Monster>();
         public static readonly List<Quest> Quests = new List<Quest>();
@@ -10,6 +11,10 @@
         public static readonly List<Vendor> Vendors = new List<Vendor>();
 
         public const int STATUS_ID_POISON = 1;
+
+        public const int SPELL_ID_HEAL = 1;
+        public const int SPELL_ID_FIREBALL = 2;
+        public const int SPELL_ID_POISON = 3;
 
         public const int ITEM_ID_RUSTY_SWORD = 1;
         public const int ITEM_ID_RAT_TAIL = 2;
@@ -22,6 +27,9 @@
         public const int ITEM_ID_SPIDER_SILK = 9;
         public const int ITEM_ID_ADVENTURER_PASS = 10;
         public const int ITEM_ID_POISON = 11;
+        public const int ITEM_ID_HEAL_SCROLL = 12;
+        public const int ITEM_ID_FIREBALL_SCROLL = 13;
+        public const int ITEM_ID_POISON_SCROLL = 14;
 
         public const int WORTHLESS_ITEM_PRICE = 0;
         public const int UNSELLABLE_ITEM_PRICE = -1;
@@ -48,6 +56,7 @@
         static World()
         {
             PopulateStatuses();
+            PopulateSpells();
             PopulateItems();
             PopulateMonsters();
             PopulateQuests();
@@ -60,6 +69,21 @@
             Statuses.Add(new Status(STATUS_ID_POISON, "Poison", "Poisoned"));
         }
 
+        private static void PopulateSpells()
+        {
+            Spells.Add(new HealingSpell(SPELL_ID_HEAL, "Heal", "Self", 3, 3));
+
+            StatusSpell fireball = new StatusSpell(SPELL_ID_FIREBALL, "Fireball", "Enemy", 3);
+            Status poisonStatus = StatusByID(STATUS_ID_POISON).NewInstanceOfStatus(3, 1);
+            fireball.StatusApplied = poisonStatus;
+            Spells.Add(fireball);
+
+            StatusSpell poison = new StatusSpell(SPELL_ID_POISON, "Poison", "Enemy", 3);
+            poisonStatus = StatusByID(STATUS_ID_POISON).NewInstanceOfStatus(1, 3);
+            poison.StatusApplied = poisonStatus;
+            Spells.Add(poison);
+        }
+
         private static void PopulateItems()
         {
             Items.Add(new Weapon(ITEM_ID_RUSTY_SWORD, "Rusty sword", "Rusty swords", 0, 5, 5, 60));
@@ -68,7 +92,7 @@
             Items.Add(new Item(ITEM_ID_SNAKE_FANG, "Snake fang", "Snake fangs", 1));
             Items.Add(new Item(ITEM_ID_SNAKESKIN, "Snakeskin", "Snakeskins", 2));
             Items.Add(new Weapon(ITEM_ID_CLUB, "Club", "Clubs", 3, 10, 8, 80, 2));
-            Items.Add(new HealingPotion(ITEM_ID_HEALING_POTION, "Healing potion", "Healing potions", 5, 3));
+            Items.Add(new HealingItem(ITEM_ID_HEALING_POTION, "Healing potion", "Healing potions", 5, 3));
             Items.Add(new Item(ITEM_ID_SPIDER_FANG, "Spider fang", "Spider fangs", 1));
             Items.Add(new Item(ITEM_ID_SPIDER_SILK, "Spider silk", "Spider silks", 1));
             Items.Add(new Item(ITEM_ID_ADVENTURER_PASS, "Adventurer pass", "Adventurer passes", UNSELLABLE_ITEM_PRICE));
@@ -77,6 +101,18 @@
             Status poisonStatus = StatusByID(STATUS_ID_POISON).NewInstanceOfStatus(1, 3);
             poison.StatusApplied = poisonStatus;
             Items.Add(poison);
+
+            Scroll healScroll = new Scroll(ITEM_ID_HEAL_SCROLL, "Heal scroll", "Heal scrolls", 5);
+            healScroll.SpellContained = SpellByID(SPELL_ID_HEAL);
+            Items.Add(healScroll);
+
+            Scroll fireballScroll = new Scroll(ITEM_ID_FIREBALL_SCROLL, "Fireball scroll", "Fireball scrolls", 5);
+            fireballScroll.SpellContained = SpellByID(SPELL_ID_FIREBALL);
+            Items.Add(fireballScroll);
+
+            Scroll poisonScroll = new Scroll(ITEM_ID_POISON_SCROLL, "Poison scroll", "Poison scrolls", 5);
+            poisonScroll.SpellContained = SpellByID(SPELL_ID_POISON);
+            Items.Add(poisonScroll);
         }
 
         private static void PopulateMonsters()
@@ -205,6 +241,11 @@
         public static Status StatusByID(int id)
         {
             return Statuses.SingleOrDefault(status => status.ID == id);
+        }
+
+        public static Spell SpellByID(int id)
+        {
+            return Spells.SingleOrDefault(spell => spell.ID == id);
         }
 
         public static Item ItemByID(int id)

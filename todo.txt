@@ -1,4 +1,7 @@
 Change experience points required per level to be based on current level
+Add spells as third option in combat
+Add spellbook screen
+Add item, quest and spell details popup screen when clicking on them in lists
 
 Add equipment
 Increases stats
@@ -7,12 +10,6 @@ Add crafting skills the player can acquire
 Add crafting recipes the player use
 Require the appropriate skill
 Requires components (inventory items)
-
-Add spells
-Level/stat requirements for the spells
-
-Add magic scrolls
-Spells without stat requirements
 
 Add more potions/poisons
 More powerful potions/poisons

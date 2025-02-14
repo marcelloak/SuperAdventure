@@ -48,6 +48,7 @@ namespace SuperAdventure
         {
             if (cboUsableItems.SelectedItem is HealingItem) _player.UseItem(_player.UseHealingItem, (UsableItem)cboUsableItems.SelectedItem);
             else if (cboUsableItems.SelectedItem is StatusItem) _player.UseItem(_player.UseStatusItem, (UsableItem)cboUsableItems.SelectedItem);
+            else if (cboUsableItems.SelectedItem is Scroll) _player.UseItem(_player.UseScroll, (UsableItem)cboUsableItems.SelectedItem);
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
@@ -185,6 +186,7 @@ namespace SuperAdventure
         private void bindUI()
         {
             lblHitPoints.DataBindings.Add("Text", _player, "HitPoints");
+            lblMana.DataBindings.Add("Text", _player, "Mana");
             lblGold.DataBindings.Add("Text", _player, "Gold");
             lblLevel.DataBindings.Add("Text", _player, "Level");
 

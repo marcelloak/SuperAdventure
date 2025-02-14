@@ -48,11 +48,14 @@ namespace Engine
             }
         }
         public int Level { get { return (ExperiencePoints / ExperiencePointsPerLevel) + 1; } }
+        public int ExperiencePointsPerLevel = 100;
         public int ExperiencePointsToNextLevel { get { return ExperiencePointsPerLevel - ExperiencePoints % ExperiencePointsPerLevel; } }
         public string ExperiencePointsDescription { get { return _experiencePoints.ToString() + "/" + (_experiencePoints + ExperiencePointsToNextLevel).ToString(); } }
         public int AttributePointsToSpend { get; set; }
         public BindingList<InventoryItem> Inventory { get; set; }
         public List<InventoryItem> SellableInventory { get { return Inventory.Where(item => item.Details.Price >= 0).ToList(); } }
+        public BindingList<Spell> Spellbook { get; set; }
+        public List<Spell> UsableSpells { get { return Spellbook.Where(spell => Attributes.Intelligence >= spell.MinimumIntelligence).ToList(); } }
         public BindingList<PlayerQuest> Quests { get; set; }
         private Location _currentLocation;
         public Location CurrentLocation
@@ -81,6 +84,7 @@ namespace Engine
             ExperiencePoints = experiencePoints;
             AttributePointsToSpend = 0;
             Inventory = new BindingList<InventoryItem>();
+            Spellbook = new BindingList<Spell>();
             Quests = new BindingList<PlayerQuest>();
             LocationsVisited = new List<int>();
         }
@@ -126,6 +130,12 @@ namespace Engine
                     int id = Convert.ToInt32(node.Attributes["ID"].Value);
                     int quantity = Convert.ToInt32(node.Attributes["Quantity"].Value);
                     player.AddItemToInventory(World.ItemByID(id), quantity);
+                }
+
+                foreach (XmlNode node in playerData.SelectNodes("/Player/Spellbook/Spells"))
+                {
+                    int id = Convert.ToInt32(node.Attributes["ID"].Value);
+                    player.Spellbook.Add(World.SpellByID(id));
                 }
 
                 foreach (XmlNode node in playerData.SelectNodes("/Player/VendorInventories"))
@@ -243,6 +253,17 @@ namespace Engine
         {
             if (item is Weapon) OnPropertyChanged("Weapons");
             else if (item is UsableItem) OnPropertyChanged("UsableItems");
+        }
+
+        private void LearnSpell(Spell spell)
+        {
+            if (spell.MinimumLevel <= Level)
+            {
+                Spellbook.Add(spell);
+                RaiseMessage("You have learned " + spell.Name);
+                OnPropertyChanged("UsableSpells");
+            }
+            else RaiseMessage("Your level is too low to learn " + spell.Name);
         }
 
         public void MarkQuestCompleted(Quest quest)
@@ -406,6 +427,61 @@ namespace Engine
             RemoveItemFromInventory(currentItem);
         }
 
+        public void UseScroll(UsableItem currentItem)
+        {
+            Scroll scroll = currentItem as Scroll;
+            RaiseMessage("You use a " + currentItem.Name);
+            CastSpell(scroll.SpellContained, this);
+            RemoveItemFromInventory(currentItem);
+        }
+
+        public bool AttemptToCastSpell(Spell spell, LivingCreature user)
+        {
+            if (spell.ManaCost > CurrentMana)
+            {
+                RaiseMessage("You don't have the mana to cast " + spell.Name);
+                return false;
+            }
+            CurrentMana -= spell.ManaCost;
+            CastSpell(spell, user);
+            return true;
+        }
+
+        public void CastSpell(Spell spell, LivingCreature user)
+        {
+            RaiseMessage("You cast " + spell.Name);
+            String identifier = "You";
+            LivingCreature target = this;
+
+            if ((user != this && spell.Target == "Self") || (user == this && spell.Target == "Enemy"))
+            {
+                identifier = "The " + CurrentMonster.Name;
+                target = CurrentMonster;
+            }
+
+            if (spell is HealingSpell)
+            {
+                HealingSpell heal = spell as HealingSpell;
+                target.CurrentHitPoints += heal.AmountToHeal;
+                if (target.CurrentHitPoints > target.MaximumHitPoints) target.CurrentHitPoints = target.MaximumHitPoints;
+                RaiseMessage(identifier + " heal" + (target == this ? "" : "s") + " for " + heal.AmountToHeal + " points.");
+            }
+            else if (spell is StatusSpell)
+            {
+                Status status = (spell as StatusSpell).StatusApplied;
+                if (status.Turns == 1)
+                {
+                    CurrentMonster.CurrentHitPoints -= status.Value;
+                    RaiseMessage(identifier + " take" + (target == this ? " " : "s ") + status.Value + " damage.");
+                }
+                else
+                {
+                    CurrentMonster.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns);
+                    RaiseMessage(identifier + (target == this ? " are " : " is ") + status.Description + " for " + status.Turns + " turns.");
+                }
+            }
+        }
+
         private bool DoesBattleEnd()
         {
             if (IsDead) return PlayerDies();
@@ -458,17 +534,17 @@ namespace Engine
                     Monster currentMonster = livingCreature as Monster;
                     identifier = "The " + currentMonster.Name;
                 }
-                RaiseMessage(identifier + " is " + livingCreature.CurrentStatus.Description);
+                RaiseMessage(identifier + (livingCreature == this ? " are " : " is ") + livingCreature.CurrentStatus.Description);
 
                 if (livingCreature.CurrentStatus.ID == World.STATUS_ID_POISON)
                 {
                     livingCreature.CurrentHitPoints -= livingCreature.CurrentStatus.Value;
-                    RaiseMessage(identifier + " lost " + livingCreature.CurrentStatus.Value + " health to poison.");
+                    RaiseMessage(identifier + (livingCreature == this ? " lose " : " lost ") + livingCreature.CurrentStatus.Value + " health to poison.");
                 }
 
                 if (livingCreature.CurrentStatus.Turns == 1)
                 {
-                    RaiseMessage(identifier + " is no longer " + livingCreature.CurrentStatus.Description);
+                    RaiseMessage(identifier + (livingCreature == this ? " are" : " is") + " no longer " + livingCreature.CurrentStatus.Description);
                     livingCreature.CurrentStatus = null;
                 }
                 else livingCreature.CurrentStatus.Turns--;
@@ -578,6 +654,18 @@ namespace Engine
                 quantityAttribute.Value = item.Quantity.ToString();
                 inventoryItem.Attributes.Append(quantityAttribute);
                 inventoryItems.AppendChild(inventoryItem);
+            }
+
+            XmlNode spellbook = playerData.CreateElement("Spellbook");
+            player.AppendChild(spellbook);
+
+            foreach (Spell spell in Spellbook)
+            {
+                XmlNode spellNode = playerData.CreateElement("Spell");
+                XmlAttribute idAttribute = playerData.CreateAttribute("ID");
+                idAttribute.Value = spell.ID.ToString();
+                spellNode.Attributes.Append(idAttribute);
+                spellbook.AppendChild(spellNode);
             }
 
             XmlNode vendorInventories = playerData.CreateElement("VendorInventories");
