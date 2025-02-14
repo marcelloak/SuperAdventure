@@ -386,6 +386,15 @@ namespace Engine
             ResolveTurn();
         }
 
+        public void WaitATurn()
+        {
+            bool turnSkipped = CheckForBeforeStatus(this);
+            if (!turnSkipped) RaiseMessage("You waited.");
+            MonsterTakesTurn();
+            CheckForAfterStatus(this);
+            ResolveTurn();
+        }
+
         public void Attack(UsableItem currentItem)
         {
             Weapon currentWeapon = currentItem as Weapon;

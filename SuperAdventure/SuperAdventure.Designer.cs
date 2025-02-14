@@ -54,6 +54,7 @@
             btnStats = new Button();
             descMana = new Label();
             lblMana = new Label();
+            btnWait = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvInventory).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvQuests).BeginInit();
             SuspendLayout();
@@ -312,11 +313,22 @@
             lblMana.Size = new Size(0, 15);
             lblMana.TabIndex = 27;
             // 
+            // btnWait
+            // 
+            btnWait.Location = new Point(620, 619);
+            btnWait.Name = "btnWait";
+            btnWait.Size = new Size(75, 23);
+            btnWait.TabIndex = 28;
+            btnWait.Text = "Wait";
+            btnWait.UseVisualStyleBackColor = true;
+            btnWait.Click += btnWait_Click;
+            // 
             // SuperAdventure
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(719, 651);
+            Controls.Add(btnWait);
             Controls.Add(lblMana);
             Controls.Add(descMana);
             Controls.Add(btnStats);
@@ -381,5 +393,6 @@
         private Button btnStats;
         private Label descMana;
         private Label lblMana;
+        private Button btnWait;
     }
 }

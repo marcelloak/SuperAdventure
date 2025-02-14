@@ -91,6 +91,11 @@ namespace SuperAdventure
             statscreen.ShowDialog(this);
         }
 
+        private void btnWait_Click(object sender, EventArgs e)
+        {
+            _player.WaitATurn();
+        }
+
         private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
         {
             _player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
@@ -133,6 +138,7 @@ namespace SuperAdventure
                     cboUsableItems.Visible = _player.UsableItems.Any();
                     btnUseWeapon.Visible = _player.Weapons.Any();
                     btnUseItem.Visible = _player.UsableItems.Any();
+                    btnWait.Visible = true;
                 }
                 else
                 {
@@ -140,6 +146,7 @@ namespace SuperAdventure
                     cboUsableItems.Visible = false;
                     btnUseWeapon.Visible = false;
                     btnUseItem.Visible = false;
+                    btnWait.Visible = false;
                 }
             }
         }
