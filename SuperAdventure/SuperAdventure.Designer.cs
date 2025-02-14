@@ -52,6 +52,8 @@
             btnTrade = new Button();
             btnMap = new Button();
             btnStats = new Button();
+            descMana = new Label();
+            lblMana = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvInventory).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvQuests).BeginInit();
             SuspendLayout();
@@ -68,7 +70,7 @@
             // descGold
             // 
             descGold.AutoSize = true;
-            descGold.Location = new Point(18, 46);
+            descGold.Location = new Point(18, 74);
             descGold.Name = "descGold";
             descGold.Size = new Size(35, 15);
             descGold.TabIndex = 1;
@@ -77,7 +79,7 @@
             // descLevel
             // 
             descLevel.AutoSize = true;
-            descLevel.Location = new Point(18, 74);
+            descLevel.Location = new Point(18, 100);
             descLevel.Name = "descLevel";
             descLevel.Size = new Size(37, 15);
             descLevel.TabIndex = 3;
@@ -94,7 +96,7 @@
             // lblGold
             // 
             lblGold.AutoSize = true;
-            lblGold.Location = new Point(110, 45);
+            lblGold.Location = new Point(110, 73);
             lblGold.Name = "lblGold";
             lblGold.Size = new Size(0, 15);
             lblGold.TabIndex = 5;
@@ -102,7 +104,7 @@
             // lblLevel
             // 
             lblLevel.AutoSize = true;
-            lblLevel.Location = new Point(110, 73);
+            lblLevel.Location = new Point(110, 99);
             lblLevel.Name = "lblLevel";
             lblLevel.Size = new Size(0, 15);
             lblLevel.TabIndex = 7;
@@ -285,7 +287,7 @@
             // 
             // btnStats
             // 
-            btnStats.Location = new Point(18, 101);
+            btnStats.Location = new Point(262, 101);
             btnStats.Name = "btnStats";
             btnStats.Size = new Size(75, 23);
             btnStats.TabIndex = 25;
@@ -293,11 +295,30 @@
             btnStats.UseVisualStyleBackColor = true;
             btnStats.Click += btnStats_Click;
             // 
+            // descMana
+            // 
+            descMana.AutoSize = true;
+            descMana.Location = new Point(18, 46);
+            descMana.Name = "descMana";
+            descMana.Size = new Size(35, 15);
+            descMana.TabIndex = 26;
+            descMana.Text = "Mana:";
+            // 
+            // lblMana
+            // 
+            lblMana.AutoSize = true;
+            lblMana.Location = new Point(110, 45);
+            lblMana.Name = "lblMana";
+            lblMana.Size = new Size(0, 15);
+            lblMana.TabIndex = 27;
+            // 
             // SuperAdventure
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(719, 651);
+            Controls.Add(lblMana);
+            Controls.Add(descMana);
             Controls.Add(btnStats);
             Controls.Add(btnMap);
             Controls.Add(btnTrade);
@@ -358,5 +379,7 @@
         private Button btnTrade;
         private Button btnMap;
         private Button btnStats;
+        private Label descMana;
+        private Label lblMana;
     }
 }

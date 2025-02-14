@@ -5,7 +5,27 @@ namespace Engine
 {
     public class Player : LivingCreature
     {
-        public int ExperiencePointsPerLevel = 100;
+        private int _currentMana;
+        public int CurrentMana
+        {
+            get { return _currentMana; }
+            set
+            {
+                _currentMana = value;
+                OnPropertyChanged("Mana");
+            }
+        }
+        private int _maximumMana;
+        public int MaximumMana
+        {
+            get { return _maximumMana; }
+            set
+            {
+                _maximumMana = value;
+                OnPropertyChanged("Mana");
+            }
+        }
+        public string Mana { get { return _currentMana.ToString() + "/" + _maximumMana.ToString(); } }
         private int _gold;
         public int Gold
         {
@@ -53,8 +73,10 @@ namespace Engine
         private bool IsFasterThanCurrentMonster { get { return Attributes.Dexterity >= CurrentMonster.Attributes.Dexterity; } }
         public event EventHandler<MessageEventArgs> OnMessage;
 
-        private Player(int currentHitPoints, int maximumHitPoints, int gold, int experiencePoints) : base(currentHitPoints, maximumHitPoints)
+        private Player(int currentHitPoints, int maximumHitPoints, int currentMana, int maximumMana, int gold, int experiencePoints) : base(currentHitPoints, maximumHitPoints)
         {
+            CurrentMana = currentMana;
+            MaximumMana = maximumMana;
             Gold = gold;
             ExperiencePoints = experiencePoints;
             AttributePointsToSpend = 0;
@@ -65,7 +87,7 @@ namespace Engine
 
         public static Player CreateDefaultPlayer()
         {
-            Player player = new Player(10, 10, 20, 0);
+            Player player = new Player(10, 10, 5, 5, 20, 0);
             player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
             player.CurrentWeapon = (Weapon)World.ItemByID(World.ITEM_ID_RUSTY_SWORD);
             player.CurrentLocation = World.LocationByID(World.LOCATION_ID_HOME);
@@ -80,13 +102,15 @@ namespace Engine
                 playerData.LoadXml(xmlPlayerData);
                 int currentHitPoints = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentHitPoints").InnerText);
                 int maximumHitPoints = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/MaximumHitPoints").InnerText);
+                int currentMana = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentMana").InnerText);
+                int maximumMana = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/MaximumMana").InnerText);
                 int gold = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/Gold").InnerText);
                 int experiencePoints = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/ExperiencePoints").InnerText);
                 int attributePointsToSpend = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/AttributePointsToSpend").InnerText);
                 int currentLocationID = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentLocation").InnerText);
                 int currentWeaponID = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentWeapon").InnerText);
 
-                Player player = new Player(currentHitPoints, maximumHitPoints, gold, experiencePoints);
+                Player player = new Player(currentHitPoints, maximumHitPoints, currentMana, maximumMana, gold, experiencePoints);
                 player.AttributePointsToSpend = attributePointsToSpend;
                 player.CurrentLocation = World.LocationByID(currentLocationID);
                 player.CurrentWeapon = (Weapon)World.ItemByID(currentWeaponID);
@@ -148,6 +172,12 @@ namespace Engine
         public void LevelUp()
         {
             MaximumHitPoints += Attributes.Vitality;
+            MaximumMana += Attributes.Intelligence / 5;
+            RaiseMessage("");
+            RaiseMessage("You levelled up to level " + Level);
+            RaiseMessage("You gained " + Attributes.Vitality + " maximum health.");
+            RaiseMessage("You gained " + Attributes.Intelligence / 5 + " maximum mana.");
+            RaiseMessage("You gained 1 attribute point to spend.", true);
             AttributePointsToSpend++;
         }
 
@@ -456,9 +486,7 @@ namespace Engine
         {
             RaiseMessage("");
             RaiseMessage("You defeated the " + CurrentMonster.Name);
-            AddExperiencePoints(CurrentMonster.RewardExperiencePoints);
             RaiseMessage("You receive " + CurrentMonster.RewardExperiencePoints.ToString() + " experience points");
-            Gold += CurrentMonster.RewardGold;
             RaiseMessage("You receive " + CurrentMonster.RewardGold.ToString() + " gold");
 
             foreach (InventoryItem inventoryItem in CurrentMonster.LootItems)
@@ -468,6 +496,9 @@ namespace Engine
             }
 
             RaiseMessage("");
+
+            AddExperiencePoints(CurrentMonster.RewardExperiencePoints);
+            Gold += CurrentMonster.RewardGold;
             MoveTo(CurrentLocation);
             return true;
         }
@@ -493,6 +524,14 @@ namespace Engine
             XmlNode maximumHitPoints = playerData.CreateElement("MaximumHitPoints");
             maximumHitPoints.AppendChild(playerData.CreateTextNode(MaximumHitPoints.ToString()));
             stats.AppendChild(maximumHitPoints);
+
+            XmlNode currentMana = playerData.CreateElement("CurrentMana");
+            currentMana.AppendChild(playerData.CreateTextNode(CurrentMana.ToString()));
+            stats.AppendChild(currentMana);
+
+            XmlNode maximumMana = playerData.CreateElement("MaximumMana");
+            maximumMana.AppendChild(playerData.CreateTextNode(MaximumMana.ToString()));
+            stats.AppendChild(maximumMana);
 
             XmlNode gold = playerData.CreateElement("Gold");
             gold.AppendChild(playerData.CreateTextNode(Gold.ToString()));
