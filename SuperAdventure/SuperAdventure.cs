@@ -46,8 +46,8 @@ namespace SuperAdventure
 
         private void btnUseItem_Click(object sender, EventArgs e)
         {
-            if (cboUsableItems.SelectedItem is HealingPotion) _player.UseItem(_player.Drink, (UsableItem)cboUsableItems.SelectedItem);
-            else if (cboUsableItems.SelectedItem is StatusItem) _player.UseItem(_player.ThrowStatusItem, (UsableItem)cboUsableItems.SelectedItem);
+            if (cboUsableItems.SelectedItem is HealingItem) _player.UseItem(_player.UseHealingItem, (UsableItem)cboUsableItems.SelectedItem);
+            else if (cboUsableItems.SelectedItem is StatusItem) _player.UseItem(_player.UseStatusItem, (UsableItem)cboUsableItems.SelectedItem);
         }
 
         private void btnLoad_Click(object sender, EventArgs e)

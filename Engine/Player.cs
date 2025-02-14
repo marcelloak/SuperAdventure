@@ -351,16 +351,16 @@ namespace Engine
             CurrentMonster.CurrentHitPoints -= damage;
         }
 
-        public void Drink(UsableItem currentItem)
+        public void UseHealingItem(UsableItem currentItem)
         {
-            HealingPotion potion = currentItem as HealingPotion;
-            CurrentHitPoints += potion.AmountToHeal;
+            HealingItem healingItem = currentItem as HealingItem;
+            CurrentHitPoints += healingItem.AmountToHeal;
             if (CurrentHitPoints > MaximumHitPoints) CurrentHitPoints = MaximumHitPoints;
-            RemoveItemFromInventory(potion);
-            RaiseMessage("You drink a " + potion.Name + " and heal for " + potion.AmountToHeal + " points.");
+            RemoveItemFromInventory(currentItem);
+            RaiseMessage("You drink a " + healingItem.Name + " and heal for " + healingItem.AmountToHeal + " points.");
         }
 
-        public void ThrowStatusItem(UsableItem currentItem)
+        public void UseStatusItem(UsableItem currentItem)
         {
             Status status = (currentItem as StatusItem).StatusApplied;
             if (status.Turns == 1)
