@@ -1,7 +1,6 @@
 Change experience points required per level to be based on current level
-Add spells and wait as options in combat
-Add spellbook screen
-Add item, quest and spell details popup screen when clicking on them in lists
+Add casting spells as an option in combat
+Add spellbook screen with spell detail popup
 
 Add equipment
 Increases stats

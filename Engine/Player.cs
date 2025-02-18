@@ -459,7 +459,7 @@ namespace Engine
         public void CastSpell(Spell spell, LivingCreature user)
         {
             RaiseMessage("You cast " + spell.Name);
-            String identifier = "You";
+            string identifier = "You";
             LivingCreature target = this;
 
             if ((user != this && spell.Target == "Self") || (user == this && spell.Target == "Enemy"))
@@ -528,7 +528,7 @@ namespace Engine
         {
             if (livingCreature.HasAStatus)
             {
-                String identifier = "You";
+                string identifier = "You";
                 if (livingCreature is Monster)
                 {
                     Monster currentMonster = livingCreature as Monster;
@@ -554,7 +554,7 @@ namespace Engine
         {
             if (livingCreature.HasAStatus)
             {
-                String identifier = "You";
+                string identifier = "You";
                 if (livingCreature is Monster)
                 {
                     Monster currentMonster = livingCreature as Monster;
@@ -584,7 +584,7 @@ namespace Engine
             }
         }
 
-        private void ClearStatus(LivingCreature livingCreature, String identifier)
+        private void ClearStatus(LivingCreature livingCreature, string identifier)
         {
             RaiseMessage(identifier + (livingCreature == this ? " are" : " is") + " no longer " + livingCreature.CurrentStatus.Description);
             livingCreature.CurrentStatus = null;

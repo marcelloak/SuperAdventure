@@ -86,9 +86,9 @@ namespace SuperAdventure
 
         private void btnStats_Click(object sender, EventArgs e)
         {
-            PlayerStats statscreen = new PlayerStats(_player);
-            statscreen.StartPosition = FormStartPosition.CenterParent;
-            statscreen.ShowDialog(this);
+            PlayerStats statScreen = new PlayerStats(_player);
+            statScreen.StartPosition = FormStartPosition.CenterParent;
+            statScreen.ShowDialog(this);
         }
 
         private void btnWait_Click(object sender, EventArgs e)
@@ -202,6 +202,11 @@ namespace SuperAdventure
             dgvInventory.DataSource = _player.Inventory;
             dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
             {
+                DataPropertyName = "ItemID",
+                Visible = false
+            });
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
                 HeaderText = "Name",
                 Width = 197,
                 DataPropertyName = "Description"
@@ -215,6 +220,11 @@ namespace SuperAdventure
             dgvQuests.RowHeadersVisible = false;
             dgvQuests.AutoGenerateColumns = false;
             dgvQuests.DataSource = _player.Quests;
+            dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "QuestID",
+                Visible = false
+            });
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = "Name",
@@ -239,6 +249,22 @@ namespace SuperAdventure
 
             _player.PropertyChanged += PlayerOnPropertyChanged;
             _player.OnMessage += DisplayMessage;
+        }
+
+        private void dgvInventory_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int id = Int32.Parse(dgvInventory.Rows[e.RowIndex].Cells[0].Value.ToString());
+            ItemWindow itemWindow = new ItemWindow(World.ItemByID(id));
+            itemWindow.StartPosition = FormStartPosition.CenterParent;
+            itemWindow.ShowDialog(this);
+        }
+
+        private void dgvQuests_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int id = Int32.Parse(dgvQuests.Rows[e.RowIndex].Cells[0].Value.ToString());
+            ItemWindow itemWindow = new ItemWindow(World.QuestByID(id));
+            itemWindow.StartPosition = FormStartPosition.CenterParent;
+            itemWindow.ShowDialog(this);
         }
     }
 }

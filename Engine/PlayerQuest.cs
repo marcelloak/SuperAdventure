@@ -16,6 +16,7 @@ namespace Engine
             }
         }
         public string Name { get {  return Details.Name; } }
+        public int QuestID { get { return Details.ID; } }
 
         public PlayerQuest(Quest details)
         {

@@ -221,7 +221,6 @@
             dgvInventory.AllowUserToResizeRows = false;
             dgvInventory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvInventory.EditMode = DataGridViewEditMode.EditProgrammatically;
-            dgvInventory.Enabled = false;
             dgvInventory.Location = new Point(16, 130);
             dgvInventory.MultiSelect = false;
             dgvInventory.Name = "dgvInventory";
@@ -229,6 +228,7 @@
             dgvInventory.RowHeadersVisible = false;
             dgvInventory.Size = new Size(312, 309);
             dgvInventory.TabIndex = 19;
+            dgvInventory.CellDoubleClick += dgvInventory_CellDoubleClick;
             // 
             // dgvQuests
             // 
@@ -237,7 +237,6 @@
             dgvQuests.AllowUserToResizeRows = false;
             dgvQuests.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvQuests.EditMode = DataGridViewEditMode.EditProgrammatically;
-            dgvQuests.Enabled = false;
             dgvQuests.Location = new Point(16, 446);
             dgvQuests.MultiSelect = false;
             dgvQuests.Name = "dgvQuests";
@@ -245,6 +244,7 @@
             dgvQuests.RowHeadersVisible = false;
             dgvQuests.Size = new Size(312, 189);
             dgvQuests.TabIndex = 20;
+            dgvQuests.CellDoubleClick += dgvQuests_CellDoubleClick;
             // 
             // btnLoad
             // 
@@ -301,7 +301,7 @@
             descMana.AutoSize = true;
             descMana.Location = new Point(18, 46);
             descMana.Name = "descMana";
-            descMana.Size = new Size(35, 15);
+            descMana.Size = new Size(40, 15);
             descMana.TabIndex = 26;
             descMana.Text = "Mana:";
             // 
