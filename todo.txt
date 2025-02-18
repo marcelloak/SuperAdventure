@@ -12,7 +12,7 @@ Add more potions/poisons/spells
 More powerful potions/poisons/spells
 Potions/poisons/spells to improve/reduce player/monster accuracy/damage
 
-Add other status effects (dark, petrified, death)
+Add other status effects (dark)
 
 Add pets
 Help the player in battle by attacking opponents or healing the player

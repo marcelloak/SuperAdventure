@@ -92,7 +92,6 @@ namespace Engine
         {
             Player player = new Player(10, 10, 5, 5, 20, 0);
             player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
-            player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_HASTE_SCROLL), 1));
             player.Spellbook.Add(World.SpellByID(World.SPELL_ID_HEAL));
             player.CurrentWeapon = (Weapon)World.ItemByID(World.ITEM_ID_RUSTY_SWORD);
             player.CurrentLocation = World.LocationByID(World.LOCATION_ID_HOME);
@@ -303,7 +302,8 @@ namespace Engine
             if (!LocationsVisited.Contains(CurrentLocation.ID)) LocationsVisited.Add(CurrentLocation.ID);
             CurrentHitPoints = MaximumHitPoints;
             CurrentMana = MaximumMana;
-            
+            ClearNegativeStatus(this);
+
             if (newLocation.HasAQuest)
             {
                 if (HasThisQuest(newLocation.QuestAvailableHere))
@@ -600,7 +600,15 @@ namespace Engine
                     }
                 }
 
-                if (livingCreature.CurrentStatus.Turns == 1) ClearStatus(livingCreature, identifier);
+                if (livingCreature.CurrentStatus.Turns == 1)
+                {
+                    if (livingCreature.CurrentStatus.ID == World.STATUS_ID_PETRIFY || livingCreature.CurrentStatus.ID == World.STATUS_ID_DEATH)
+                    {
+                        RaiseMessage(identifier + " died because " + (livingCreature == this ? "you were " : "it was ") + livingCreature.CurrentStatus.Description);
+                        livingCreature.CurrentHitPoints = 0;
+                    }
+                    else ClearStatus(livingCreature, identifier);
+                }
                 else if (livingCreature.CurrentStatus.ChanceToCure > 0)
                 {
                     bool cured = RandomNumberGenerator.NumberBetween(1, 100) <= livingCreature.CurrentStatus.ChanceToCure;
@@ -631,6 +639,11 @@ namespace Engine
             if (livingCreature == this) OnPropertyChanged("Status");
         }
 
+        private void ClearNegativeStatus(LivingCreature livingCreature)
+        {
+            if (livingCreature.HasAStatus && livingCreature.HasANegativeStatus) ClearStatus(livingCreature, "You");
+        }
+
         private void ClearStatus(LivingCreature livingCreature, string identifier = "")
         {
             if (identifier != "") RaiseMessage(identifier + (livingCreature == this ? " are" : " is") + " no longer " + livingCreature.CurrentStatus.Description);
@@ -640,8 +653,7 @@ namespace Engine
 
         private bool PlayerDies()
         {
-            RaiseMessage("The " + CurrentMonster.Name + " killed you.");
-            ClearStatus(this);
+            if (CurrentMonster != null) RaiseMessage("The " + CurrentMonster.Name + " killed you.");
             MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
             return true;
         }

@@ -31,6 +31,7 @@ namespace Engine
         public Status CurrentStatus { get; set; }
         public string Status { get { return (CurrentStatus == null) ? "" : CurrentStatus.Name; } }
         public bool HasAStatus { get { return CurrentStatus != null; } }
+        public bool HasANegativeStatus { get { return CurrentStatus.ID != World.STATUS_ID_HASTE; } }
 
         public LivingCreature(int currentHitPoints, int maximumHitPoints, Status currentStatus = null)
         {

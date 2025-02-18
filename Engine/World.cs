@@ -20,6 +20,8 @@
         public static int STATUS_ID_BURN;
         public static int STATUS_ID_SLOW;
         public static int STATUS_ID_STOP;
+        public static int STATUS_ID_PETRIFY;
+        public static int STATUS_ID_DEATH;
 
         public static int SPELL_ID_HEAL;
         public static int SPELL_ID_FIREBALL;
@@ -31,6 +33,8 @@
         public static int SPELL_ID_BURN;
         public static int SPELL_ID_SLOW;
         public static int SPELL_ID_STOP;
+        public static int SPELL_ID_PETRIFY;
+        public static int SPELL_ID_DEATH;
 
         public static int ITEM_ID_RUSTY_SWORD;
         public static int ITEM_ID_CLUB;
@@ -47,6 +51,8 @@
         public static int ITEM_ID_BURN_SCROLL;
         public static int ITEM_ID_SLOW_SCROLL;
         public static int ITEM_ID_STOP_SCROLL;
+        public static int ITEM_ID_PETRIFY_SCROLL;
+        public static int ITEM_ID_DEATH_SCROLL;
 
         public static int ITEM_ID_RAT_TAIL;
         public static int ITEM_ID_PIECE_OF_FUR;
@@ -106,6 +112,8 @@
             STATUS_ID_BURN = NextID();
             STATUS_ID_SLOW = NextID();
             STATUS_ID_STOP = NextID();
+            STATUS_ID_PETRIFY = NextID();
+            STATUS_ID_DEATH = NextID();
 
             SPELL_ID_HEAL = NextID();
             SPELL_ID_FIREBALL = NextID();
@@ -117,6 +125,8 @@
             SPELL_ID_BURN = NextID();
             SPELL_ID_SLOW = NextID();
             SPELL_ID_STOP = NextID();
+            SPELL_ID_PETRIFY = NextID();
+            SPELL_ID_DEATH = NextID();
 
             ITEM_ID_RUSTY_SWORD = NextID();
             ITEM_ID_CLUB = NextID();
@@ -133,6 +143,8 @@
             ITEM_ID_BURN_SCROLL = NextID();
             ITEM_ID_SLOW_SCROLL = NextID();
             ITEM_ID_STOP_SCROLL = NextID();
+            ITEM_ID_PETRIFY_SCROLL = NextID();
+            ITEM_ID_DEATH_SCROLL = NextID();
 
             ITEM_ID_RAT_TAIL = NextID();
             ITEM_ID_PIECE_OF_FUR = NextID();
@@ -173,6 +185,8 @@
             Statuses.Add(new Status(STATUS_ID_BURN, "Burn", "Burned", "Deals damage and has a chance to wear off each turn."));
             Statuses.Add(new Status(STATUS_ID_SLOW, "Slow", "Slowed", "Decreases speed for a set amount of turns."));
             Statuses.Add(new Status(STATUS_ID_STOP, "Stop", "Stopped", "Skips turns for a set amount of turns."));
+            Statuses.Add(new Status(STATUS_ID_PETRIFY, "Petrify", "Petrified", "Kills you after a set amount of turns."));
+            Statuses.Add(new Status(STATUS_ID_DEATH, "Death", "Cursed", "Kills you after a set amount of turns."));
         }
 
         private static void PopulateSpells()
@@ -223,6 +237,16 @@
             Status stopStatus = StatusByID(STATUS_ID_STOP).NewInstanceOfStatus(0, 4);
             stop.StatusApplied = stopStatus;
             Spells.Add(stop);
+
+            StatusSpell petrify = new StatusSpell(SPELL_ID_PETRIFY, "Petrify", "Enemy", 3);
+            Status petrifyStatus = StatusByID(STATUS_ID_PETRIFY).NewInstanceOfStatus(0, 4);
+            petrify.StatusApplied = petrifyStatus;
+            Spells.Add(petrify);
+
+            StatusSpell death = new StatusSpell(SPELL_ID_DEATH, "Death", "Enemy", 3);
+            Status deathStatus = StatusByID(STATUS_ID_DEATH).NewInstanceOfStatus(0, 4);
+            death.StatusApplied = deathStatus;
+            Spells.Add(death);
         }
 
         private static void PopulateItems()
@@ -256,11 +280,13 @@
             Items.Add(new Scroll(ITEM_ID_BURN_SCROLL, SpellByID(SPELL_ID_BURN), 5));
             Items.Add(new Scroll(ITEM_ID_SLOW_SCROLL, SpellByID(SPELL_ID_SLOW), 5));
             Items.Add(new Scroll(ITEM_ID_STOP_SCROLL, SpellByID(SPELL_ID_STOP), 5));
+            Items.Add(new Scroll(ITEM_ID_PETRIFY_SCROLL, SpellByID(SPELL_ID_PETRIFY), 5));
+            Items.Add(new Scroll(ITEM_ID_DEATH_SCROLL, SpellByID(SPELL_ID_DEATH), 5));
         }
 
         private static void PopulateMonsters()
         {
-            Monster rat = new Monster(MONSTER_ID_RAT, "Rat", 5, 3, 10, 3, 3, 60, 0);
+            Monster rat = new Monster(MONSTER_ID_RAT, "Rat", 3, 3, 10, 3, 3, 60, 0);
             Attributes ratAttributes = new Attributes(1, 1, 1, 1);
             rat.Attributes = ratAttributes;
             rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_PIECE_OF_FUR), 75, true));
