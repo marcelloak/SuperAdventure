@@ -1,5 +1,4 @@
 Change experience points required per level to be based on current level
-Add spellbook screen with spell detail popup
 Let monsters have items and spells
 
 Add equipment

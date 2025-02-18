@@ -57,6 +57,7 @@
             descMana = new Label();
             lblMana = new Label();
             btnWait = new Button();
+            btnSpellbook = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvInventory).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvQuests).BeginInit();
             SuspendLayout();
@@ -343,11 +344,22 @@
             btnWait.UseVisualStyleBackColor = true;
             btnWait.Click += btnWait_Click;
             // 
+            // btnSpellbook
+            // 
+            btnSpellbook.Location = new Point(262, 74);
+            btnSpellbook.Name = "btnSpellbook";
+            btnSpellbook.Size = new Size(75, 23);
+            btnSpellbook.TabIndex = 29;
+            btnSpellbook.Text = "Spellbook";
+            btnSpellbook.UseVisualStyleBackColor = true;
+            btnSpellbook.Click += btnSpellbook_Click;
+            // 
             // SuperAdventure
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(719, 651);
+            Controls.Add(btnSpellbook);
             Controls.Add(btnWait);
             Controls.Add(lblMana);
             Controls.Add(descMana);
@@ -418,5 +430,6 @@
         private Label descMana;
         private Label lblMana;
         private Button btnWait;
+        private Button btnSpellbook;
     }
 }

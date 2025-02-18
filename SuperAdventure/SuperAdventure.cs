@@ -101,6 +101,29 @@ namespace SuperAdventure
             statScreen.ShowDialog(this);
         }
 
+        private void btnSpellbook_Click(object sender, EventArgs e)
+        {
+            Spellbook spellbookScreen = new Spellbook(_player);
+            spellbookScreen.StartPosition = FormStartPosition.CenterParent;
+            spellbookScreen.ShowDialog(this);
+        }
+
+        private void dgvInventory_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int id = Int32.Parse(dgvInventory.Rows[e.RowIndex].Cells[0].Value.ToString());
+            ItemWindow itemWindow = new ItemWindow(World.ItemByID(id));
+            itemWindow.StartPosition = FormStartPosition.CenterParent;
+            itemWindow.ShowDialog(this);
+        }
+
+        private void dgvQuests_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int id = Int32.Parse(dgvQuests.Rows[e.RowIndex].Cells[0].Value.ToString());
+            ItemWindow itemWindow = new ItemWindow(World.QuestByID(id));
+            itemWindow.StartPosition = FormStartPosition.CenterParent;
+            itemWindow.ShowDialog(this);
+        }
+
         private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
         {
             _player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
@@ -274,22 +297,6 @@ namespace SuperAdventure
 
             _player.PropertyChanged += PlayerOnPropertyChanged;
             _player.OnMessage += DisplayMessage;
-        }
-
-        private void dgvInventory_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            int id = Int32.Parse(dgvInventory.Rows[e.RowIndex].Cells[0].Value.ToString());
-            ItemWindow itemWindow = new ItemWindow(World.ItemByID(id));
-            itemWindow.StartPosition = FormStartPosition.CenterParent;
-            itemWindow.ShowDialog(this);
-        }
-
-        private void dgvQuests_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            int id = Int32.Parse(dgvQuests.Rows[e.RowIndex].Cells[0].Value.ToString());
-            ItemWindow itemWindow = new ItemWindow(World.QuestByID(id));
-            itemWindow.StartPosition = FormStartPosition.CenterParent;
-            itemWindow.ShowDialog(this);
         }
     }
 }
