@@ -4,7 +4,7 @@
     {
         public Spell SpellContained { get; set; }
 
-        public Scroll(int id, string name, string namePlural, int price, int minimumLevel = 1, Spell spellContained = null) : base(id, name, namePlural, price, minimumLevel)
+        public Scroll(int id, Spell spellContained, int price, int minimumLevel = 1) : base(id, spellContained.Name + " scroll", spellContained.Name + " scrolls", price, minimumLevel)
         {
             SpellContained = spellContained;
         }

@@ -8,9 +8,8 @@
         public int ManaCost { get; set; }
         public int MinimumLevel { get; set; }
         public int MinimumIntelligence { get; set; }
-        public Status StatusApplied { get; set; }
 
-        public Spell(int id, string name, string target, int manaCost, int minimumLevel = 1, int minimumIntelligence = 1, Status statusApplied = null)
+        public Spell(int id, string name, string target, int manaCost, int minimumLevel = 1, int minimumIntelligence = 1)
         {
             ID = id;
             Name = name;
@@ -18,7 +17,6 @@
             ManaCost = manaCost;
             MinimumLevel = minimumLevel;
             MinimumIntelligence = minimumIntelligence;
-            StatusApplied = statusApplied;
         }
     }
 }

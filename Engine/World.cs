@@ -111,21 +111,10 @@
             poison.StatusApplied = poisonStatus;
             Items.Add(poison);
 
-            Scroll healScroll = new Scroll(ITEM_ID_HEAL_SCROLL, "Heal scroll", "Heal scrolls", 5);
-            healScroll.SpellContained = SpellByID(SPELL_ID_HEAL);
-            Items.Add(healScroll);
-
-            Scroll fireballScroll = new Scroll(ITEM_ID_FIREBALL_SCROLL, "Fireball scroll", "Fireball scrolls", 5);
-            fireballScroll.SpellContained = SpellByID(SPELL_ID_FIREBALL);
-            Items.Add(fireballScroll);
-
-            Scroll poisonScroll = new Scroll(ITEM_ID_POISON_SCROLL, "Poison scroll", "Poison scrolls", 5);
-            poisonScroll.SpellContained = SpellByID(SPELL_ID_POISON);
-            Items.Add(poisonScroll);
-
-            Scroll sleepScroll = new Scroll(ITEM_ID_SLEEP_SCROLL, "Sleep scroll", "Sleep scrolls", 5);
-            sleepScroll.SpellContained = SpellByID(SPELL_ID_SLEEP);
-            Items.Add(sleepScroll);
+            Items.Add(new Scroll(ITEM_ID_HEAL_SCROLL, SpellByID(SPELL_ID_HEAL), 5));
+            Items.Add(new Scroll(ITEM_ID_FIREBALL_SCROLL, SpellByID(SPELL_ID_FIREBALL), 5));
+            Items.Add(new Scroll(ITEM_ID_POISON_SCROLL, SpellByID(SPELL_ID_POISON), 5));
+            Items.Add(new Scroll(ITEM_ID_SLEEP_SCROLL, SpellByID(SPELL_ID_SLEEP), 5));
         }
 
         private static void PopulateMonsters()
