@@ -1,6 +1,4 @@
-Change experience points required per level to be based on current level
 Let monsters have items and spells
-Implement world IDs be generated at run-time from single ID counter
 
 Add equipment
 Increases stats

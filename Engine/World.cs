@@ -10,75 +10,78 @@
         public static readonly List<Location> Locations = new List<Location>();
         public static readonly List<Vendor> Vendors = new List<Vendor>();
 
-        public const int STATUS_ID_POISON = 1;
-        public const int STATUS_ID_SLEEP = 2;
-        public const int STATUS_ID_HASTE = 3;
-        public const int STATUS_ID_PARALYZE = 4;
-        public const int STATUS_ID_FROZEN = 5;
-        public const int STATUS_ID_BURN = 6;
-        public const int STATUS_ID_SLOW = 7;
-        public const int STATUS_ID_STOP = 8;
+        public static int currentID = 0;
 
-        public const int SPELL_ID_HEAL = 1;
-        public const int SPELL_ID_FIREBALL = 2;
-        public const int SPELL_ID_POISON = 3;
-        public const int SPELL_ID_SLEEP = 4;
-        public const int SPELL_ID_HASTE = 5;
-        public const int SPELL_ID_PARALYZE = 6;
-        public const int SPELL_ID_FROZEN = 7;
-        public const int SPELL_ID_BURN = 8;
-        public const int SPELL_ID_SLOW = 9;
-        public const int SPELL_ID_STOP = 10;
+        public static int STATUS_ID_POISON;
+        public static int STATUS_ID_SLEEP;
+        public static int STATUS_ID_HASTE;
+        public static int STATUS_ID_PARALYZE;
+        public static int STATUS_ID_FROZEN;
+        public static int STATUS_ID_BURN;
+        public static int STATUS_ID_SLOW;
+        public static int STATUS_ID_STOP;
 
-        public const int ITEM_ID_RUSTY_SWORD = 1;
-        public const int ITEM_ID_CLUB = 2;
+        public static int SPELL_ID_HEAL;
+        public static int SPELL_ID_FIREBALL;
+        public static int SPELL_ID_POISON;
+        public static int SPELL_ID_SLEEP;
+        public static int SPELL_ID_HASTE;
+        public static int SPELL_ID_PARALYZE;
+        public static int SPELL_ID_FROZEN;
+        public static int SPELL_ID_BURN;
+        public static int SPELL_ID_SLOW;
+        public static int SPELL_ID_STOP;
 
-        public const int ITEM_ID_HEALING_POTION = 3;
-        public const int ITEM_ID_POISON = 4;
-        public const int ITEM_ID_HEAL_SCROLL = 5;
-        public const int ITEM_ID_FIREBALL_SCROLL = 6;
-        public const int ITEM_ID_POISON_SCROLL = 7;
-        public const int ITEM_ID_SLEEP_SCROLL = 8;
-        public const int ITEM_ID_HASTE_SCROLL = 9;
-        public const int ITEM_ID_PARALYZE_SCROLL = 10;
-        public const int ITEM_ID_FROZEN_SCROLL = 11;
-        public const int ITEM_ID_BURN_SCROLL = 12;
-        public const int ITEM_ID_SLOW_SCROLL = 13;
-        public const int ITEM_ID_STOP_SCROLL = 14;
+        public static int ITEM_ID_RUSTY_SWORD;
+        public static int ITEM_ID_CLUB;
 
-        public const int ITEM_ID_RAT_TAIL = 15;
-        public const int ITEM_ID_PIECE_OF_FUR = 16;
-        public const int ITEM_ID_SNAKE_FANG = 17;
-        public const int ITEM_ID_SNAKESKIN = 18;
-        public const int ITEM_ID_SPIDER_FANG = 19;
-        public const int ITEM_ID_SPIDER_SILK = 20;
+        public static int ITEM_ID_HEALING_POTION;
+        public static int ITEM_ID_POISON;
+        public static int ITEM_ID_HEAL_SCROLL;
+        public static int ITEM_ID_FIREBALL_SCROLL;
+        public static int ITEM_ID_POISON_SCROLL;
+        public static int ITEM_ID_SLEEP_SCROLL;
+        public static int ITEM_ID_HASTE_SCROLL;
+        public static int ITEM_ID_PARALYZE_SCROLL;
+        public static int ITEM_ID_FROZEN_SCROLL;
+        public static int ITEM_ID_BURN_SCROLL;
+        public static int ITEM_ID_SLOW_SCROLL;
+        public static int ITEM_ID_STOP_SCROLL;
 
-        public const int ITEM_ID_ADVENTURER_PASS = 21;
+        public static int ITEM_ID_RAT_TAIL;
+        public static int ITEM_ID_PIECE_OF_FUR;
+        public static int ITEM_ID_SNAKE_FANG;
+        public static int ITEM_ID_SNAKESKIN;
+        public static int ITEM_ID_SPIDER_FANG;
+        public static int ITEM_ID_SPIDER_SILK;
+
+        public static int ITEM_ID_ADVENTURER_PASS;
 
         public const int WORTHLESS_ITEM_PRICE = 0;
         public const int UNSELLABLE_ITEM_PRICE = -1;
 
-        public const int MONSTER_ID_RAT = 1;
-        public const int MONSTER_ID_SNAKE = 2;
-        public const int MONSTER_ID_GIANT_SPIDER = 3;
+        public static int MONSTER_ID_RAT;
+        public static int MONSTER_ID_SNAKE;
+        public static int MONSTER_ID_GIANT_SPIDER;
 
-        public const int QUEST_ID_CLEAR_ALCHEMIST_GARDEN = 1;
-        public const int QUEST_ID_CLEAR_FARMERS_FIELD = 2;
+        public static int QUEST_ID_CLEAR_ALCHEMIST_GARDEN;
+        public static int QUEST_ID_CLEAR_FARMERS_FIELD;
 
-        public const int VENDOR_ID_BOB_THE_RAT_CATCHER = 1;
+        public static int VENDOR_ID_BOB_THE_RAT_CATCHER;
 
-        public const int LOCATION_ID_HOME = 1;
-        public const int LOCATION_ID_TOWN_SQUARE = 2;
-        public const int LOCATION_ID_GUARD_POST = 3;
-        public const int LOCATION_ID_ALCHEMIST_HUT = 4;
-        public const int LOCATION_ID_ALCHEMISTS_GARDEN = 5;
-        public const int LOCATION_ID_FARMHOUSE = 6;
-        public const int LOCATION_ID_FARM_FIELD = 7;
-        public const int LOCATION_ID_BRIDGE = 8;
-        public const int LOCATION_ID_SPIDER_FIELD = 9;
+        public static int LOCATION_ID_HOME;
+        public static int LOCATION_ID_TOWN_SQUARE;
+        public static int LOCATION_ID_GUARD_POST;
+        public static int LOCATION_ID_ALCHEMIST_HUT;
+        public static int LOCATION_ID_ALCHEMISTS_GARDEN;
+        public static int LOCATION_ID_FARMHOUSE;
+        public static int LOCATION_ID_FARM_FIELD;
+        public static int LOCATION_ID_BRIDGE;
+        public static int LOCATION_ID_SPIDER_FIELD;
 
         static World()
         {
+            PopulateIDs();
             PopulateStatuses();
             PopulateSpells();
             PopulateItems();
@@ -86,6 +89,78 @@
             PopulateQuests();
             PopulateVendors();
             PopulateLocations();
+        }
+
+        private static int NextID()
+        {
+            return currentID++;
+        }
+
+        private static void PopulateIDs()
+        {
+            STATUS_ID_POISON = NextID();
+            STATUS_ID_SLEEP = NextID();
+            STATUS_ID_HASTE = NextID();
+            STATUS_ID_PARALYZE = NextID();
+            STATUS_ID_FROZEN = NextID();
+            STATUS_ID_BURN = NextID();
+            STATUS_ID_SLOW = NextID();
+            STATUS_ID_STOP = NextID();
+
+            SPELL_ID_HEAL = NextID();
+            SPELL_ID_FIREBALL = NextID();
+            SPELL_ID_POISON = NextID();
+            SPELL_ID_SLEEP = NextID();
+            SPELL_ID_HASTE = NextID();
+            SPELL_ID_PARALYZE = NextID();
+            SPELL_ID_FROZEN = NextID();
+            SPELL_ID_BURN = NextID();
+            SPELL_ID_SLOW = NextID();
+            SPELL_ID_STOP = NextID();
+
+            ITEM_ID_RUSTY_SWORD = NextID();
+            ITEM_ID_CLUB = NextID();
+
+            ITEM_ID_HEALING_POTION = NextID();
+            ITEM_ID_POISON = NextID();
+            ITEM_ID_HEAL_SCROLL = NextID();
+            ITEM_ID_FIREBALL_SCROLL = NextID();
+            ITEM_ID_POISON_SCROLL = NextID();
+            ITEM_ID_SLEEP_SCROLL = NextID();
+            ITEM_ID_HASTE_SCROLL = NextID();
+            ITEM_ID_PARALYZE_SCROLL = NextID();
+            ITEM_ID_FROZEN_SCROLL = NextID();
+            ITEM_ID_BURN_SCROLL = NextID();
+            ITEM_ID_SLOW_SCROLL = NextID();
+            ITEM_ID_STOP_SCROLL = NextID();
+
+            ITEM_ID_RAT_TAIL = NextID();
+            ITEM_ID_PIECE_OF_FUR = NextID();
+            ITEM_ID_SNAKE_FANG = NextID();
+            ITEM_ID_SNAKESKIN = NextID();
+            ITEM_ID_SPIDER_FANG = NextID();
+            ITEM_ID_SPIDER_SILK = NextID();
+
+            ITEM_ID_ADVENTURER_PASS = NextID();
+
+            MONSTER_ID_RAT = NextID();
+            MONSTER_ID_SNAKE = NextID();
+            MONSTER_ID_GIANT_SPIDER = NextID();
+
+            QUEST_ID_CLEAR_ALCHEMIST_GARDEN = NextID();
+            QUEST_ID_CLEAR_FARMERS_FIELD = NextID();
+
+            VENDOR_ID_BOB_THE_RAT_CATCHER = NextID();
+
+            LOCATION_ID_HOME = NextID();
+            LOCATION_ID_TOWN_SQUARE = NextID();
+            LOCATION_ID_GUARD_POST = NextID();
+            LOCATION_ID_ALCHEMIST_HUT = NextID();
+            LOCATION_ID_ALCHEMISTS_GARDEN = NextID();
+            LOCATION_ID_FARMHOUSE = NextID();
+            LOCATION_ID_FARM_FIELD = NextID();
+            LOCATION_ID_BRIDGE = NextID();
+            LOCATION_ID_SPIDER_FIELD = NextID();
         }
 
         private static void PopulateStatuses()

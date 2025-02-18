@@ -58,6 +58,7 @@
             lblMana = new Label();
             btnWait = new Button();
             btnSpellbook = new Button();
+            lblStatus = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvInventory).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvQuests).BeginInit();
             SuspendLayout();
@@ -269,7 +270,7 @@
             // 
             // btnLoad
             // 
-            btnLoad.Location = new Point(182, 12);
+            btnLoad.Location = new Point(181, 101);
             btnLoad.Name = "btnLoad";
             btnLoad.Size = new Size(75, 23);
             btnLoad.TabIndex = 21;
@@ -279,7 +280,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(262, 12);
+            btnSave.Location = new Point(181, 74);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 23);
             btnSave.TabIndex = 22;
@@ -354,11 +355,21 @@
             btnSpellbook.UseVisualStyleBackColor = true;
             btnSpellbook.Click += btnSpellbook_Click;
             // 
+            // lblStatus
+            // 
+            lblStatus.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblStatus.Location = new Point(257, 19);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(80, 15);
+            lblStatus.TabIndex = 30;
+            lblStatus.TextAlign = ContentAlignment.TopRight;
+            // 
             // SuperAdventure
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(719, 651);
+            Controls.Add(lblStatus);
             Controls.Add(btnSpellbook);
             Controls.Add(btnWait);
             Controls.Add(lblMana);
@@ -431,5 +442,6 @@
         private Label lblMana;
         private Button btnWait;
         private Button btnSpellbook;
+        private Label lblStatus;
     }
 }

@@ -47,10 +47,9 @@ namespace Engine
                 OnPropertyChanged("Level");
             }
         }
-        public int Level { get { return (ExperiencePoints / ExperiencePointsPerLevel) + 1; } }
-        public int ExperiencePointsPerLevel = 100;
-        public int ExperiencePointsToNextLevel { get { return ExperiencePointsPerLevel - ExperiencePoints % ExperiencePointsPerLevel; } }
-        public string ExperiencePointsDescription { get { return _experiencePoints.ToString() + "/" + (_experiencePoints + ExperiencePointsToNextLevel).ToString(); } }
+        public int Level { get; set; }
+        public int ExperiencePointsToNextLevel { get { return (Level * 100) + ((Level - 1) * (Level) / 2) * 5; } }
+        public string ExperiencePointsDescription { get { return _experiencePoints.ToString() + "/" + ExperiencePointsToNextLevel.ToString(); } }
         public int AttributePointsToSpend { get; set; }
         public BindingList<InventoryItem> Inventory { get; set; }
         public List<InventoryItem> SellableInventory { get { return Inventory.Where(item => item.Details.Price >= 0).ToList(); } }
@@ -77,6 +76,7 @@ namespace Engine
 
         private Player(int currentHitPoints, int maximumHitPoints, int currentMana, int maximumMana, int gold, int experiencePoints) : base(currentHitPoints, maximumHitPoints)
         {
+            Level = 1;
             CurrentMana = currentMana;
             MaximumMana = maximumMana;
             Gold = gold;
@@ -92,6 +92,7 @@ namespace Engine
         {
             Player player = new Player(10, 10, 5, 5, 20, 0);
             player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
+            player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_HASTE_SCROLL), 1));
             player.Spellbook.Add(World.SpellByID(World.SPELL_ID_HEAL));
             player.CurrentWeapon = (Weapon)World.ItemByID(World.ITEM_ID_RUSTY_SWORD);
             player.CurrentLocation = World.LocationByID(World.LOCATION_ID_HOME);
@@ -104,6 +105,7 @@ namespace Engine
             {
                 XmlDocument playerData = new XmlDocument();
                 playerData.LoadXml(xmlPlayerData);
+                int level = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/Level").InnerText);
                 int currentHitPoints = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentHitPoints").InnerText);
                 int maximumHitPoints = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/MaximumHitPoints").InnerText);
                 int currentMana = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentMana").InnerText);
@@ -115,9 +117,19 @@ namespace Engine
                 int currentWeaponID = Convert.ToInt32(playerData.SelectSingleNode("/Player/Stats/CurrentWeapon").InnerText);
 
                 Player player = new Player(currentHitPoints, maximumHitPoints, currentMana, maximumMana, gold, experiencePoints);
+                player.Level = level;
                 player.AttributePointsToSpend = attributePointsToSpend;
                 player.CurrentLocation = World.LocationByID(currentLocationID);
                 player.CurrentWeapon = (Weapon)World.ItemByID(currentWeaponID);
+
+                XmlNode currentStatus = playerData.SelectSingleNode("/Player/Stats/CurrentStatus");
+                int currentStatusID = Convert.ToInt32(currentStatus.Attributes["ID"].Value);
+                int currentStatusValue = Convert.ToInt32(currentStatus.Attributes["Value"].Value);
+                int currentStatusTurns = Convert.ToInt32(currentStatus.Attributes["Turns"].Value);
+                int currentStatusChanceToActivate = Convert.ToInt32(currentStatus.Attributes["ChanceToActivate"].Value);
+                int currentStatusChanceToCure = Convert.ToInt32(currentStatus.Attributes["ChanceToCure"].Value);
+
+                player.SetStatus(player, World.StatusByID(currentStatusID).NewInstanceOfStatus(currentStatusValue, currentStatusTurns, currentStatusChanceToActivate, currentStatusChanceToCure));
 
                 foreach (XmlNode node in playerData.SelectNodes("/Player/LocationsVisited/LocationVisited"))
                 {
@@ -169,9 +181,9 @@ namespace Engine
 
         public void AddExperiencePoints(int experiencePointsToAdd)
         {
-            while (ExperiencePointsToNextLevel <= experiencePointsToAdd)
+            while (ExperiencePointsToNextLevel <= ExperiencePoints + experiencePointsToAdd)
             {
-                int experienceUsed = ExperiencePointsToNextLevel;
+                int experienceUsed = ExperiencePointsToNextLevel - ExperiencePoints;
                 experiencePointsToAdd -= experienceUsed;
                 ExperiencePoints += experienceUsed;
                 LevelUp();
@@ -181,6 +193,7 @@ namespace Engine
 
         public void LevelUp()
         {
+            Level++;
             MaximumHitPoints += Attributes.Vitality;
             MaximumMana += Attributes.Intelligence / 5;
             RaiseMessage("");
@@ -314,6 +327,7 @@ namespace Engine
 
             CurrentMonster = newLocation.NewInstanceOfMonsterLivingHere();
             if (CurrentMonster != null) RaiseMessage("You see a " + CurrentMonster.Name);
+            if (CurrentStatus != null) RaiseMessage("You are " + CurrentStatus.Description);
         }
 
         private void AddQuest(Quest quest)
@@ -439,7 +453,7 @@ namespace Engine
             }
             else
             {
-                CurrentMonster.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure);
+                SetStatus(CurrentMonster, status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure));
                 RaiseMessage("You throw a " + statusItem.Name + " and " + status.Name + " the " + CurrentMonster.Name + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turn" + (status.Turns == 1 ? "" : "s")));
             }
             RemoveItemFromInventory(statusItem);
@@ -497,7 +511,7 @@ namespace Engine
                 }
                 else
                 {
-                    target.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure);
+                    SetStatus(target, status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure));
                     RaiseMessage(identifier + (target == this ? " are " : " is ") + status.Description + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turn" + (status.Turns == 1 ? "" : "s")));
                 }
             }
@@ -611,10 +625,17 @@ namespace Engine
             return CheckSpeed(this) >= CheckSpeed(CurrentMonster);
         }
 
+        private void SetStatus(LivingCreature livingCreature, Status status)
+        {
+            livingCreature.CurrentStatus = status;
+            if (livingCreature == this) OnPropertyChanged("Status");
+        }
+
         private void ClearStatus(LivingCreature livingCreature, string identifier = "")
         {
             if (identifier != "") RaiseMessage(identifier + (livingCreature == this ? " are" : " is") + " no longer " + livingCreature.CurrentStatus.Description);
             livingCreature.CurrentStatus = null;
+            if (livingCreature == this) OnPropertyChanged("Status");
         }
 
         private bool PlayerDies()
@@ -660,6 +681,10 @@ namespace Engine
             XmlNode stats = playerData.CreateElement("Stats");
             player.AppendChild(stats);
 
+            XmlNode level = playerData.CreateElement("Level");
+            level.AppendChild(playerData.CreateTextNode(Level.ToString()));
+            stats.AppendChild(level);
+
             XmlNode currentHitPoints = playerData.CreateElement("CurrentHitPoints");
             currentHitPoints.AppendChild(playerData.CreateTextNode(CurrentHitPoints.ToString()));
             stats.AppendChild(currentHitPoints);
@@ -695,6 +720,24 @@ namespace Engine
             XmlNode currentWeapon = playerData.CreateElement("CurrentWeapon");
             currentWeapon.AppendChild(playerData.CreateTextNode(CurrentWeapon.ID.ToString()));
             stats.AppendChild(currentWeapon);
+
+            XmlNode currentStatus = playerData.CreateElement("CurrentStatus");
+            XmlAttribute statusIdAttribute = playerData.CreateAttribute("ID");
+            statusIdAttribute.Value = CurrentStatus.ID.ToString();
+            currentStatus.Attributes.Append(statusIdAttribute);
+            XmlAttribute valueAttribute = playerData.CreateAttribute("Value");
+            valueAttribute.Value = CurrentStatus.Value.ToString();
+            currentStatus.Attributes.Append(valueAttribute);
+            XmlAttribute turnsAttribute = playerData.CreateAttribute("Turns");
+            turnsAttribute.Value = CurrentStatus.Turns.ToString();
+            currentStatus.Attributes.Append(turnsAttribute);
+            XmlAttribute chanceToActivateAttribute = playerData.CreateAttribute("ChanceToActivate");
+            chanceToActivateAttribute.Value = CurrentStatus.ChanceToActivate.ToString();
+            currentStatus.Attributes.Append(chanceToActivateAttribute);
+            XmlAttribute chanceToCureAttribute = playerData.CreateAttribute("ChanceToCure");
+            chanceToCureAttribute.Value = CurrentStatus.ChanceToCure.ToString();
+            currentStatus.Attributes.Append(chanceToCureAttribute);
+            stats.AppendChild(currentStatus);
 
             XmlNode locationsVisited = playerData.CreateElement("LocationsVisited");
             player.AppendChild(locationsVisited);

@@ -29,6 +29,7 @@ namespace Engine
         public Attributes Attributes { get; set; }
         public bool IsDead {  get { return CurrentHitPoints <= 0; } }
         public Status CurrentStatus { get; set; }
+        public string Status { get { return (CurrentStatus == null) ? "" : CurrentStatus.Name; } }
         public bool HasAStatus { get { return CurrentStatus != null; } }
 
         public LivingCreature(int currentHitPoints, int maximumHitPoints, Status currentStatus = null)

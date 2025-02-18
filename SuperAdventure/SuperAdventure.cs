@@ -224,6 +224,7 @@ namespace SuperAdventure
             lblMana.DataBindings.Clear();
             lblGold.DataBindings.Clear();
             lblLevel.DataBindings.Clear();
+            lblStatus.DataBindings.Clear();
 
             dgvInventory.DataSource = null;
             dgvQuests.DataSource = null;
@@ -240,6 +241,7 @@ namespace SuperAdventure
             lblMana.DataBindings.Add("Text", _player, "Mana");
             lblGold.DataBindings.Add("Text", _player, "Gold");
             lblLevel.DataBindings.Add("Text", _player, "Level");
+            lblStatus.DataBindings.Add("Text", _player, "Status");
 
             dgvInventory.RowHeadersVisible = false;
             dgvInventory.AutoGenerateColumns = false;
