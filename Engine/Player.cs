@@ -92,6 +92,7 @@ namespace Engine
         {
             Player player = new Player(10, 10, 5, 5, 20, 0);
             player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
+            player.Spellbook.Add(World.SpellByID(World.SPELL_ID_HEAL));
             player.CurrentWeapon = (Weapon)World.ItemByID(World.ITEM_ID_RUSTY_SWORD);
             player.CurrentLocation = World.LocationByID(World.LOCATION_ID_HOME);
             return player;
@@ -288,6 +289,7 @@ namespace Engine
             CurrentLocation = newLocation;
             if (!LocationsVisited.Contains(CurrentLocation.ID)) LocationsVisited.Add(CurrentLocation.ID);
             CurrentHitPoints = MaximumHitPoints;
+            CurrentMana = MaximumMana;
 
             if (newLocation.HasAQuest)
             {
@@ -362,7 +364,7 @@ namespace Engine
             if (quest.IsRepeatable) RaiseMessage("This quest is repeatable. Return here to reset it.");
         }
 
-        public void TakeTurn(Action<UsableItem> function, UsableItem currentItem = null)
+        public void TakeTurn(Func<LivingCreature, Object, bool> function, LivingCreature user, Object obj = null)
         {
             bool turnSkipped = CheckForSkippedTurn(this);
             if (turnSkipped) MonsterTakesTurn();
@@ -370,7 +372,7 @@ namespace Engine
             {
                 if (IsFasterThanCurrentMonster())
                 {
-                    function(currentItem);
+                    if (!function(user, obj)) return;
                     if (DoesBattleEnd()) return;
                     MonsterTakesTurn();
                 }
@@ -378,19 +380,20 @@ namespace Engine
                 {
                     MonsterTakesTurn();
                     if (DoesBattleEnd()) return;
-                    function(currentItem);
+                    if (!function(user, obj)) return;
                 }
             }
             CheckForAfterStatus(this);
             ResolveTurn();
         }
 
-        public void WaitATurn(UsableItem currentItem = null)
+        public bool WaitATurn(LivingCreature user, Object obj = null)
         {
             RaiseMessage("You waited.");
+            return true;
         }
 
-        public void Attack(UsableItem currentItem)
+        public bool Attack(LivingCreature user, Object currentItem)
         {
             Weapon currentWeapon = currentItem as Weapon;
             bool hit = RandomNumberGenerator.NumberBetween(1, 100) <= currentWeapon.HitChance + Level * 5 - CurrentMonster.Defence;
@@ -404,43 +407,49 @@ namespace Engine
                 RaiseMessage("You hit the " + CurrentMonster.Name + " for " + damage.ToString() + " points.");
             }
             CurrentMonster.CurrentHitPoints -= damage;
+            return true;
         }
 
-        public void UseHealingItem(UsableItem currentItem)
+        public bool UseHealingItem(LivingCreature user, Object currentItem)
         {
             HealingItem healingItem = currentItem as HealingItem;
             CurrentHitPoints += healingItem.AmountToHeal;
             if (CurrentHitPoints > MaximumHitPoints) CurrentHitPoints = MaximumHitPoints;
-            RemoveItemFromInventory(currentItem);
+            RemoveItemFromInventory(healingItem);
             RaiseMessage("You drink a " + healingItem.Name + " and heal for " + healingItem.AmountToHeal + " points.");
+            return true;
         }
 
-        public void UseStatusItem(UsableItem currentItem)
+        public bool UseStatusItem(LivingCreature user, Object currentItem)
         {
+            StatusItem statusItem = currentItem as StatusItem;
             Status status = (currentItem as StatusItem).StatusApplied;
             if (status.Turns == 1)
             {
                 CurrentMonster.CurrentHitPoints -= status.Value;
-                RaiseMessage("You throw a " + currentItem.Name + " and deal " + status.Value + " damage to the " + CurrentMonster.Name);
+                RaiseMessage("You throw a " + statusItem.Name + " and deal " + status.Value + " damage to the " + CurrentMonster.Name);
             }
             else
             {
                 CurrentMonster.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure);
-                RaiseMessage("You throw a " + currentItem.Name + " and " + status.Name + " the " + CurrentMonster.Name + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turn" + (status.Turns == 1 ? "" : "s")));
+                RaiseMessage("You throw a " + statusItem.Name + " and " + status.Name + " the " + CurrentMonster.Name + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turn" + (status.Turns == 1 ? "" : "s")));
             }
-            RemoveItemFromInventory(currentItem);
+            RemoveItemFromInventory(statusItem);
+            return true;
         }
 
-        public void UseScroll(UsableItem currentItem)
+        public bool UseScroll(LivingCreature user, Object currentItem)
         {
             Scroll scroll = currentItem as Scroll;
-            RaiseMessage("You use a " + currentItem.Name);
+            RaiseMessage("You use a " + scroll.Name);
             CastSpell(scroll.SpellContained, this);
-            RemoveItemFromInventory(currentItem);
+            RemoveItemFromInventory(scroll);
+            return true;
         }
 
-        public bool AttemptToCastSpell(Spell spell, LivingCreature user)
+        public bool AttemptToCastSpell(LivingCreature user, Object spellObject)
         {
+            Spell spell = spellObject as Spell;
             if (spell.ManaCost > CurrentMana)
             {
                 RaiseMessage("You don't have the mana to cast " + spell.Name);

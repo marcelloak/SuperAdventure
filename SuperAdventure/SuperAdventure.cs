@@ -41,19 +41,24 @@ namespace SuperAdventure
 
         private void btnUseWeapon_Click(object sender, EventArgs e)
         {
-            _player.TakeTurn(_player.Attack, (UsableItem)cboWeapons.SelectedItem);
+            _player.TakeTurn(_player.Attack, _player, cboWeapons.SelectedItem);
         }
 
         private void btnUseItem_Click(object sender, EventArgs e)
         {
-            if (cboUsableItems.SelectedItem is HealingItem) _player.TakeTurn(_player.UseHealingItem, (UsableItem)cboUsableItems.SelectedItem);
-            else if (cboUsableItems.SelectedItem is StatusItem) _player.TakeTurn(_player.UseStatusItem, (UsableItem)cboUsableItems.SelectedItem);
-            else if (cboUsableItems.SelectedItem is Scroll) _player.TakeTurn(_player.UseScroll, (UsableItem)cboUsableItems.SelectedItem);
+            if (cboUsableItems.SelectedItem is HealingItem) _player.TakeTurn(_player.UseHealingItem, _player, cboUsableItems.SelectedItem);
+            else if (cboUsableItems.SelectedItem is StatusItem) _player.TakeTurn(_player.UseStatusItem, _player, cboUsableItems.SelectedItem);
+            else if (cboUsableItems.SelectedItem is Scroll) _player.TakeTurn(_player.UseScroll, _player, cboUsableItems.SelectedItem);
+        }
+
+        private void btnUseSpell_Click(object sender, EventArgs e)
+        {
+            _player.TakeTurn(_player.AttemptToCastSpell, _player, cboSpells.SelectedItem);
         }
 
         private void btnWait_Click(object sender, EventArgs e)
         {
-            _player.TakeTurn(_player.WaitATurn);
+            _player.TakeTurn(_player.WaitATurn, _player);
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
@@ -121,6 +126,15 @@ namespace SuperAdventure
                     btnUseItem.Visible = false;
                 }
             }
+            else if (propertyChangedEventArgs.PropertyName == "UsableSpells")
+            {
+                cboSpells.DataSource = _player.UsableSpells;
+                if (!_player.UsableSpells.Any())
+                {
+                    cboSpells.Visible = false;
+                    btnUseSpell.Visible = false;
+                }
+            }
             else if (propertyChangedEventArgs.PropertyName == "CurrentLocation")
             {
                 btnNorth.Visible = (_player.CurrentLocation.LocationToNorth != null);
@@ -136,16 +150,20 @@ namespace SuperAdventure
                 {
                     cboWeapons.Visible = _player.Weapons.Any();
                     cboUsableItems.Visible = _player.UsableItems.Any();
+                    cboSpells.Visible = _player.UsableSpells.Any();
                     btnUseWeapon.Visible = _player.Weapons.Any();
                     btnUseItem.Visible = _player.UsableItems.Any();
+                    btnUseSpell.Visible = _player.UsableSpells.Any();
                     btnWait.Visible = true;
                 }
                 else
                 {
                     cboWeapons.Visible = false;
                     cboUsableItems.Visible = false;
+                    cboSpells.Visible = false;
                     btnUseWeapon.Visible = false;
                     btnUseItem.Visible = false;
+                    btnUseSpell.Visible = false;
                     btnWait.Visible = false;
                 }
             }
@@ -249,6 +267,10 @@ namespace SuperAdventure
             cboUsableItems.DataSource = _player.UsableItems;
             cboUsableItems.DisplayMember = "Name";
             cboUsableItems.ValueMember = "ID";
+
+            cboSpells.DataSource = _player.UsableSpells;
+            cboSpells.DisplayMember = "Name";
+            cboSpells.ValueMember = "ID";
 
             _player.PropertyChanged += PlayerOnPropertyChanged;
             _player.OnMessage += DisplayMessage;

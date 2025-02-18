@@ -37,8 +37,10 @@
             descSelectAction = new Label();
             cboWeapons = new ComboBox();
             cboUsableItems = new ComboBox();
+            cboSpells = new ComboBox();
             btnUseWeapon = new Button();
             btnUseItem = new Button();
+            btnUseSpell = new Button();
             btnNorth = new Button();
             btnEast = new Button();
             btnSouth = new Button();
@@ -113,7 +115,7 @@
             // descSelectAction
             // 
             descSelectAction.AutoSize = true;
-            descSelectAction.Location = new Point(617, 527);
+            descSelectAction.Location = new Point(620, 502);
             descSelectAction.Name = "descSelectAction";
             descSelectAction.Size = new Size(74, 15);
             descSelectAction.TabIndex = 8;
@@ -135,6 +137,14 @@
             cboUsableItems.Size = new Size(121, 23);
             cboUsableItems.TabIndex = 10;
             // 
+            // cboSpells
+            // 
+            cboSpells.FormattingEnabled = true;
+            cboSpells.Location = new Point(369, 623);
+            cboSpells.Name = "cboSpells";
+            cboSpells.Size = new Size(121, 23);
+            cboSpells.TabIndex = 9;
+            // 
             // btnUseWeapon
             // 
             btnUseWeapon.Location = new Point(620, 555);
@@ -154,6 +164,16 @@
             btnUseItem.Text = "Use";
             btnUseItem.UseVisualStyleBackColor = true;
             btnUseItem.Click += btnUseItem_Click;
+            // 
+            // btnUseSpell
+            // 
+            btnUseSpell.Location = new Point(620, 623);
+            btnUseSpell.Name = "btnUseSpell";
+            btnUseSpell.Size = new Size(75, 23);
+            btnUseSpell.TabIndex = 11;
+            btnUseSpell.Text = "Use";
+            btnUseSpell.UseVisualStyleBackColor = true;
+            btnUseSpell.Click += btnUseSpell_Click;
             // 
             // btnNorth
             // 
@@ -315,7 +335,7 @@
             // 
             // btnWait
             // 
-            btnWait.Location = new Point(620, 619);
+            btnWait.Location = new Point(620, 521);
             btnWait.Name = "btnWait";
             btnWait.Size = new Size(75, 23);
             btnWait.TabIndex = 28;
@@ -344,8 +364,10 @@
             Controls.Add(btnSouth);
             Controls.Add(btnEast);
             Controls.Add(btnNorth);
+            Controls.Add(btnUseSpell);
             Controls.Add(btnUseItem);
             Controls.Add(btnUseWeapon);
+            Controls.Add(cboSpells);
             Controls.Add(cboUsableItems);
             Controls.Add(cboWeapons);
             Controls.Add(descSelectAction);
@@ -376,8 +398,10 @@
         private Label descSelectAction;
         private ComboBox cboWeapons;
         private ComboBox cboUsableItems;
+        private ComboBox cboSpells;
         private Button btnUseWeapon;
         private Button btnUseItem;
+        private Button btnUseSpell;
         private Button btnNorth;
         private Button btnEast;
         private Button btnSouth;
