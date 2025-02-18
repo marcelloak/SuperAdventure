@@ -73,7 +73,6 @@ namespace Engine
         public List<Weapon> Weapons { get { return Inventory.Where(item => item.Details is Weapon).Select(item => item.Details as Weapon).ToList().Where(weapon => Level >= weapon.MinimumLevel && Attributes.Strength >= weapon.StrengthRequired && Attributes.Dexterity >= weapon.DexterityRequired).ToList(); } }
         public List<UsableItem> UsableItems { get { return Inventory.Where(item => item.Details is UsableItem && !(item.Details is Weapon)).Select(item => item.Details as UsableItem).ToList().Where(item => Level >= item.MinimumLevel).ToList(); } }
         private Monster CurrentMonster;
-        private bool IsFasterThanCurrentMonster { get { return Attributes.Dexterity >= CurrentMonster.Attributes.Dexterity; } }
         public event EventHandler<MessageEventArgs> OnMessage;
 
         private Player(int currentHitPoints, int maximumHitPoints, int currentMana, int maximumMana, int gold, int experiencePoints) : base(currentHitPoints, maximumHitPoints)
@@ -363,13 +362,13 @@ namespace Engine
             if (quest.IsRepeatable) RaiseMessage("This quest is repeatable. Return here to reset it.");
         }
 
-        public void TakeTurn(Action<UsableItem> function, UsableItem currentItem)
+        public void TakeTurn(Action<UsableItem> function, UsableItem currentItem = null)
         {
-            bool turnSkipped = CheckForBeforeStatus(this);
+            bool turnSkipped = CheckForSkippedTurn(this);
             if (turnSkipped) MonsterTakesTurn();
             else
             {
-                if (IsFasterThanCurrentMonster)
+                if (IsFasterThanCurrentMonster())
                 {
                     function(currentItem);
                     if (DoesBattleEnd()) return;
@@ -386,13 +385,9 @@ namespace Engine
             ResolveTurn();
         }
 
-        public void WaitATurn()
+        public void WaitATurn(UsableItem currentItem = null)
         {
-            bool turnSkipped = CheckForBeforeStatus(this);
-            if (!turnSkipped) RaiseMessage("You waited.");
-            MonsterTakesTurn();
-            CheckForAfterStatus(this);
-            ResolveTurn();
+            RaiseMessage("You waited.");
         }
 
         public void Attack(UsableItem currentItem)
@@ -431,7 +426,7 @@ namespace Engine
             else
             {
                 CurrentMonster.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure);
-                RaiseMessage("You throw a " + currentItem.Name + " and " + status.Name + " the " + CurrentMonster.Name + " for " + status.Turns + " turns.");
+                RaiseMessage("You throw a " + currentItem.Name + " and " + status.Name + " the " + CurrentMonster.Name + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turn" + (status.Turns == 1 ? "" : "s")));
             }
             RemoveItemFromInventory(currentItem);
         }
@@ -480,13 +475,13 @@ namespace Engine
                 Status status = (spell as StatusSpell).StatusApplied;
                 if (status.Turns == 1)
                 {
-                    CurrentMonster.CurrentHitPoints -= status.Value;
+                    target.CurrentHitPoints -= status.Value;
                     RaiseMessage(identifier + " take" + (target == this ? " " : "s ") + status.Value + " damage.");
                 }
                 else
                 {
-                    CurrentMonster.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure);
-                    RaiseMessage(identifier + (target == this ? " are " : " is ") + status.Description + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turns."));
+                    target.CurrentStatus = status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure);
+                    RaiseMessage(identifier + (target == this ? " are " : " is ") + status.Description + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turn" + (status.Turns == 1 ? "" : "s")));
                 }
             }
         }
@@ -506,7 +501,7 @@ namespace Engine
 
         private void MonsterTakesTurn()
         {
-            bool turnSkipped = CheckForBeforeStatus(CurrentMonster);
+            bool turnSkipped = CheckForSkippedTurn(CurrentMonster);
             if (!turnSkipped)
             {
                 bool hit = RandomNumberGenerator.NumberBetween(1, 100) <= CurrentMonster.HitChance - Level * 5;
@@ -524,7 +519,7 @@ namespace Engine
             CheckForAfterStatus(CurrentMonster);
         }
 
-        private bool CheckForBeforeStatus(LivingCreature livingCreature)
+        private bool CheckForSkippedTurn(LivingCreature livingCreature)
         {
             if (livingCreature.HasAStatus)
             {
@@ -540,7 +535,7 @@ namespace Engine
 
                 if (activated)
                 {
-                    if (livingCreature.CurrentStatus.ID == World.STATUS_ID_SLEEP)
+                    if (livingCreature.CurrentStatus.ID == World.STATUS_ID_SLEEP || livingCreature.CurrentStatus.ID == World.STATUS_ID_PARALYZE || livingCreature.CurrentStatus.ID == World.STATUS_ID_FROZEN)
                     {
                         RaiseMessage(identifier + " missed " + (livingCreature == this ? "your" : "their") + " turn because " + (livingCreature == this ? "you" : "they") + " were " + livingCreature.CurrentStatus.Description);
                         return true;
@@ -567,10 +562,10 @@ namespace Engine
 
                 if (activated)
                 {
-                    if (livingCreature.CurrentStatus.ID == World.STATUS_ID_POISON)
+                    if (livingCreature.CurrentStatus.ID == World.STATUS_ID_POISON || livingCreature.CurrentStatus.ID == World.STATUS_ID_BURN)
                     {
                         livingCreature.CurrentHitPoints -= livingCreature.CurrentStatus.Value;
-                        RaiseMessage(identifier + (livingCreature == this ? " lose " : " lost ") + livingCreature.CurrentStatus.Value + " health to poison.");
+                        RaiseMessage(identifier + (livingCreature == this ? " lose " : " lost ") + livingCreature.CurrentStatus.Value + " health to " + livingCreature.CurrentStatus.Name);
                     }
                 }
 
@@ -582,6 +577,22 @@ namespace Engine
                 }
                 else if (livingCreature.CurrentStatus.Turns != Int32.MaxValue) livingCreature.CurrentStatus.Turns--;
             }
+        }
+
+        private bool CheckIfHasted(LivingCreature livingCreature)
+        {
+            return (livingCreature.HasAStatus && livingCreature.CurrentStatus.ID == World.STATUS_ID_HASTE);
+        }
+
+        private bool IsFasterThanCurrentMonster()
+        {
+            bool monsterHasted = CheckIfHasted(CurrentMonster);
+            if (CheckIfHasted(this))
+            {
+                if (!monsterHasted) return true;
+            }
+            else if (monsterHasted) return false;
+            return Attributes.Dexterity >= CurrentMonster.Attributes.Dexterity;
         }
 
         private void ClearStatus(LivingCreature livingCreature, string identifier)

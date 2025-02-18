@@ -12,27 +12,42 @@
 
         public const int STATUS_ID_POISON = 1;
         public const int STATUS_ID_SLEEP = 2;
+        public const int STATUS_ID_HASTE = 3;
+        public const int STATUS_ID_PARALYZE = 4;
+        public const int STATUS_ID_FROZEN = 5;
+        public const int STATUS_ID_BURN = 6;
 
         public const int SPELL_ID_HEAL = 1;
         public const int SPELL_ID_FIREBALL = 2;
         public const int SPELL_ID_POISON = 3;
         public const int SPELL_ID_SLEEP = 4;
+        public const int SPELL_ID_HASTE = 5;
+        public const int SPELL_ID_PARALYZE = 6;
+        public const int SPELL_ID_FROZEN = 7;
+        public const int SPELL_ID_BURN = 8;
 
         public const int ITEM_ID_RUSTY_SWORD = 1;
-        public const int ITEM_ID_RAT_TAIL = 2;
-        public const int ITEM_ID_PIECE_OF_FUR = 3;
-        public const int ITEM_ID_SNAKE_FANG = 4;
-        public const int ITEM_ID_SNAKESKIN = 5;
-        public const int ITEM_ID_CLUB = 6;
-        public const int ITEM_ID_HEALING_POTION = 7;
-        public const int ITEM_ID_SPIDER_FANG = 8;
-        public const int ITEM_ID_SPIDER_SILK = 9;
-        public const int ITEM_ID_ADVENTURER_PASS = 10;
-        public const int ITEM_ID_POISON = 11;
-        public const int ITEM_ID_HEAL_SCROLL = 12;
-        public const int ITEM_ID_FIREBALL_SCROLL = 13;
-        public const int ITEM_ID_POISON_SCROLL = 14;
-        public const int ITEM_ID_SLEEP_SCROLL = 15;
+        public const int ITEM_ID_CLUB = 2;
+
+        public const int ITEM_ID_HEALING_POTION = 3;
+        public const int ITEM_ID_POISON = 4;
+        public const int ITEM_ID_HEAL_SCROLL = 5;
+        public const int ITEM_ID_FIREBALL_SCROLL = 6;
+        public const int ITEM_ID_POISON_SCROLL = 7;
+        public const int ITEM_ID_SLEEP_SCROLL = 8;
+        public const int ITEM_ID_HASTE_SCROLL = 9;
+        public const int ITEM_ID_PARALYZE_SCROLL = 10;
+        public const int ITEM_ID_FROZEN_SCROLL = 11;
+        public const int ITEM_ID_BURN_SCROLL = 12;
+
+        public const int ITEM_ID_RAT_TAIL = 13;
+        public const int ITEM_ID_PIECE_OF_FUR = 14;
+        public const int ITEM_ID_SNAKE_FANG = 15;
+        public const int ITEM_ID_SNAKESKIN = 16;
+        public const int ITEM_ID_SPIDER_FANG = 17;
+        public const int ITEM_ID_SPIDER_SILK = 18;
+
+        public const int ITEM_ID_ADVENTURER_PASS = 19;
 
         public const int WORTHLESS_ITEM_PRICE = 0;
         public const int UNSELLABLE_ITEM_PRICE = -1;
@@ -71,6 +86,10 @@
         {
             Statuses.Add(new Status(STATUS_ID_POISON, "Poison", "Poisoned"));
             Statuses.Add(new Status(STATUS_ID_SLEEP, "Sleep", "Asleep"));
+            Statuses.Add(new Status(STATUS_ID_HASTE, "Haste", "Hasted"));
+            Statuses.Add(new Status(STATUS_ID_PARALYZE, "Paralyze", "Paralyzed"));
+            Statuses.Add(new Status(STATUS_ID_FROZEN, "Frozen", "Frozen"));
+            Statuses.Add(new Status(STATUS_ID_BURN, "Burn", "Burned"));
         }
 
         private static void PopulateSpells()
@@ -91,19 +110,42 @@
             Status sleepStatus = StatusByID(STATUS_ID_SLEEP).NewInstanceOfStatus(0, Int32.MaxValue, 100, 25);
             sleep.StatusApplied = sleepStatus;
             Spells.Add(sleep);
+
+            StatusSpell haste = new StatusSpell(SPELL_ID_HASTE, "Haste", "Self", 3);
+            Status hasteStatus = StatusByID(STATUS_ID_HASTE).NewInstanceOfStatus(0, 4);
+            haste.StatusApplied = hasteStatus;
+            Spells.Add(haste);
+
+            StatusSpell paralyze = new StatusSpell(SPELL_ID_PARALYZE, "Paralyze", "Enemy", 3);
+            Status paralyzeStatus = StatusByID(STATUS_ID_PARALYZE).NewInstanceOfStatus(0, 10, 25);
+            paralyze.StatusApplied = paralyzeStatus;
+            Spells.Add(paralyze);
+
+            StatusSpell frozen = new StatusSpell(SPELL_ID_FROZEN, "Frozen", "Enemy", 3);
+            Status frozenStatus = StatusByID(STATUS_ID_FROZEN).NewInstanceOfStatus(0, Int32.MaxValue, 100, 25);
+            frozen.StatusApplied = frozenStatus;
+            Spells.Add(frozen);
+
+            StatusSpell burn = new StatusSpell(SPELL_ID_BURN, "Burn", "Enemy", 3);
+            Status burnStatus = StatusByID(STATUS_ID_BURN).NewInstanceOfStatus(1, Int32.MaxValue, 100, 25);
+            burn.StatusApplied = burnStatus;
+            Spells.Add(burn);
         }
 
         private static void PopulateItems()
         {
             Items.Add(new Weapon(ITEM_ID_RUSTY_SWORD, "Rusty sword", "Rusty swords", 0, 5, 5, 60));
+            Items.Add(new Weapon(ITEM_ID_CLUB, "Club", "Clubs", 3, 10, 8, 80, 2));
+
+            Items.Add(new HealingItem(ITEM_ID_HEALING_POTION, "Healing potion", "Healing potions", 5, 3));
+
             Items.Add(new Item(ITEM_ID_RAT_TAIL, "Rat tail", "Rat tails", 1));
             Items.Add(new Item(ITEM_ID_PIECE_OF_FUR, "Piece of fur", "Pieces of fur", 1));
             Items.Add(new Item(ITEM_ID_SNAKE_FANG, "Snake fang", "Snake fangs", 1));
             Items.Add(new Item(ITEM_ID_SNAKESKIN, "Snakeskin", "Snakeskins", 2));
-            Items.Add(new Weapon(ITEM_ID_CLUB, "Club", "Clubs", 3, 10, 8, 80, 2));
-            Items.Add(new HealingItem(ITEM_ID_HEALING_POTION, "Healing potion", "Healing potions", 5, 3));
             Items.Add(new Item(ITEM_ID_SPIDER_FANG, "Spider fang", "Spider fangs", 1));
             Items.Add(new Item(ITEM_ID_SPIDER_SILK, "Spider silk", "Spider silks", 1));
+
             Items.Add(new Item(ITEM_ID_ADVENTURER_PASS, "Adventurer pass", "Adventurer passes", UNSELLABLE_ITEM_PRICE));
 
             StatusItem poison = new StatusItem(ITEM_ID_POISON, "Poison", "Poisons", 3);
@@ -115,6 +157,10 @@
             Items.Add(new Scroll(ITEM_ID_FIREBALL_SCROLL, SpellByID(SPELL_ID_FIREBALL), 5));
             Items.Add(new Scroll(ITEM_ID_POISON_SCROLL, SpellByID(SPELL_ID_POISON), 5));
             Items.Add(new Scroll(ITEM_ID_SLEEP_SCROLL, SpellByID(SPELL_ID_SLEEP), 5));
+            Items.Add(new Scroll(ITEM_ID_HASTE_SCROLL, SpellByID(SPELL_ID_HASTE), 5));
+            Items.Add(new Scroll(ITEM_ID_PARALYZE_SCROLL, SpellByID(SPELL_ID_PARALYZE), 5));
+            Items.Add(new Scroll(ITEM_ID_FROZEN_SCROLL, SpellByID(SPELL_ID_FROZEN), 5));
+            Items.Add(new Scroll(ITEM_ID_BURN_SCROLL, SpellByID(SPELL_ID_BURN), 5));
         }
 
         private static void PopulateMonsters()

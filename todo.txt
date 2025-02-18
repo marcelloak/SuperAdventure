@@ -14,7 +14,7 @@ Add more potions/poisons
 More powerful potions/poisons
 Potions/poisons to improve/reduce player/monster accuracy or damage
 
-Add other status effects (paralyze, dark, frozen, burn, haste, death)
+Add other status effects (dark, death)
 
 Add pets
 Help the player in battle by attacking opponents or healing the player

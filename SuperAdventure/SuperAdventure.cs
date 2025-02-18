@@ -51,6 +51,11 @@ namespace SuperAdventure
             else if (cboUsableItems.SelectedItem is Scroll) _player.TakeTurn(_player.UseScroll, (UsableItem)cboUsableItems.SelectedItem);
         }
 
+        private void btnWait_Click(object sender, EventArgs e)
+        {
+            _player.TakeTurn(_player.WaitATurn);
+        }
+
         private void btnLoad_Click(object sender, EventArgs e)
         {
             if (File.Exists(PLAYER_DATA_FILE_NAME))
@@ -89,11 +94,6 @@ namespace SuperAdventure
             PlayerStats statScreen = new PlayerStats(_player);
             statScreen.StartPosition = FormStartPosition.CenterParent;
             statScreen.ShowDialog(this);
-        }
-
-        private void btnWait_Click(object sender, EventArgs e)
-        {
-            _player.WaitATurn();
         }
 
         private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
@@ -180,9 +180,12 @@ namespace SuperAdventure
         private void clearUI()
         {
             lblHitPoints.DataBindings.Clear();
+            lblMana.DataBindings.Clear();
             lblGold.DataBindings.Clear();
             lblLevel.DataBindings.Clear();
 
+            dgvInventory.DataSource = null;
+            dgvQuests.DataSource = null;
             dgvInventory.Columns.Clear();
             dgvQuests.Columns.Clear();
 
@@ -199,7 +202,6 @@ namespace SuperAdventure
 
             dgvInventory.RowHeadersVisible = false;
             dgvInventory.AutoGenerateColumns = false;
-            dgvInventory.DataSource = _player.Inventory;
             dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "ItemID",
@@ -216,10 +218,10 @@ namespace SuperAdventure
                 HeaderText = "Quantity",
                 DataPropertyName = "Quantity"
             });
+            dgvInventory.DataSource = _player.Inventory;
 
             dgvQuests.RowHeadersVisible = false;
             dgvQuests.AutoGenerateColumns = false;
-            dgvQuests.DataSource = _player.Quests;
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "QuestID",
@@ -236,6 +238,7 @@ namespace SuperAdventure
                 HeaderText = "Done?",
                 DataPropertyName = "IsCompleted"
             });
+            dgvQuests.DataSource = _player.Quests;
 
             cboWeapons.DataSource = _player.Weapons;
             cboWeapons.DisplayMember = "Name";
