@@ -89,20 +89,9 @@ namespace SuperAdventure
             else
             {
                 text += "Applies " + status.Name + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turn" + (status.Turns == 1 ? "" : "s")) + Environment.NewLine;
-                text += StatusDescription(status.ID);
+                text += status.Tooltip + Environment.NewLine;
             }
             return text;
-        }
-
-        private string StatusDescription(int statusID)
-        {
-            if (statusID == World.STATUS_ID_POISON) return "Deals damage each turn for a set amount of turns." + Environment.NewLine;
-            if (statusID == World.STATUS_ID_SLEEP) return "Skips turns and has a chance to wear off each turn." + Environment.NewLine;
-            if (statusID == World.STATUS_ID_HASTE) return "Increases speed for a set amount of turns." + Environment.NewLine;
-            if (statusID == World.STATUS_ID_PARALYZE) return "Chance to skip turn each turn for a set amount of turns." + Environment.NewLine;
-            if (statusID == World.STATUS_ID_FROZEN) return "Skips turns and has a chance to wear off each turn." + Environment.NewLine;
-            if (statusID == World.STATUS_ID_BURN) return "Deals damage and has a chance to wear off each turn." + Environment.NewLine;
-            return "";
         }
 
         private void ItemWindow_KeyDown(object sender, KeyEventArgs e)

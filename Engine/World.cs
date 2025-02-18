@@ -16,6 +16,8 @@
         public const int STATUS_ID_PARALYZE = 4;
         public const int STATUS_ID_FROZEN = 5;
         public const int STATUS_ID_BURN = 6;
+        public const int STATUS_ID_SLOW = 7;
+        public const int STATUS_ID_STOP = 8;
 
         public const int SPELL_ID_HEAL = 1;
         public const int SPELL_ID_FIREBALL = 2;
@@ -25,6 +27,8 @@
         public const int SPELL_ID_PARALYZE = 6;
         public const int SPELL_ID_FROZEN = 7;
         public const int SPELL_ID_BURN = 8;
+        public const int SPELL_ID_SLOW = 9;
+        public const int SPELL_ID_STOP = 10;
 
         public const int ITEM_ID_RUSTY_SWORD = 1;
         public const int ITEM_ID_CLUB = 2;
@@ -39,15 +43,17 @@
         public const int ITEM_ID_PARALYZE_SCROLL = 10;
         public const int ITEM_ID_FROZEN_SCROLL = 11;
         public const int ITEM_ID_BURN_SCROLL = 12;
+        public const int ITEM_ID_SLOW_SCROLL = 13;
+        public const int ITEM_ID_STOP_SCROLL = 14;
 
-        public const int ITEM_ID_RAT_TAIL = 13;
-        public const int ITEM_ID_PIECE_OF_FUR = 14;
-        public const int ITEM_ID_SNAKE_FANG = 15;
-        public const int ITEM_ID_SNAKESKIN = 16;
-        public const int ITEM_ID_SPIDER_FANG = 17;
-        public const int ITEM_ID_SPIDER_SILK = 18;
+        public const int ITEM_ID_RAT_TAIL = 15;
+        public const int ITEM_ID_PIECE_OF_FUR = 16;
+        public const int ITEM_ID_SNAKE_FANG = 17;
+        public const int ITEM_ID_SNAKESKIN = 18;
+        public const int ITEM_ID_SPIDER_FANG = 19;
+        public const int ITEM_ID_SPIDER_SILK = 20;
 
-        public const int ITEM_ID_ADVENTURER_PASS = 19;
+        public const int ITEM_ID_ADVENTURER_PASS = 21;
 
         public const int WORTHLESS_ITEM_PRICE = 0;
         public const int UNSELLABLE_ITEM_PRICE = -1;
@@ -84,12 +90,14 @@
 
         private static void PopulateStatuses()
         {
-            Statuses.Add(new Status(STATUS_ID_POISON, "Poison", "Poisoned"));
-            Statuses.Add(new Status(STATUS_ID_SLEEP, "Sleep", "Asleep"));
-            Statuses.Add(new Status(STATUS_ID_HASTE, "Haste", "Hasted"));
-            Statuses.Add(new Status(STATUS_ID_PARALYZE, "Paralyze", "Paralyzed"));
-            Statuses.Add(new Status(STATUS_ID_FROZEN, "Frozen", "Frozen"));
-            Statuses.Add(new Status(STATUS_ID_BURN, "Burn", "Burned"));
+            Statuses.Add(new Status(STATUS_ID_POISON, "Poison", "Poisoned", "Deals damage each turn for a set amount of turns."));
+            Statuses.Add(new Status(STATUS_ID_SLEEP, "Sleep", "Asleep", "Skips turns and has a chance to wear off each turn."));
+            Statuses.Add(new Status(STATUS_ID_HASTE, "Haste", "Hasted", "Increases speed for a set amount of turns."));
+            Statuses.Add(new Status(STATUS_ID_PARALYZE, "Paralyze", "Paralyzed", "Chance to skip turn each turn for a set amount of turns."));
+            Statuses.Add(new Status(STATUS_ID_FROZEN, "Frozen", "Frozen", "Skips turns and has a chance to wear off each turn."));
+            Statuses.Add(new Status(STATUS_ID_BURN, "Burn", "Burned", "Deals damage and has a chance to wear off each turn."));
+            Statuses.Add(new Status(STATUS_ID_SLOW, "Slow", "Slowed", "Decreases speed for a set amount of turns."));
+            Statuses.Add(new Status(STATUS_ID_STOP, "Stop", "Stopped", "Skips turns for a set amount of turns."));
         }
 
         private static void PopulateSpells()
@@ -130,6 +138,16 @@
             Status burnStatus = StatusByID(STATUS_ID_BURN).NewInstanceOfStatus(1, Int32.MaxValue, 100, 25);
             burn.StatusApplied = burnStatus;
             Spells.Add(burn);
+
+            StatusSpell slow = new StatusSpell(SPELL_ID_SLOW, "Slow", "Enemy", 3);
+            Status slowStatus = StatusByID(STATUS_ID_SLOW).NewInstanceOfStatus(0, 4);
+            slow.StatusApplied = slowStatus;
+            Spells.Add(slow);
+
+            StatusSpell stop = new StatusSpell(SPELL_ID_STOP, "Stop", "Enemy", 3);
+            Status stopStatus = StatusByID(STATUS_ID_STOP).NewInstanceOfStatus(0, 4);
+            stop.StatusApplied = stopStatus;
+            Spells.Add(stop);
         }
 
         private static void PopulateItems()
@@ -161,6 +179,8 @@
             Items.Add(new Scroll(ITEM_ID_PARALYZE_SCROLL, SpellByID(SPELL_ID_PARALYZE), 5));
             Items.Add(new Scroll(ITEM_ID_FROZEN_SCROLL, SpellByID(SPELL_ID_FROZEN), 5));
             Items.Add(new Scroll(ITEM_ID_BURN_SCROLL, SpellByID(SPELL_ID_BURN), 5));
+            Items.Add(new Scroll(ITEM_ID_SLOW_SCROLL, SpellByID(SPELL_ID_SLOW), 5));
+            Items.Add(new Scroll(ITEM_ID_STOP_SCROLL, SpellByID(SPELL_ID_STOP), 5));
         }
 
         private static void PopulateMonsters()

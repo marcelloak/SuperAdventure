@@ -290,7 +290,7 @@ namespace Engine
             if (!LocationsVisited.Contains(CurrentLocation.ID)) LocationsVisited.Add(CurrentLocation.ID);
             CurrentHitPoints = MaximumHitPoints;
             CurrentMana = MaximumMana;
-
+            
             if (newLocation.HasAQuest)
             {
                 if (HasThisQuest(newLocation.QuestAvailableHere))
@@ -373,13 +373,21 @@ namespace Engine
                 if (IsFasterThanCurrentMonster())
                 {
                     if (!function(user, obj)) return;
-                    if (DoesBattleEnd()) return;
+                    if (DoesBattleEnd())
+                    {
+                        CheckForAfterStatus(this);
+                        return;
+                    }
                     MonsterTakesTurn();
                 }
                 else
                 {
                     MonsterTakesTurn();
-                    if (DoesBattleEnd()) return;
+                    if (DoesBattleEnd())
+                    {
+                        CheckForAfterStatus(this);
+                        return;
+                    }
                     if (!function(user, obj)) return;
                 }
             }
@@ -544,7 +552,7 @@ namespace Engine
 
                 if (activated)
                 {
-                    if (livingCreature.CurrentStatus.ID == World.STATUS_ID_SLEEP || livingCreature.CurrentStatus.ID == World.STATUS_ID_PARALYZE || livingCreature.CurrentStatus.ID == World.STATUS_ID_FROZEN)
+                    if (livingCreature.CurrentStatus.ID == World.STATUS_ID_SLEEP || livingCreature.CurrentStatus.ID == World.STATUS_ID_PARALYZE || livingCreature.CurrentStatus.ID == World.STATUS_ID_FROZEN || livingCreature.CurrentStatus.ID == World.STATUS_ID_STOP)
                     {
                         RaiseMessage(identifier + " missed " + (livingCreature == this ? "your" : "their") + " turn because " + (livingCreature == this ? "you" : "they") + " were " + livingCreature.CurrentStatus.Description);
                         return true;
@@ -588,31 +596,31 @@ namespace Engine
             }
         }
 
-        private bool CheckIfHasted(LivingCreature livingCreature)
+        private int CheckSpeed(LivingCreature livingCreature)
         {
-            return (livingCreature.HasAStatus && livingCreature.CurrentStatus.ID == World.STATUS_ID_HASTE);
+            if (livingCreature.HasAStatus)
+            {
+                if (livingCreature.CurrentStatus.ID == World.STATUS_ID_HASTE) return Int32.MaxValue;
+                if (livingCreature.CurrentStatus.ID == World.STATUS_ID_SLOW) return Int32.MinValue;
+            }
+            return livingCreature.Attributes.Dexterity;
         }
 
         private bool IsFasterThanCurrentMonster()
         {
-            bool monsterHasted = CheckIfHasted(CurrentMonster);
-            if (CheckIfHasted(this))
-            {
-                if (!monsterHasted) return true;
-            }
-            else if (monsterHasted) return false;
-            return Attributes.Dexterity >= CurrentMonster.Attributes.Dexterity;
+            return CheckSpeed(this) >= CheckSpeed(CurrentMonster);
         }
 
-        private void ClearStatus(LivingCreature livingCreature, string identifier)
+        private void ClearStatus(LivingCreature livingCreature, string identifier = "")
         {
-            RaiseMessage(identifier + (livingCreature == this ? " are" : " is") + " no longer " + livingCreature.CurrentStatus.Description);
+            if (identifier != "") RaiseMessage(identifier + (livingCreature == this ? " are" : " is") + " no longer " + livingCreature.CurrentStatus.Description);
             livingCreature.CurrentStatus = null;
         }
 
         private bool PlayerDies()
         {
             RaiseMessage("The " + CurrentMonster.Name + " killed you.");
+            ClearStatus(this);
             MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
             return true;
         }

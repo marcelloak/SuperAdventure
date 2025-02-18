@@ -1,5 +1,6 @@
 Change experience points required per level to be based on current level
 Let monsters have items and spells
+Implement world IDs be generated at run-time from single ID counter
 
 Add equipment
 Increases stats
@@ -9,11 +10,11 @@ Add crafting recipes the player use
 Require the appropriate skill
 Requires components (inventory items)
 
-Add more potions/poisons
-More powerful potions/poisons
-Potions/poisons to improve/reduce player/monster accuracy or damage
+Add more potions/poisons/spells
+More powerful potions/poisons/spells
+Potions/poisons/spells to improve/reduce player/monster accuracy/damage
 
-Add other status effects (dark, death)
+Add other status effects (dark, petrified, death)
 
 Add pets
 Help the player in battle by attacking opponents or healing the player
