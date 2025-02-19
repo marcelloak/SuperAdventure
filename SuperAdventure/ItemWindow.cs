@@ -56,6 +56,7 @@ namespace SuperAdventure
 
         private string QuestInformation(Quest quest)
         {
+            Text = "Quest Description";
             string text = "";
             lblName.Text = quest.Name;
             text += quest.Description + Environment.NewLine;
@@ -67,6 +68,7 @@ namespace SuperAdventure
 
         private string SpellInformation(Spell spell, bool fromScroll = false)
         {
+            Text = "Spell Description";
             string text = "";
             if (fromScroll) text += spell.Name + Environment.NewLine;
             else

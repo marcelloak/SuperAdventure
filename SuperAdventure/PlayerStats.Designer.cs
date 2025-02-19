@@ -262,7 +262,7 @@
             Controls.Add(descExperiencePoints);
             KeyPreview = true;
             Name = "PlayerStats";
-            Text = "PlayerStats";
+            Text = "Stats";
             KeyDown += PlayerStats_KeyDown;
             ResumeLayout(false);
             PerformLayout();

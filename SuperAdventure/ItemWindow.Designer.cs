@@ -59,7 +59,7 @@
             Controls.Add(lblName);
             KeyPreview = true;
             Name = "ItemWindow";
-            Text = "ItemWindow";
+            Text = "Item Description";
             KeyDown += ItemWindow_KeyDown;
             ResumeLayout(false);
             PerformLayout();
