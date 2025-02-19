@@ -1,4 +1,6 @@
-Let monsters have items and spells
+Add items and/or spells to some monsters
+Add lines between location connections
+Add some way to tell a spell in the spellbook cant be used because of minimum intelligence
 
 Add equipment
 Increases stats
@@ -8,15 +10,13 @@ Add crafting recipes the player use
 Require the appropriate skill
 Requires components (inventory items)
 
+Add pets
+Help the player in battle by attacking opponents or healing the player
+
 Add more potions/poisons/spells
 More powerful potions/poisons/spells
 Potions/poisons/spells to improve/reduce player/monster accuracy/damage
 
 Add other status effects (dark)
 
-Add pets
-Help the player in battle by attacking opponents or healing the player
-
 Add more vendors
-
-Add lines between location connections

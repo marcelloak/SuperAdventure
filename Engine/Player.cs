@@ -5,27 +5,6 @@ namespace Engine
 {
     public class Player : LivingCreature
     {
-        private int _currentMana;
-        public int CurrentMana
-        {
-            get { return _currentMana; }
-            set
-            {
-                _currentMana = value;
-                OnPropertyChanged("Mana");
-            }
-        }
-        private int _maximumMana;
-        public int MaximumMana
-        {
-            get { return _maximumMana; }
-            set
-            {
-                _maximumMana = value;
-                OnPropertyChanged("Mana");
-            }
-        }
-        public string Mana { get { return _currentMana.ToString() + "/" + _maximumMana.ToString(); } }
         private int _gold;
         public int Gold
         {
@@ -51,9 +30,7 @@ namespace Engine
         public int ExperiencePointsToNextLevel { get { return (Level * 100) + ((Level - 1) * (Level) / 2) * 5; } }
         public string ExperiencePointsDescription { get { return _experiencePoints.ToString() + "/" + ExperiencePointsToNextLevel.ToString(); } }
         public int AttributePointsToSpend { get; set; }
-        public BindingList<InventoryItem> Inventory { get; set; }
         public List<InventoryItem> SellableInventory { get { return Inventory.Where(item => item.Details.Price >= 0).ToList(); } }
-        public BindingList<Spell> Spellbook { get; set; }
         public List<Spell> UsableSpells { get { return Spellbook.Where(spell => Attributes.Intelligence >= spell.MinimumIntelligence).ToList(); } }
         public BindingList<PlayerQuest> Quests { get; set; }
         private Location _currentLocation;
@@ -74,16 +51,12 @@ namespace Engine
         private Monster CurrentMonster;
         public event EventHandler<MessageEventArgs> OnMessage;
 
-        private Player(int currentHitPoints, int maximumHitPoints, int currentMana, int maximumMana, int gold, int experiencePoints) : base(currentHitPoints, maximumHitPoints)
+        private Player(int currentHitPoints, int maximumHitPoints, int currentMana, int maximumMana, int gold, int experiencePoints) : base(currentHitPoints, maximumHitPoints, currentMana, maximumMana)
         {
             Level = 1;
-            CurrentMana = currentMana;
-            MaximumMana = maximumMana;
             Gold = gold;
             ExperiencePoints = experiencePoints;
             AttributePointsToSpend = 0;
-            Inventory = new BindingList<InventoryItem>();
-            Spellbook = new BindingList<Spell>();
             Quests = new BindingList<PlayerQuest>();
             LocationsVisited = new List<int>();
         }
@@ -123,12 +96,15 @@ namespace Engine
 
                 XmlNode currentStatus = playerData.SelectSingleNode("/Player/Stats/CurrentStatus");
                 int currentStatusID = Convert.ToInt32(currentStatus.Attributes["ID"].Value);
-                int currentStatusValue = Convert.ToInt32(currentStatus.Attributes["Value"].Value);
-                int currentStatusTurns = Convert.ToInt32(currentStatus.Attributes["Turns"].Value);
-                int currentStatusChanceToActivate = Convert.ToInt32(currentStatus.Attributes["ChanceToActivate"].Value);
-                int currentStatusChanceToCure = Convert.ToInt32(currentStatus.Attributes["ChanceToCure"].Value);
-
-                player.SetStatus(player, World.StatusByID(currentStatusID).NewInstanceOfStatus(currentStatusValue, currentStatusTurns, currentStatusChanceToActivate, currentStatusChanceToCure));
+                if (currentStatusID == 0) player.ClearStatus(player);
+                else
+                {
+                    int currentStatusValue = Convert.ToInt32(currentStatus.Attributes["Value"].Value);
+                    int currentStatusTurns = Convert.ToInt32(currentStatus.Attributes["Turns"].Value);
+                    int currentStatusChanceToActivate = Convert.ToInt32(currentStatus.Attributes["ChanceToActivate"].Value);
+                    int currentStatusChanceToCure = Convert.ToInt32(currentStatus.Attributes["ChanceToCure"].Value);
+                    player.SetStatus(player, World.StatusByID(currentStatusID).NewInstanceOfStatus(currentStatusValue, currentStatusTurns, currentStatusChanceToActivate, currentStatusChanceToCure));
+                }
 
                 foreach (XmlNode node in playerData.SelectNodes("/Player/LocationsVisited/LocationVisited"))
                 {
@@ -140,7 +116,7 @@ namespace Engine
                 {
                     int id = Convert.ToInt32(node.Attributes["ID"].Value);
                     int quantity = Convert.ToInt32(node.Attributes["Quantity"].Value);
-                    player.AddItemToInventory(World.ItemByID(id), quantity);
+                    player.AddItemToInventory(player, World.ItemByID(id), quantity);
                 }
 
                 foreach (XmlNode node in playerData.SelectNodes("/Player/Spellbook/Spells"))
@@ -237,26 +213,26 @@ namespace Engine
 
         public void RemoveQuestCompletionItems(Quest quest)
         {
-            quest.QuestCompletionItems.ForEach(questItem => RemoveItemFromInventory(questItem.Details, questItem.Quantity));
+            quest.QuestCompletionItems.ForEach(questItem => RemoveItemFromInventory(this, questItem.Details, questItem.Quantity));
         }
 
-        public void AddItemToInventory(Item itemToAdd, int quantity = 1)
+        public void AddItemToInventory(LivingCreature user, Item itemToAdd, int quantity = 1)
         {
-            InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToAdd.ID);
-            if (item == null) Inventory.Add(new InventoryItem(itemToAdd, quantity));
+            InventoryItem item = user.Inventory.SingleOrDefault(ii => ii.Details.ID == itemToAdd.ID);
+            if (item == null) user.Inventory.Add(new InventoryItem(itemToAdd, quantity));
             else item.Quantity += quantity;
-            RaiseInventoryChangedEvent(itemToAdd);
+            if (user == this) RaiseInventoryChangedEvent(itemToAdd);
         }
 
-        public void RemoveItemFromInventory(Item itemToRemove, int quantity = 1)
+        public void RemoveItemFromInventory(LivingCreature user, Item itemToRemove, int quantity = 1)
         {
-            InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToRemove.ID);
+            InventoryItem item = user.Inventory.SingleOrDefault(ii => ii.Details.ID == itemToRemove.ID);
             if (item != null)
             {
                 item.Quantity -= quantity;
                 if (item.Quantity < 0) item.Quantity = 0; // TODO: Might want to raise an error instead
-                if (item.Quantity == 0) Inventory.Remove(item);
-                RaiseInventoryChangedEvent(itemToRemove);
+                if (item.Quantity == 0) user.Inventory.Remove(item);
+                if (user == this) RaiseInventoryChangedEvent(itemToRemove);
             }
             // TODO: Might want to raise an error for if item is null
         }
@@ -372,7 +348,7 @@ namespace Engine
             AddExperiencePoints(quest.RewardExperiencePoints);
             Gold += quest.RewardGold;
 
-            AddItemToInventory(quest.RewardItem);
+            AddItemToInventory(this, quest.RewardItem);
             MarkQuestCompleted(quest);
 
             if (quest.IsRepeatable) RaiseMessage("This quest is repeatable. Return here to reset it.");
@@ -435,10 +411,12 @@ namespace Engine
         public bool UseHealingItem(LivingCreature user, Object currentItem)
         {
             HealingItem healingItem = currentItem as HealingItem;
-            CurrentHitPoints += healingItem.AmountToHeal;
-            if (CurrentHitPoints > MaximumHitPoints) CurrentHitPoints = MaximumHitPoints;
-            RemoveItemFromInventory(healingItem);
-            RaiseMessage("You drink a " + healingItem.Name + " and heal for " + healingItem.AmountToHeal + " points.");
+            user.CurrentHitPoints += healingItem.AmountToHeal;
+            if (user.CurrentHitPoints > user.MaximumHitPoints) user.CurrentHitPoints = user.MaximumHitPoints;
+            RemoveItemFromInventory(user, healingItem);
+            string identifier = "You";
+            if (user != this) identifier = "The " + (user as Monster).Name;
+            RaiseMessage(identifier + " drink" + (user == this ? "" : "s") + " a " + healingItem.Name + " and heal" + (user == this ? "" : "s") + " for " + healingItem.AmountToHeal + " point" + (healingItem.AmountToHeal == 1 ? "" : "s"));
             return true;
         }
 
@@ -446,26 +424,35 @@ namespace Engine
         {
             StatusItem statusItem = currentItem as StatusItem;
             Status status = (currentItem as StatusItem).StatusApplied;
+            LivingCreature target = this;
+            string identifier = "You";
+            if (user == this)
+            {
+                target = CurrentMonster;
+                identifier = "The " + CurrentMonster.Name;
+            }
             if (status.Turns == 1)
             {
-                CurrentMonster.CurrentHitPoints -= status.Value;
-                RaiseMessage("You throw a " + statusItem.Name + " and deal " + status.Value + " damage to the " + CurrentMonster.Name);
+                target.CurrentHitPoints -= status.Value;
+                RaiseMessage(identifier + " throw" + (user == this ? "" : "s") + " a " + statusItem.Name + " and deal" + (user == this ? "" : "s") + " " + status.Value + " damage to " + identifier);
             }
             else
             {
-                SetStatus(CurrentMonster, status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure));
-                RaiseMessage("You throw a " + statusItem.Name + " and " + status.Name + " the " + CurrentMonster.Name + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turn" + (status.Turns == 1 ? "" : "s")));
+                SetStatus(target, status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure));
+                RaiseMessage(identifier + " throw" + (user == this ? "" : "s") + " a " + statusItem.Name + " and " + status.Name + " " + identifier + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turn" + (status.Turns == 1 ? "" : "s")));
             }
-            RemoveItemFromInventory(statusItem);
+            RemoveItemFromInventory(user, statusItem);
             return true;
         }
 
         public bool UseScroll(LivingCreature user, Object currentItem)
         {
             Scroll scroll = currentItem as Scroll;
-            RaiseMessage("You use a " + scroll.Name);
-            CastSpell(scroll.SpellContained, this);
-            RemoveItemFromInventory(scroll);
+            string identifier = "You";
+            if (user != this) identifier = "The " + (user as Monster).Name;
+            RaiseMessage(identifier + " use" + (user == this ? "" : "s") + " a " + scroll.Name);
+            CastSpell(user, scroll.SpellContained);
+            RemoveItemFromInventory(user, scroll);
             return true;
         }
 
@@ -478,28 +465,25 @@ namespace Engine
                 return false;
             }
             CurrentMana -= spell.ManaCost;
-            CastSpell(spell, user);
+            CastSpell(user, spell);
             return true;
         }
 
-        public void CastSpell(Spell spell, LivingCreature user)
+        public void CastSpell(LivingCreature user, Spell spell)
         {
-            RaiseMessage("You cast " + spell.Name);
-            string identifier = "You";
+            string userIdentifier = user == this ? "You" : "The " + CurrentMonster.Name;
             LivingCreature target = this;
+            if ((user == this && spell.Target == "Enemy") || (user != this && spell.Target == "Self")) target = CurrentMonster;
+            string targetIdentifier = target == this ? "You" : "The " + CurrentMonster.Name;
 
-            if ((user != this && spell.Target == "Self") || (user == this && spell.Target == "Enemy"))
-            {
-                identifier = "The " + CurrentMonster.Name;
-                target = CurrentMonster;
-            }
+            RaiseMessage(userIdentifier + " cast" + (user == this ? "" : "s") + " " + spell.Name);
 
             if (spell is HealingSpell)
             {
                 HealingSpell heal = spell as HealingSpell;
                 target.CurrentHitPoints += heal.AmountToHeal;
                 if (target.CurrentHitPoints > target.MaximumHitPoints) target.CurrentHitPoints = target.MaximumHitPoints;
-                RaiseMessage(identifier + " heal" + (target == this ? "" : "s") + " for " + heal.AmountToHeal + " points.");
+                RaiseMessage(targetIdentifier + " heal" + (target == this ? "" : "s") + " for " + heal.AmountToHeal + " point" + (heal.AmountToHeal == 1 ? "" : "s"));
             }
             else if (spell is StatusSpell)
             {
@@ -507,12 +491,12 @@ namespace Engine
                 if (status.Turns == 1)
                 {
                     target.CurrentHitPoints -= status.Value;
-                    RaiseMessage(identifier + " take" + (target == this ? " " : "s ") + status.Value + " damage.");
+                    RaiseMessage(targetIdentifier + " take" + (target == this ? " " : "s ") + status.Value + " damage.");
                 }
                 else
                 {
                     SetStatus(target, status.NewInstanceOfStatus(status.Value, status.Turns, status.ChanceToActivate, status.ChanceToCure));
-                    RaiseMessage(identifier + (target == this ? " are " : " is ") + status.Description + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turn" + (status.Turns == 1 ? "" : "s")));
+                    RaiseMessage(targetIdentifier + (target == this ? " are " : " is ") + status.Description + (status.Turns == Int32.MaxValue ? "" : " for " + status.Turns + " turn" + (status.Turns == 1 ? "" : "s")));
                 }
             }
         }
@@ -535,17 +519,44 @@ namespace Engine
             bool turnSkipped = CheckForSkippedTurn(CurrentMonster);
             if (!turnSkipped)
             {
-                bool hit = RandomNumberGenerator.NumberBetween(1, 100) <= CurrentMonster.HitChance - Level * 5;
-                int damage = 0;
-
-                if (hit) damage = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
-                if (damage == 0) RaiseMessage("The " + CurrentMonster.Name + " missed.");
-                else
+                bool turnTaken = false;
+                if (CurrentMonster.Inventory.Count > 0)
                 {
-                    damage += CurrentMonster.Attributes.Strength / 5;
-                    RaiseMessage("The " + CurrentMonster.Name + " did " + damage.ToString() + " points of damage.");
+                    bool useItem = RandomNumberGenerator.NumberBetween(1, 100) <= CurrentMonster.ChanceToUseItem;
+                    if (useItem)
+                    {
+                        Item item = CurrentMonster.Inventory[RandomNumberGenerator.NumberBetween(0, CurrentMonster.Inventory.Count - 1)].Details;
+                        if (item is HealingItem) UseHealingItem(CurrentMonster, item);
+                        else if (item is StatusItem) UseStatusItem(CurrentMonster, item);
+                        else if (item is Scroll) UseScroll(CurrentMonster, item);
+                        RemoveItemFromInventory(CurrentMonster, item);
+                        turnTaken = true;
+                    }
                 }
-                CurrentHitPoints -= damage;
+                if (!turnTaken && CurrentMonster.CastableSpells.Count > 0)
+                {
+                    bool castSpell = RandomNumberGenerator.NumberBetween(1, 100) <= CurrentMonster.ChanceToCastSpell;
+                    if (castSpell)
+                    {
+                        Spell spell = CurrentMonster.CastableSpells[RandomNumberGenerator.NumberBetween(0, CurrentMonster.CastableSpells.Count - 1)];
+                        CastSpell(CurrentMonster, spell);
+                        turnTaken = true;
+                    }
+                }
+                if (!turnTaken)
+                {
+                    bool hit = RandomNumberGenerator.NumberBetween(1, 100) <= CurrentMonster.HitChance - Level * 5;
+                    int damage = 0;
+
+                    if (hit) damage = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
+                    if (damage == 0) RaiseMessage("The " + CurrentMonster.Name + " missed.");
+                    else
+                    {
+                        damage += CurrentMonster.Attributes.Strength / 5;
+                        RaiseMessage("The " + CurrentMonster.Name + " did " + damage.ToString() + " points of damage.");
+                    }
+                    CurrentHitPoints -= damage;
+                }
             }
             CheckForAfterStatus(CurrentMonster);
         }
@@ -667,7 +678,7 @@ namespace Engine
 
             foreach (InventoryItem inventoryItem in CurrentMonster.LootItems)
             {
-                AddItemToInventory(inventoryItem.Details);
+                AddItemToInventory(this, inventoryItem.Details);
                 RaiseMessage("You loot " + inventoryItem.Quantity.ToString() + " " + inventoryItem.Description);
             }
 
@@ -734,21 +745,30 @@ namespace Engine
             stats.AppendChild(currentWeapon);
 
             XmlNode currentStatus = playerData.CreateElement("CurrentStatus");
-            XmlAttribute statusIdAttribute = playerData.CreateAttribute("ID");
-            statusIdAttribute.Value = CurrentStatus.ID.ToString();
-            currentStatus.Attributes.Append(statusIdAttribute);
-            XmlAttribute valueAttribute = playerData.CreateAttribute("Value");
-            valueAttribute.Value = CurrentStatus.Value.ToString();
-            currentStatus.Attributes.Append(valueAttribute);
-            XmlAttribute turnsAttribute = playerData.CreateAttribute("Turns");
-            turnsAttribute.Value = CurrentStatus.Turns.ToString();
-            currentStatus.Attributes.Append(turnsAttribute);
-            XmlAttribute chanceToActivateAttribute = playerData.CreateAttribute("ChanceToActivate");
-            chanceToActivateAttribute.Value = CurrentStatus.ChanceToActivate.ToString();
-            currentStatus.Attributes.Append(chanceToActivateAttribute);
-            XmlAttribute chanceToCureAttribute = playerData.CreateAttribute("ChanceToCure");
-            chanceToCureAttribute.Value = CurrentStatus.ChanceToCure.ToString();
-            currentStatus.Attributes.Append(chanceToCureAttribute);
+            if (HasAStatus)
+            {
+                XmlAttribute statusIdAttribute = playerData.CreateAttribute("ID");
+                statusIdAttribute.Value = CurrentStatus.ID.ToString();
+                currentStatus.Attributes.Append(statusIdAttribute);
+                XmlAttribute valueAttribute = playerData.CreateAttribute("Value");
+                valueAttribute.Value = CurrentStatus.Value.ToString();
+                currentStatus.Attributes.Append(valueAttribute);
+                XmlAttribute turnsAttribute = playerData.CreateAttribute("Turns");
+                turnsAttribute.Value = CurrentStatus.Turns.ToString();
+                currentStatus.Attributes.Append(turnsAttribute);
+                XmlAttribute chanceToActivateAttribute = playerData.CreateAttribute("ChanceToActivate");
+                chanceToActivateAttribute.Value = CurrentStatus.ChanceToActivate.ToString();
+                currentStatus.Attributes.Append(chanceToActivateAttribute);
+                XmlAttribute chanceToCureAttribute = playerData.CreateAttribute("ChanceToCure");
+                chanceToCureAttribute.Value = CurrentStatus.ChanceToCure.ToString();
+                currentStatus.Attributes.Append(chanceToCureAttribute);
+            }
+            else
+            {
+                XmlAttribute statusIdAttribute = playerData.CreateAttribute("ID");
+                statusIdAttribute.Value = "0";
+                currentStatus.Attributes.Append(statusIdAttribute);
+            }
             stats.AppendChild(currentStatus);
 
             XmlNode locationsVisited = playerData.CreateElement("LocationsVisited");

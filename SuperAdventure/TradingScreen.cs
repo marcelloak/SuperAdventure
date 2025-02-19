@@ -29,7 +29,7 @@ namespace SuperAdventure
             if (itemBeingSold.Price == null) MessageBox.Show("You cannot sell the " + itemBeingSold.Name);
             else
             {
-                _currentPlayer.RemoveItemFromInventory(itemBeingSold);
+                _currentPlayer.RemoveItemFromInventory(_currentPlayer, itemBeingSold);
                 _currentPlayer.Gold += itemBeingSold.Price;
                 _currentPlayer.CurrentLocation.VendorWorkingHere.AddItemToInventory(itemBeingSold);
                 clearUI();
@@ -44,7 +44,7 @@ namespace SuperAdventure
             Item itemBeingBought= World.ItemByID(Convert.ToInt32(itemID));
             if (_currentPlayer.Gold >= itemBeingBought.Price)
             {
-                _currentPlayer.AddItemToInventory(itemBeingBought);
+                _currentPlayer.AddItemToInventory(_currentPlayer, itemBeingBought);
                 _currentPlayer.Gold -= itemBeingBought.Price;
                 _currentPlayer.CurrentLocation.VendorWorkingHere.RemoveItemFromInventory(itemBeingBought);
                 clearUI();
