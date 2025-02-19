@@ -1,9 +1,9 @@
 Add items and/or spells to some monsters
 Add lines between location connections
-Add some way to tell a spell in the spellbook cant be used because of minimum intelligence
-
-Add equipment
-Increases stats
+Add some way to indicate a spell in the spellbook cant be used because of minimum intelligence
+Add viewing and equipping equipment to stats screen
+Show stats from equipment in stats screen
+Save and load current equipment
 
 Add crafting skills the player can acquire
 Add crafting recipes the player use

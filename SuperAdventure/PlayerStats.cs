@@ -16,10 +16,10 @@ namespace SuperAdventure
             _player = player;
             _keyBindings = new Dictionary<Keys, Button>();
             _attributePointsToSpend = _player.AttributePointsToSpend;
-            _attributes.Strength = _player.Attributes.Strength;
-            _attributes.Intelligence = _player.Attributes.Intelligence;
-            _attributes.Dexterity = _player.Attributes.Dexterity;
-            _attributes.Vitality = _player.Attributes.Vitality;
+            _attributes.Strength = _player.BaseAttributes.Strength;
+            _attributes.Intelligence = _player.BaseAttributes.Intelligence;
+            _attributes.Dexterity = _player.BaseAttributes.Dexterity;
+            _attributes.Vitality = _player.BaseAttributes.Vitality;
             InitializeComponent();
             buttonsWhenLeveling.Add(btnApply);
             buttonsWhenLeveling.Add(btnStrengthPlus);
@@ -43,10 +43,10 @@ namespace SuperAdventure
         private void btnApply_Click(object sender, EventArgs e)
         {
             _player.AttributePointsToSpend = _attributePointsToSpend;
-            _player.Attributes.Strength = _attributes.Strength;
-            _player.Attributes.Intelligence = _attributes.Intelligence;
-            _player.Attributes.Dexterity = _attributes.Dexterity;
-            _player.Attributes.Vitality = _attributes.Vitality;
+            _player.BaseAttributes.Strength = _attributes.Strength;
+            _player.BaseAttributes.Intelligence = _attributes.Intelligence;
+            _player.BaseAttributes.Dexterity = _attributes.Dexterity;
+            _player.BaseAttributes.Vitality = _attributes.Vitality;
             RefreshLevelingButtons();
         }
 
@@ -119,10 +119,10 @@ namespace SuperAdventure
 
         private void DeactivateMinusButtons()
         {
-            if (_player.Attributes.Strength == _attributes.Strength) btnStrengthMinus.Enabled = false;
-            if (_player.Attributes.Intelligence == _attributes.Intelligence) btnIntelligenceMinus.Enabled = false;
-            if (_player.Attributes.Dexterity == _attributes.Dexterity) btnDexterityMinus.Enabled = false;
-            if (_player.Attributes.Vitality == _attributes.Vitality) btnVitalityMinus.Enabled = false;
+            if (_player.BaseAttributes.Strength == _attributes.Strength) btnStrengthMinus.Enabled = false;
+            if (_player.BaseAttributes.Intelligence == _attributes.Intelligence) btnIntelligenceMinus.Enabled = false;
+            if (_player.BaseAttributes.Dexterity == _attributes.Dexterity) btnDexterityMinus.Enabled = false;
+            if (_player.BaseAttributes.Vitality == _attributes.Vitality) btnVitalityMinus.Enabled = false;
         }
 
         private void DeactivatePlusButtons()
@@ -153,10 +153,10 @@ namespace SuperAdventure
 
         private bool StillLeveling()
         {
-            if (_player.Attributes.Strength != _attributes.Strength) return true;
-            if (_player.Attributes.Intelligence != _attributes.Intelligence) return true;
-            if (_player.Attributes.Dexterity != _attributes.Dexterity) return true;
-            if (_player.Attributes.Vitality != _attributes.Vitality) return true;
+            if (_player.BaseAttributes.Strength != _attributes.Strength) return true;
+            if (_player.BaseAttributes.Intelligence != _attributes.Intelligence) return true;
+            if (_player.BaseAttributes.Dexterity != _attributes.Dexterity) return true;
+            if (_player.BaseAttributes.Vitality != _attributes.Vitality) return true;
             return false;
         }
 

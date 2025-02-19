@@ -31,7 +31,7 @@ namespace Engine
         public string ExperiencePointsDescription { get { return _experiencePoints.ToString() + "/" + ExperiencePointsToNextLevel.ToString(); } }
         public int AttributePointsToSpend { get; set; }
         public List<InventoryItem> SellableInventory { get { return Inventory.Where(item => item.Details.Price >= 0).ToList(); } }
-        public List<Spell> UsableSpells { get { return Spellbook.Where(spell => Attributes.Intelligence >= spell.MinimumIntelligence).ToList(); } }
+        public List<Spell> UsableSpells { get { return Spellbook.Where(spell => TotalIntelligence >= spell.MinimumIntelligence).ToList(); } }
         public BindingList<PlayerQuest> Quests { get; set; }
         private Location _currentLocation;
         public Location CurrentLocation
@@ -46,8 +46,13 @@ namespace Engine
 
         public List<int> LocationsVisited { get; set; }
         public Weapon CurrentWeapon { get; set; }
-        public List<Weapon> Weapons { get { return Inventory.Where(item => item.Details is Weapon).Select(item => item.Details as Weapon).ToList().Where(weapon => Level >= weapon.MinimumLevel && Attributes.Strength >= weapon.StrengthRequired && Attributes.Dexterity >= weapon.DexterityRequired).ToList(); } }
+        public List<Weapon> Weapons { get { return Inventory.Where(item => item.Details is Weapon).Select(item => item.Details as Weapon).ToList().Where(weapon => Level >= weapon.MinimumLevel && TotalStrength >= weapon.StrengthRequired && TotalDexterity >= weapon.DexterityRequired).ToList(); } }
         public List<UsableItem> UsableItems { get { return Inventory.Where(item => item.Details is UsableItem && !(item.Details is Weapon)).Select(item => item.Details as UsableItem).ToList().Where(item => Level >= item.MinimumLevel).ToList(); } }
+        public EquipmentSet Equipment {  get; set; }
+        public int TotalStrength { get { return BaseAttributes.Strength + Equipment.GetStrengthIncreased(); } }
+        public int TotalDexterity { get { return BaseAttributes.Dexterity + Equipment.GetDexterityIncreased(); } }
+        public int TotalIntelligence{ get { return BaseAttributes.Intelligence + Equipment.GetIntelligenceIncreased(); } }
+        public int TotalVitality { get { return BaseAttributes.Vitality + Equipment.GetVitalityIncreased(); } }
         private Monster CurrentMonster;
         public event EventHandler<MessageEventArgs> OnMessage;
 
@@ -59,6 +64,7 @@ namespace Engine
             AttributePointsToSpend = 0;
             Quests = new BindingList<PlayerQuest>();
             LocationsVisited = new List<int>();
+            Equipment = new EquipmentSet();
         }
 
         public static Player CreateDefaultPlayer()
@@ -93,6 +99,13 @@ namespace Engine
                 player.AttributePointsToSpend = attributePointsToSpend;
                 player.CurrentLocation = World.LocationByID(currentLocationID);
                 player.CurrentWeapon = (Weapon)World.ItemByID(currentWeaponID);
+
+                XmlNode baseAttributes = playerData.SelectSingleNode("/Player/Stats/BaseAttributes");
+                int strength = Convert.ToInt32(baseAttributes.Attributes["Strength"].Value);
+                int dexterity = Convert.ToInt32(baseAttributes.Attributes["Dexterity"].Value);
+                int intelligence = Convert.ToInt32(baseAttributes.Attributes["Intelligence"].Value);
+                int vitality = Convert.ToInt32(baseAttributes.Attributes["Vitality"].Value);
+                player.BaseAttributes = new Attributes(strength, intelligence, dexterity, vitality);
 
                 XmlNode currentStatus = playerData.SelectSingleNode("/Player/Stats/CurrentStatus");
                 int currentStatusID = Convert.ToInt32(currentStatus.Attributes["ID"].Value);
@@ -169,12 +182,12 @@ namespace Engine
         public void LevelUp()
         {
             Level++;
-            MaximumHitPoints += Attributes.Vitality;
-            MaximumMana += Attributes.Intelligence / 5;
+            MaximumHitPoints += TotalVitality;
+            MaximumMana += TotalIntelligence / 5;
             RaiseMessage("");
             RaiseMessage("You levelled up to level " + Level);
-            RaiseMessage("You gained " + Attributes.Vitality + " maximum health.");
-            RaiseMessage("You gained " + Attributes.Intelligence / 5 + " maximum mana.");
+            RaiseMessage("You gained " + TotalVitality + " maximum health.");
+            RaiseMessage("You gained " + TotalIntelligence / 5 + " maximum mana.");
             RaiseMessage("You gained 1 attribute point to spend.", true);
             AttributePointsToSpend++;
         }
@@ -401,7 +414,7 @@ namespace Engine
             if (damage == 0) RaiseMessage("You missed the " + CurrentMonster.Name);
             else
             {
-                damage += Attributes.Strength / 5;
+                damage += TotalStrength / 5;
                 RaiseMessage("You hit the " + CurrentMonster.Name + " for " + damage.ToString() + " points.");
             }
             CurrentMonster.CurrentHitPoints -= damage;
@@ -545,14 +558,14 @@ namespace Engine
                 }
                 if (!turnTaken)
                 {
-                    bool hit = RandomNumberGenerator.NumberBetween(1, 100) <= CurrentMonster.HitChance - Level * 5;
+                    bool hit = RandomNumberGenerator.NumberBetween(1, 100) <= CurrentMonster.HitChance - Level * 5 - Equipment.GetDefence();
                     int damage = 0;
 
                     if (hit) damage = RandomNumberGenerator.NumberBetween(0, CurrentMonster.MaximumDamage);
                     if (damage == 0) RaiseMessage("The " + CurrentMonster.Name + " missed.");
                     else
                     {
-                        damage += CurrentMonster.Attributes.Strength / 5;
+                        damage += CurrentMonster.BaseAttributes.Strength / 5;
                         RaiseMessage("The " + CurrentMonster.Name + " did " + damage.ToString() + " points of damage.");
                     }
                     CurrentHitPoints -= damage;
@@ -636,7 +649,8 @@ namespace Engine
                 if (livingCreature.CurrentStatus.ID == World.STATUS_ID_HASTE) return Int32.MaxValue;
                 if (livingCreature.CurrentStatus.ID == World.STATUS_ID_SLOW) return Int32.MinValue;
             }
-            return livingCreature.Attributes.Dexterity;
+            if (livingCreature == this) return TotalDexterity;
+            return livingCreature.BaseAttributes.Dexterity;
         }
 
         private bool IsFasterThanCurrentMonster()
@@ -743,6 +757,21 @@ namespace Engine
             XmlNode currentWeapon = playerData.CreateElement("CurrentWeapon");
             currentWeapon.AppendChild(playerData.CreateTextNode(CurrentWeapon.ID.ToString()));
             stats.AppendChild(currentWeapon);
+
+            XmlNode baseAttributes = playerData.CreateElement("BaseAttributes");
+            XmlAttribute strengthAttribute = playerData.CreateAttribute("Strength");
+            strengthAttribute.Value = BaseAttributes.Strength.ToString();
+            baseAttributes.Attributes.Append(strengthAttribute);
+            XmlAttribute dexterityAttribute = playerData.CreateAttribute("Dexterity");
+            dexterityAttribute.Value = BaseAttributes.Dexterity.ToString();
+            baseAttributes.Attributes.Append(dexterityAttribute);
+            XmlAttribute intelligenceAttribute = playerData.CreateAttribute("Intelligence");
+            intelligenceAttribute.Value = BaseAttributes.Intelligence.ToString();
+            baseAttributes.Attributes.Append(intelligenceAttribute);
+            XmlAttribute vitalityAttribute = playerData.CreateAttribute("Vitality");
+            vitalityAttribute.Value = BaseAttributes.Vitality.ToString();
+            baseAttributes.Attributes.Append(vitalityAttribute);
+            stats.AppendChild(baseAttributes);
 
             XmlNode currentStatus = playerData.CreateElement("CurrentStatus");
             if (HasAStatus)

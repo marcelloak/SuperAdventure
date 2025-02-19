@@ -288,13 +288,13 @@
         {
             Monster rat = new Monster(MONSTER_ID_RAT, "Rat", 3, 3, 10, 3, 3, 60, 0);
             Attributes ratAttributes = new Attributes(1, 1, 1, 1);
-            rat.Attributes = ratAttributes;
+            rat.BaseAttributes = ratAttributes;
             rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_PIECE_OF_FUR), 75, true));
             rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_RAT_TAIL), 75, false));
 
             Monster snake = new Monster(MONSTER_ID_SNAKE, "Snake", 5, 5, 20, 4, 4, 80, 20);
             Attributes snakeAttributes = new Attributes(3, 3, 3, 3);
-            snake.Attributes = snakeAttributes;
+            snake.BaseAttributes = snakeAttributes;
             snake.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SNAKESKIN), 75, true));
             snake.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SNAKE_FANG), 75, false));
 

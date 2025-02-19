@@ -35,7 +35,7 @@ namespace Engine
         internal Monster NewInstanceOfMonster()
         {
             Monster newMonster = new Monster(ID, Name, MaximumDamage, RewardGold, RewardExperiencePoints, CurrentHitPoints, MaximumHitPoints, HitChance, Defence, ChanceToUseItem, ChanceToCastSpell, CurrentMana, MaximumMana);
-            newMonster.Attributes = Attributes;
+            newMonster.BaseAttributes = BaseAttributes;
             newMonster.Spellbook = Spellbook;
 
             LootTable.Where(lootItem => RandomNumberGenerator.NumberBetween(1, 100) <= lootItem.DropPercentage).ToList().ForEach(lootItem => newMonster.LootItems.Add(new InventoryItem(lootItem.Details, 1)));

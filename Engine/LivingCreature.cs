@@ -47,7 +47,7 @@ namespace Engine
             }
         }
         public string Mana { get { return _currentMana.ToString() + "/" + _maximumMana.ToString(); } }
-        public Attributes Attributes { get; set; }
+        public Attributes BaseAttributes { get; set; }
         public bool IsDead {  get { return CurrentHitPoints <= 0; } }
         public Status CurrentStatus { get; set; }
         public string Status { get { return (CurrentStatus == null) ? "" : CurrentStatus.Name; } }
@@ -63,7 +63,7 @@ namespace Engine
             CurrentMana = currentMana;
             MaximumMana = maximumMana;
             CurrentStatus = currentStatus;
-            Attributes = new Attributes();
+            BaseAttributes = new Attributes();
             Inventory = new BindingList<InventoryItem>();
             Spellbook = new BindingList<Spell>();
         }
