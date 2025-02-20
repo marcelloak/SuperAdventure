@@ -9,6 +9,11 @@ namespace Engine
         public Equipment Hands { get; set; }
         public Equipment Legs { get; set; }
         public Equipment Feet { get; set; }
+        public string HeadName { get { return Head == null ? "" : Head.Name; } }
+        public string ArmsName { get { return Arms == null ? "" : Arms.Name; } }
+        public string HandsName { get { return Hands == null ? "" : Hands.Name; } }
+        public string LegsName { get { return Legs == null ? "" : Legs.Name; } }
+        public string FeetName { get { return Feet == null ? "" : Feet.Name; } }
         public int Defence { get { return GetDefence(); } }
         public string StrengthIncreasedDescription { get { return GetStrengthIncreased() > 0 ? "+" + GetStrengthIncreased().ToString() : ""; } }
         public string IntelligenceIncreasedDescription { get { return GetIntelligenceIncreased() > 0 ? "+" + GetIntelligenceIncreased().ToString() : ""; } }
@@ -31,6 +36,7 @@ namespace Engine
             else if (slot == "Hands") Hands = item;
             else if (slot == "Legs") Legs = item;
             else if (slot == "Feet") Feet = item;
+            OnPropertyChanged(slot + "Name");
             OnPropertyChanged("Defence");
             OnPropertyChanged("StrengthIncreasedDescription");
             OnPropertyChanged("IntelligenceIncreasedDescription");

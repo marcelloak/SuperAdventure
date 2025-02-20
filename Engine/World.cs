@@ -279,7 +279,7 @@
             Items.Add(new Scroll(ITEM_ID_PETRIFY_SCROLL, SpellByID(SPELL_ID_PETRIFY), 5));
             Items.Add(new Scroll(ITEM_ID_DEATH_SCROLL, SpellByID(SPELL_ID_DEATH), 5));
 
-            Equipment helm = new Equipment(ITEM_ID_HELM, "Helm", "Helms", 5, 2);
+            Equipment helm = new Equipment(ITEM_ID_HELM, "Helm", "Helms", 5, 2, "Head");
             Attributes helmAttributes = new Attributes(2, 2, 0, 0);
             helm.AttributesIncreased = helmAttributes;
             Items.Add(helm);

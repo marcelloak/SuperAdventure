@@ -170,6 +170,7 @@ namespace SuperAdventure
         {
             lblExperiencePoints.DataBindings.Add("Text", _player, "ExperiencePointsDescription");
             lblDefence.DataBindings.Add("Text", _player.Equipment, "Defence");
+
             lblStrength.DataBindings.Add("Text", _attributes, "Strength");
             lblStrengthEquip.DataBindings.Add("Text", _player.Equipment, "StrengthIncreasedDescription");
             lblIntelligence.DataBindings.Add("Text", _attributes, "Intelligence");
@@ -178,6 +179,12 @@ namespace SuperAdventure
             lblDexterityEquip.DataBindings.Add("Text", _player.Equipment, "DexterityIncreasedDescription");
             lblVitality.DataBindings.Add("Text", _attributes, "Vitality");
             lblVitalityEquip.DataBindings.Add("Text", _player.Equipment, "VitalityIncreasedDescription");
+
+            lblHead.DataBindings.Add("Text", _player.Equipment, "HeadName");
+            lblArms.DataBindings.Add("Text", _player.Equipment, "ArmsName");
+            lblHands.DataBindings.Add("Text", _player.Equipment, "HandsName");
+            lblLegs.DataBindings.Add("Text", _player.Equipment, "LegsName");
+            lblFeet.DataBindings.Add("Text", _player.Equipment, "FeetName");
         }
     }
 }
