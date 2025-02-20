@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Engine;
+﻿using Engine;
 
 namespace SuperAdventure
 {
@@ -19,7 +10,7 @@ namespace SuperAdventure
         {
             _currentPlayer = player;
             InitializeComponent();
-            bindUI();
+            BindUI();
         }
 
         private void dgvSpells_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -29,6 +20,20 @@ namespace SuperAdventure
             itemWindow.StartPosition = FormStartPosition.CenterParent;
             itemWindow.ShowDialog(this);
         }
+        private void dgvSpells_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            DataGridViewRow row = dgvSpells.Rows[e.RowIndex];
+            int id = Int32.Parse(dgvSpells.Rows[e.RowIndex].Cells[0].Value.ToString());
+            int minimumIntelligence = World.SpellByID(id).MinimumIntelligence;
+
+            if (_currentPlayer.TotalIntelligence < minimumIntelligence) row.DefaultCellStyle.BackColor = Color.Red;
+            else row.DefaultCellStyle.BackColor = Color.White;
+        }
+
+        private void dgvSpells_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            dgvSpells.ClearSelection();
+        }
 
         private void Spellbook_KeyDown(object sender, KeyEventArgs e)
         {
@@ -36,7 +41,7 @@ namespace SuperAdventure
             if (e.KeyCode == Keys.Escape) Close();
         }
 
-        private void bindUI()
+        private void BindUI()
         {
             dgvSpells.RowHeadersVisible = false;
             dgvSpells.AutoGenerateColumns = false;

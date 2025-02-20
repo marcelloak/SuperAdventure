@@ -47,6 +47,8 @@
             dgvSpells.Size = new Size(203, 403);
             dgvSpells.TabIndex = 0;
             dgvSpells.CellDoubleClick += dgvSpells_CellDoubleClick;
+            dgvSpells.DataBindingComplete += dgvSpells_DataBindingComplete;
+            dgvSpells.RowPrePaint += dgvSpells_RowPrePaint;
             // 
             // Spellbook
             // 

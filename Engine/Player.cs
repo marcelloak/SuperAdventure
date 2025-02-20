@@ -71,7 +71,6 @@ namespace Engine
         {
             Player player = new Player(10, 10, 5, 5, 20, 0);
             player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
-            player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_BETTER_HELM), 1));
             player.Equipment.Head = World.ItemByID(World.ITEM_ID_HELM) as Equipment;
             player.Spellbook.Add(World.SpellByID(World.SPELL_ID_HEAL));
             player.CurrentWeapon = (Weapon)World.ItemByID(World.ITEM_ID_RUSTY_SWORD);

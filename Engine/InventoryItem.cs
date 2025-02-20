@@ -41,9 +41,9 @@ namespace Engine
             if (this.Details is Weapon) return "Weapon";
             if (this.Details is Equipment) return "Equipment";
             if (this.Details is Scroll) return "Scroll";
-            if (this.Details is HealingItem) return "HealingItem";
-            if (this.Details is StatusItem) return "StatusItem";
-            if (this.Details is UsableItem) return "UsableItem";
+            if (this.Details is HealingItem) return "Healing Item";
+            if (this.Details is StatusItem) return "Status Item";
+            if (this.Details is UsableItem) return "Usable Item";
 
             return "";
         }

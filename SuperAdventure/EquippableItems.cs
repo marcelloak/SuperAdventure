@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Engine;
+﻿using Engine;
 
 namespace SuperAdventure
 {
@@ -33,6 +24,12 @@ namespace SuperAdventure
             _currentPlayer.UnequipSlot(_slot);
             _currentPlayer.EquipItem(World.ItemByID(id) as Equipment);
             Close();
+        }
+
+        private void EquippableItems_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+            if (e.KeyCode == Keys.Escape) Close();
         }
 
         private void GenerateEquipmentList()

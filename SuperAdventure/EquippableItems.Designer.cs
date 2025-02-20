@@ -54,8 +54,10 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(374, 450);
             Controls.Add(dgvEquipment);
+            KeyPreview = true;
             Name = "EquippableItems";
             Text = "EquippableItems";
+            KeyDown += EquippableItems_KeyDown;
             ((System.ComponentModel.ISupportInitialize)dgvEquipment).EndInit();
             ResumeLayout(false);
         }

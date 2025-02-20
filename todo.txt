@@ -1,6 +1,13 @@
-Add items and/or spells to some monsters
 Add lines between location connections
-Add some way to indicate a spell in the spellbook cant be used because of minimum intelligence
+Figure out why spells are not added to spell combo box once minimum intelligence is reached
+Figure out how to not select the first item when entering equippable item screen
+Save and load spellbook
+
+Add items and/or spells to some monsters
+Add more monsters/locations/quests/vendors
+Add more weapons/equipment
+Add more items/spells including ones that improve/reduce player/monster accuracy/damage
+Add more status effects (dark)
 
 Add crafting skills the player can acquire
 Add crafting recipes the player use
@@ -9,11 +16,3 @@ Requires components (inventory items)
 
 Add pets
 Help the player in battle by attacking opponents or healing the player
-
-Add more potions/poisons/spells
-More powerful potions/poisons/spells
-Potions/poisons/spells to improve/reduce player/monster accuracy/damage
-
-Add other status effects (dark)
-
-Add more vendors

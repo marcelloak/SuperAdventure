@@ -13,7 +13,7 @@ namespace SuperAdventure
             _keyBindings = new Dictionary<Keys, Button>();
             InitializeComponent();
             BindKeys();
-            bindUI();
+            BindUI();
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -32,8 +32,8 @@ namespace SuperAdventure
                 _currentPlayer.RemoveItemFromInventory(_currentPlayer, itemBeingSold);
                 _currentPlayer.Gold += itemBeingSold.Price;
                 _currentPlayer.CurrentLocation.VendorWorkingHere.AddItemToInventory(itemBeingSold);
-                clearUI();
-                bindUI();
+                ClearUI();
+                BindUI();
             }
         }
 
@@ -47,8 +47,8 @@ namespace SuperAdventure
                 _currentPlayer.AddItemToInventory(_currentPlayer, itemBeingBought);
                 _currentPlayer.Gold -= itemBeingBought.Price;
                 _currentPlayer.CurrentLocation.VendorWorkingHere.RemoveItemFromInventory(itemBeingBought);
-                clearUI();
-                bindUI();
+                ClearUI();
+                BindUI();
             }
             else MessageBox.Show("You do not have enough gold to buy the " + itemBeingBought.Name);
         }
@@ -64,7 +64,7 @@ namespace SuperAdventure
             _keyBindings.Add(Keys.Escape, btnClose);
         }
 
-        private void clearUI()
+        private void ClearUI()
         {
             dgvMyItems.DataSource = null;
             dgvMyItems.Columns.Clear();
@@ -74,7 +74,7 @@ namespace SuperAdventure
             dgvVendorItems.CellClick -= dgvVendorItems_CellClick;
         }
 
-        private void bindUI()
+        private void BindUI()
         {
             DataGridViewCellStyle rightAlignedCellStyle = new DataGridViewCellStyle();
             rightAlignedCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;

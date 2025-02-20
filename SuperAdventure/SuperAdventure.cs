@@ -15,7 +15,7 @@ namespace SuperAdventure
             _player = Player.CreateDefaultPlayer();
             _keyBindings = new Dictionary<Keys, Button>();
             BindKeys();
-            bindUI();
+            BindUI();
             _player.MoveTo(_player.CurrentLocation);
         }
 
@@ -67,8 +67,8 @@ namespace SuperAdventure
             {
                 _player = Player.CreatePlayerFromXmlString(File.ReadAllText(PLAYER_DATA_FILE_NAME));
                 rtbMessages.AppendText("You have loaded a saved game." + Environment.NewLine);
-                clearUI();
-                bindUI();
+                ClearUI();
+                BindUI();
                 _player.MoveTo(_player.CurrentLocation);
             }
             else rtbMessages.AppendText("Failed to load game." + Environment.NewLine);
@@ -204,6 +204,16 @@ namespace SuperAdventure
             if (_keyBindings.ContainsKey(e.KeyCode)) _keyBindings[e.KeyCode].PerformClick();
         }
 
+        private void dgvInventory_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            dgvInventory.ClearSelection();
+        }
+
+        private void dgvQuests_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            dgvQuests.ClearSelection();
+        }
+
         private void BindKeys()
         {
             _keyBindings.Add(Keys.W, btnNorth);
@@ -218,7 +228,7 @@ namespace SuperAdventure
             _keyBindings.Add(Keys.F5, btnLoad);
         }
 
-        private void clearUI()
+        private void ClearUI()
         {
             lblHitPoints.DataBindings.Clear();
             lblMana.DataBindings.Clear();
@@ -235,7 +245,7 @@ namespace SuperAdventure
             _player.OnMessage -= DisplayMessage;
         }
 
-        private void bindUI()
+        private void BindUI()
         {
             lblHitPoints.DataBindings.Add("Text", _player, "HitPoints");
             lblMana.DataBindings.Add("Text", _player, "Mana");

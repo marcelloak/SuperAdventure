@@ -251,6 +251,7 @@
             dgvInventory.Size = new Size(312, 309);
             dgvInventory.TabIndex = 19;
             dgvInventory.CellDoubleClick += dgvInventory_CellDoubleClick;
+            dgvInventory.DataBindingComplete += dgvInventory_DataBindingComplete;
             // 
             // dgvQuests
             // 
@@ -267,6 +268,7 @@
             dgvQuests.Size = new Size(312, 189);
             dgvQuests.TabIndex = 20;
             dgvQuests.CellDoubleClick += dgvQuests_CellDoubleClick;
+            dgvQuests.DataBindingComplete += dgvQuests_DataBindingComplete;
             // 
             // btnLoad
             // 
