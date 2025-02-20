@@ -1,7 +1,6 @@
 Add items and/or spells to some monsters
 Add lines between location connections
 Add some way to indicate a spell in the spellbook cant be used because of minimum intelligence
-Add equipping equipment to stats screen
 
 Add crafting skills the player can acquire
 Add crafting recipes the player use

@@ -186,5 +186,40 @@ namespace SuperAdventure
             lblLegs.DataBindings.Add("Text", _player.Equipment, "LegsName");
             lblFeet.DataBindings.Add("Text", _player.Equipment, "FeetName");
         }
+
+        private void head_Click(object sender, EventArgs e)
+        {
+            EquippableItems equipScreen = new EquippableItems(_player, "Head");
+            equipScreen.StartPosition = FormStartPosition.CenterParent;
+            equipScreen.ShowDialog(this);
+        }
+
+        private void arms_Click(object sender, EventArgs e)
+        {
+            EquippableItems equipScreen = new EquippableItems(_player, "Arms");
+            equipScreen.StartPosition = FormStartPosition.CenterParent;
+            equipScreen.ShowDialog(this);
+        }
+
+        private void hands_Click(object sender, EventArgs e)
+        {
+            EquippableItems equipScreen = new EquippableItems(_player, "Hands");
+            equipScreen.StartPosition = FormStartPosition.CenterParent;
+            equipScreen.ShowDialog(this);
+        }
+
+        private void legs_Click(object sender, EventArgs e)
+        {
+            EquippableItems equipScreen = new EquippableItems(_player, "Legs");
+            equipScreen.StartPosition = FormStartPosition.CenterParent;
+            equipScreen.ShowDialog(this);
+        }
+
+        private void feet_Click(object sender, EventArgs e)
+        {
+            EquippableItems equipScreen = new EquippableItems(_player, "Feet");
+            equipScreen.StartPosition = FormStartPosition.CenterParent;
+            equipScreen.ShowDialog(this);
+        }
     }
 }

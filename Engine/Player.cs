@@ -71,6 +71,7 @@ namespace Engine
         {
             Player player = new Player(10, 10, 5, 5, 20, 0);
             player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
+            player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_BETTER_HELM), 1));
             player.Equipment.Head = World.ItemByID(World.ITEM_ID_HELM) as Equipment;
             player.Spellbook.Add(World.SpellByID(World.SPELL_ID_HEAL));
             player.CurrentWeapon = (Weapon)World.ItemByID(World.ITEM_ID_RUSTY_SWORD);
@@ -266,6 +267,82 @@ namespace Engine
         {
             if (item is Weapon) OnPropertyChanged("Weapons");
             else if (item is UsableItem) OnPropertyChanged("UsableItems");
+        }
+
+        public void EquipItem(Equipment item)
+        {
+            RemoveItemFromInventory(this, item);
+            Equipment.EquipItem(item);
+        }
+
+        public void UnequipSlot(string slot, bool keepItem = true)
+        {
+            if (slot == "Head")
+            {
+                if (Equipment.Head != null)
+                {
+                    if (keepItem) AddItemToInventory(this, Equipment.Head);
+                    Equipment.Head = null;
+                }
+            }
+            else if (slot == "Arms")
+            {
+                if (Equipment.Arms != null)
+                {
+                    if (keepItem) AddItemToInventory(this, Equipment.Arms);
+                    Equipment.Arms = null;
+                }
+            }
+            else if (slot == "Hands")
+            {
+                if (Equipment.Hands != null)
+                {
+                    if (keepItem) AddItemToInventory(this, Equipment.Hands);
+                    Equipment.Hands = null;
+                }
+            }
+            else if (slot == "Legs")
+            {
+                if (Equipment.Legs != null)
+                {
+                    if (keepItem) AddItemToInventory(this, Equipment.Legs);
+                    Equipment.Legs = null;
+                }
+            }
+            else if (slot == "Feet")
+            {
+                if (Equipment.Feet != null)
+                {
+                    if (keepItem) AddItemToInventory(this, Equipment.Feet);
+                    Equipment.Feet = null;
+                }
+            }
+        }
+
+        public List<Equipment> GetEquipmentForSlot(string slot)
+        {
+            List<Equipment> equipment = Inventory.Where(item => item.Details is Equipment).Select(item => item.Details as Equipment).Where(equipment => equipment.Slot == slot).ToList();
+            if (slot == "Head")
+            {
+                if (Equipment.Head != null) equipment.Add(Equipment.Head);
+            }
+            else if (slot == "Arms")
+            {
+                if (Equipment.Arms != null) equipment.Add(Equipment.Arms);
+            }
+            else if (slot == "Hands")
+            {
+                if (Equipment.Hands != null) equipment.Add(Equipment.Hands);
+            }
+            else if (slot == "Legs")
+            {
+                if (Equipment.Legs != null) equipment.Add(Equipment.Legs);
+            }
+            else if (slot == "Feet")
+            {
+                if (Equipment.Feet != null) equipment.Add(Equipment.Feet);
+            }
+            return equipment;
         }
 
         private void LearnSpell(Spell spell)

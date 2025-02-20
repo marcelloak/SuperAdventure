@@ -29,14 +29,14 @@ namespace Engine
             Feet = feet;
         }
 
-        public void EquipItem(string slot, Equipment item = null)
+        public void EquipItem(Equipment item)
         {
-            if (slot == "Head") Head = item;
-            else if (slot == "Arms") Arms = item;
-            else if (slot == "Hands") Hands = item;
-            else if (slot == "Legs") Legs = item;
-            else if (slot == "Feet") Feet = item;
-            OnPropertyChanged(slot + "Name");
+            if (item.Slot == "Head") Head = item;
+            else if (item.Slot == "Arms") Arms = item;
+            else if (item.Slot == "Hands") Hands = item;
+            else if (item.Slot == "Legs") Legs = item;
+            else if (item.Slot == "Feet") Feet = item;
+            OnPropertyChanged(item.Slot + "Name");
             OnPropertyChanged("Defence");
             OnPropertyChanged("StrengthIncreasedDescription");
             OnPropertyChanged("IntelligenceIncreasedDescription");

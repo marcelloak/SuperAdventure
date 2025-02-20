@@ -307,6 +307,7 @@
             lblHead.Name = "lblHead";
             lblHead.Size = new Size(0, 15);
             lblHead.TabIndex = 27;
+            lblHead.Click += head_Click;
             // 
             // descHead
             // 
@@ -316,6 +317,7 @@
             descHead.Size = new Size(38, 15);
             descHead.TabIndex = 26;
             descHead.Text = "Head:";
+            descHead.Click += head_Click;
             // 
             // lblArms
             // 
@@ -324,6 +326,7 @@
             lblArms.Name = "lblArms";
             lblArms.Size = new Size(0, 15);
             lblArms.TabIndex = 29;
+            lblArms.Click += arms_Click;
             // 
             // descArms
             // 
@@ -333,6 +336,7 @@
             descArms.Size = new Size(38, 15);
             descArms.TabIndex = 28;
             descArms.Text = "Arms:";
+            descArms.Click += arms_Click;
             // 
             // lblHands
             // 
@@ -341,6 +345,7 @@
             lblHands.Name = "lblHands";
             lblHands.Size = new Size(0, 15);
             lblHands.TabIndex = 31;
+            lblHands.Click += hands_Click;
             // 
             // descHands
             // 
@@ -350,6 +355,7 @@
             descHands.Size = new Size(44, 15);
             descHands.TabIndex = 30;
             descHands.Text = "Hands:";
+            descHands.Click += hands_Click;
             // 
             // lblLegs
             // 
@@ -358,6 +364,7 @@
             lblLegs.Name = "lblLegs";
             lblLegs.Size = new Size(0, 15);
             lblLegs.TabIndex = 33;
+            lblLegs.Click += legs_Click;
             // 
             // descLegs
             // 
@@ -367,6 +374,7 @@
             descLegs.Size = new Size(34, 15);
             descLegs.TabIndex = 32;
             descLegs.Text = "Legs:";
+            descLegs.Click += legs_Click;
             // 
             // lblFeet
             // 
@@ -375,6 +383,7 @@
             lblFeet.Name = "lblFeet";
             lblFeet.Size = new Size(0, 15);
             lblFeet.TabIndex = 35;
+            lblFeet.Click += feet_Click;
             // 
             // descFeet
             // 
@@ -384,6 +393,7 @@
             descFeet.Size = new Size(32, 15);
             descFeet.TabIndex = 34;
             descFeet.Text = "Feet:";
+            descFeet.Click += feet_Click;
             // 
             // PlayerStats
             // 

@@ -25,6 +25,7 @@ namespace Engine
                 OnPropertyChanged("Description");
             }
         }
+        public string ItemType { get { return GetItemType(); } }
         public string Description { get { return Quantity > 1 ? Details.NamePlural : Details.Name; } }
         public int ItemID { get { return Details.ID; } }
         public int Price { get { return Details.Price; } }
@@ -33,6 +34,18 @@ namespace Engine
         {
             Details = details;
             Quantity = quantity;
+        }
+
+        public string GetItemType()
+        {
+            if (this.Details is Weapon) return "Weapon";
+            if (this.Details is Equipment) return "Equipment";
+            if (this.Details is Scroll) return "Scroll";
+            if (this.Details is HealingItem) return "HealingItem";
+            if (this.Details is StatusItem) return "StatusItem";
+            if (this.Details is UsableItem) return "UsableItem";
+
+            return "";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

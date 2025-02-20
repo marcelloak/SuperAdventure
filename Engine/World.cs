@@ -56,6 +56,7 @@
         public static int ITEM_ID_DEATH_SCROLL;
 
         public static int ITEM_ID_HELM;
+        public static int ITEM_ID_BETTER_HELM;
 
         public static int ITEM_ID_RAT_TAIL;
         public static int ITEM_ID_PIECE_OF_FUR;
@@ -283,6 +284,11 @@
             Attributes helmAttributes = new Attributes(2, 2, 0, 0);
             helm.AttributesIncreased = helmAttributes;
             Items.Add(helm);
+
+            Equipment betterHelm = new Equipment(ITEM_ID_BETTER_HELM, "Better helm", "Better helms", 5, 5, "Head");
+            Attributes betterHelmAttributes = new Attributes(3, 0, 1, 1);
+            betterHelm.AttributesIncreased = betterHelmAttributes;
+            Items.Add(betterHelm);
 
             Items.Add(new Item(ITEM_ID_RAT_TAIL, "Rat tail", "Rat tails", 1));
             Items.Add(new Item(ITEM_ID_PIECE_OF_FUR, "Piece of fur", "Pieces of fur", 1));

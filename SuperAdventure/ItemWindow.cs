@@ -43,6 +43,16 @@ namespace SuperAdventure
                 text += "Damage: " + (item as Weapon).MinimumDamage + "-" + (item as Weapon).MaximumDamage + Environment.NewLine;
                 text += "Hit chance: " + (item as Weapon).HitChance + Environment.NewLine;
             }
+            else if (item is Equipment)
+            {
+                text += "Equipment" + Environment.NewLine;
+                text += Environment.NewLine;
+                text += "Defence: " + (item as Equipment).Defence + Environment.NewLine;
+                if ((item as Equipment).AttributesIncreased.Strength > 0) text += "Strength: " + (item as Equipment).AttributesIncreased.Strength + Environment.NewLine;
+                if ((item as Equipment).AttributesIncreased.Intelligence > 0) text += "Intelligence: " + (item as Equipment).AttributesIncreased.Intelligence + Environment.NewLine;
+                if ((item as Equipment).AttributesIncreased.Dexterity > 0) text += "Dexterity: " + (item as Equipment).AttributesIncreased.Dexterity + Environment.NewLine;
+                if ((item as Equipment).AttributesIncreased.Vitality > 0) text += "Vitality: " + (item as Equipment).AttributesIncreased.Vitality + Environment.NewLine;
+            }
             else if (item is Scroll)
             {
                 text += "Scroll" + Environment.NewLine;

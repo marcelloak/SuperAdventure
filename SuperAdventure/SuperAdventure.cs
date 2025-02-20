@@ -253,12 +253,18 @@ namespace SuperAdventure
             dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = "Name",
-                Width = 197,
+                Width = 179,
                 DataPropertyName = "Description"
             });
             dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
             {
-                HeaderText = "Quantity",
+                HeaderText = "Type",
+                DataPropertyName = "ItemType"
+            });
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Qty",
+                Width = 30,
                 DataPropertyName = "Quantity"
             });
             dgvInventory.DataSource = _player.Inventory;
@@ -273,7 +279,7 @@ namespace SuperAdventure
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = "Name",
-                Width = 197,
+                Width = 209,
                 DataPropertyName = "Name"
             });
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
