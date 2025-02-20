@@ -71,6 +71,7 @@ namespace Engine
         {
             Player player = new Player(10, 10, 5, 5, 20, 0);
             player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
+            player.Equipment.Head = World.ItemByID(World.ITEM_ID_HELM) as Equipment;
             player.Spellbook.Add(World.SpellByID(World.SPELL_ID_HEAL));
             player.CurrentWeapon = (Weapon)World.ItemByID(World.ITEM_ID_RUSTY_SWORD);
             player.CurrentLocation = World.LocationByID(World.LOCATION_ID_HOME);
@@ -109,8 +110,7 @@ namespace Engine
 
                 XmlNode currentStatus = playerData.SelectSingleNode("/Player/Stats/CurrentStatus");
                 int currentStatusID = Convert.ToInt32(currentStatus.Attributes["ID"].Value);
-                if (currentStatusID == 0) player.ClearStatus(player);
-                else
+                if (currentStatusID != 0)
                 {
                     int currentStatusValue = Convert.ToInt32(currentStatus.Attributes["Value"].Value);
                     int currentStatusTurns = Convert.ToInt32(currentStatus.Attributes["Turns"].Value);
@@ -118,6 +118,18 @@ namespace Engine
                     int currentStatusChanceToCure = Convert.ToInt32(currentStatus.Attributes["ChanceToCure"].Value);
                     player.SetStatus(player, World.StatusByID(currentStatusID).NewInstanceOfStatus(currentStatusValue, currentStatusTurns, currentStatusChanceToActivate, currentStatusChanceToCure));
                 }
+
+                int headID = Convert.ToInt32(playerData.SelectSingleNode("/Player/Equipment/HeadID").InnerText);
+                int armsID = Convert.ToInt32(playerData.SelectSingleNode("/Player/Equipment/ArmsID").InnerText);
+                int handsID = Convert.ToInt32(playerData.SelectSingleNode("/Player/Equipment/HandsID").InnerText);
+                int legsID = Convert.ToInt32(playerData.SelectSingleNode("/Player/Equipment/LegsID").InnerText);
+                int feetID = Convert.ToInt32(playerData.SelectSingleNode("/Player/Equipment/FeetID").InnerText);
+
+                if (headID != 0) player.Equipment.Head = World.ItemByID(headID) as Equipment;
+                if (armsID != 0) player.Equipment.Arms = World.ItemByID(armsID) as Equipment;
+                if (handsID != 0) player.Equipment.Hands = World.ItemByID(handsID) as Equipment;
+                if (legsID != 0) player.Equipment.Legs = World.ItemByID(legsID) as Equipment;
+                if (feetID != 0) player.Equipment.Feet = World.ItemByID(feetID) as Equipment;
 
                 foreach (XmlNode node in playerData.SelectNodes("/Player/LocationsVisited/LocationVisited"))
                 {
@@ -799,6 +811,29 @@ namespace Engine
                 currentStatus.Attributes.Append(statusIdAttribute);
             }
             stats.AppendChild(currentStatus);
+
+            XmlNode equipment = playerData.CreateElement("Equipment");
+            player.AppendChild(equipment);
+            XmlNode head = playerData.CreateElement("HeadID");
+            if (Equipment.Head != null) head.AppendChild(playerData.CreateTextNode(Equipment.Head.ID.ToString()));
+            else head.AppendChild(playerData.CreateTextNode("0"));
+            equipment.AppendChild(head);
+            XmlNode arms = playerData.CreateElement("ArmsID");
+            if (Equipment.Arms != null) arms.AppendChild(playerData.CreateTextNode(Equipment.Arms.ID.ToString()));
+            else arms.AppendChild(playerData.CreateTextNode("0"));
+            equipment.AppendChild(arms);
+            XmlNode hands = playerData.CreateElement("HandsID");
+            if (Equipment.Hands != null) hands.AppendChild(playerData.CreateTextNode(Equipment.Hands.ID.ToString()));
+            else hands.AppendChild(playerData.CreateTextNode("0"));
+            equipment.AppendChild(hands);
+            XmlNode legs = playerData.CreateElement("LegsID");
+            if (Equipment.Legs != null) legs.AppendChild(playerData.CreateTextNode(Equipment.Legs.ID.ToString()));
+            else legs.AppendChild(playerData.CreateTextNode("0"));
+            equipment.AppendChild(legs);
+            XmlNode feet = playerData.CreateElement("FeetID");
+            if (Equipment.Feet != null) feet.AppendChild(playerData.CreateTextNode(Equipment.Feet.ID.ToString()));
+            else feet.AppendChild(playerData.CreateTextNode("0"));
+            equipment.AppendChild(feet);
 
             XmlNode locationsVisited = playerData.CreateElement("LocationsVisited");
             player.AppendChild(locationsVisited);

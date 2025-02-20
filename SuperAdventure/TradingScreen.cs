@@ -12,7 +12,7 @@ namespace SuperAdventure
             _currentPlayer = player;
             _keyBindings = new Dictionary<Keys, Button>();
             InitializeComponent();
-            bindKeys();
+            BindKeys();
             bindUI();
         }
 
@@ -59,7 +59,7 @@ namespace SuperAdventure
             if (_keyBindings.ContainsKey(e.KeyCode)) _keyBindings[e.KeyCode].PerformClick();
         }
 
-        private void bindKeys()
+        private void BindKeys()
         {
             _keyBindings.Add(Keys.Escape, btnClose);
         }

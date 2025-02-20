@@ -1,12 +1,19 @@
-﻿namespace Engine
+﻿using System.ComponentModel;
+
+namespace Engine
 {
-    public class EquipmentSet
+    public class EquipmentSet : INotifyPropertyChanged
     {
         public Equipment Head { get; set; }
         public Equipment Arms { get; set; }
         public Equipment Hands { get; set; }
         public Equipment Legs { get; set; }
         public Equipment Feet { get; set; }
+        public int Defence { get { return GetDefence(); } }
+        public string StrengthIncreasedDescription { get { return GetStrengthIncreased() > 0 ? "+" + GetStrengthIncreased().ToString() : ""; } }
+        public string IntelligenceIncreasedDescription { get { return GetIntelligenceIncreased() > 0 ? "+" + GetIntelligenceIncreased().ToString() : ""; } }
+        public string DexterityIncreasedDescription { get { return GetDexterityIncreased() > 0 ? "+" + GetDexterityIncreased().ToString() : ""; } }
+        public string VitalityIncreasedDescription { get { return GetVitalityIncreased() > 0 ? "+" + GetVitalityIncreased().ToString() : ""; } }
 
         public EquipmentSet(Equipment head = null, Equipment arms = null, Equipment hands = null, Equipment legs = null, Equipment feet = null)
         {
@@ -15,6 +22,20 @@
             Hands = hands;
             Legs = legs;
             Feet = feet;
+        }
+
+        public void EquipItem(string slot, Equipment item = null)
+        {
+            if (slot == "Head") Head = item;
+            else if (slot == "Arms") Arms = item;
+            else if (slot == "Hands") Hands = item;
+            else if (slot == "Legs") Legs = item;
+            else if (slot == "Feet") Feet = item;
+            OnPropertyChanged("Defence");
+            OnPropertyChanged("StrengthIncreasedDescription");
+            OnPropertyChanged("IntelligenceIncreasedDescription");
+            OnPropertyChanged("DexterityIncreasedDescription");
+            OnPropertyChanged("VitalityIncreasedDescription");
         }
 
         public int GetDefence()
@@ -70,6 +91,12 @@
             if (Legs != null) vitality += Legs.AttributesIncreased.Vitality;
             if (Feet != null) vitality += Feet.AttributesIncreased.Vitality;
             return vitality;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name)
+        {
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
     }
 }

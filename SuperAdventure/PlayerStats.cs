@@ -8,7 +8,7 @@ namespace SuperAdventure
         private Player _player;
         private Attributes _attributes = new Attributes();
         private int _attributePointsToSpend;
-        private List<Button> buttonsWhenLeveling = new List<Button>();
+        private List<Button> levelingButtons = new List<Button>();
         Dictionary<Keys, Button> _keyBindings;
 
         public PlayerStats(Player player)
@@ -21,16 +21,8 @@ namespace SuperAdventure
             _attributes.Dexterity = _player.BaseAttributes.Dexterity;
             _attributes.Vitality = _player.BaseAttributes.Vitality;
             InitializeComponent();
-            buttonsWhenLeveling.Add(btnApply);
-            buttonsWhenLeveling.Add(btnStrengthPlus);
-            buttonsWhenLeveling.Add(btnStrengthMinus);
-            buttonsWhenLeveling.Add(btnIntelligencePlus);
-            buttonsWhenLeveling.Add(btnIntelligenceMinus);
-            buttonsWhenLeveling.Add(btnDexterityPlus);
-            buttonsWhenLeveling.Add(btnDexterityMinus);
-            buttonsWhenLeveling.Add(btnVitalityPlus);
-            buttonsWhenLeveling.Add(btnVitalityMinus);
-            bindKeys();
+            AddLevelingButtons();
+            BindKeys();
             BindUI();
             RefreshLevelingButtons();
         }
@@ -105,16 +97,28 @@ namespace SuperAdventure
             _attributePointsToSpend--;
             RefreshLevelingButtons();
         }
+        private void AddLevelingButtons()
+        {
+            levelingButtons.Add(btnApply);
+            levelingButtons.Add(btnStrengthPlus);
+            levelingButtons.Add(btnStrengthMinus);
+            levelingButtons.Add(btnIntelligencePlus);
+            levelingButtons.Add(btnIntelligenceMinus);
+            levelingButtons.Add(btnDexterityPlus);
+            levelingButtons.Add(btnDexterityMinus);
+            levelingButtons.Add(btnVitalityPlus);
+            levelingButtons.Add(btnVitalityMinus);
+        }
 
         private void RefreshLevelingButtons()
         {
             if (_attributePointsToSpend > 0 || StillLeveling())
             {
-                ShowLevelingButtons();
+                ToggleLevelingButtons(true);
                 DeactivateMinusButtons();
                 if (_attributePointsToSpend == 0) DeactivatePlusButtons();
             }
-            else HideLevelingButtons();
+            else ToggleLevelingButtons(false);
         }
 
         private void DeactivateMinusButtons()
@@ -133,21 +137,12 @@ namespace SuperAdventure
             btnVitalityPlus.Enabled = false;
         }
 
-        private void ShowLevelingButtons()
+        private void ToggleLevelingButtons(bool enabled)
         {
-            foreach (Button button in buttonsWhenLeveling)
+            foreach (Button button in levelingButtons)
             {
-                button.Enabled = true;
-                button.Visible = true;
-            }
-        }
-
-        private void HideLevelingButtons()
-        {
-            foreach (Button button in buttonsWhenLeveling)
-            {
-                button.Enabled = false;
-                button.Visible = false;
+                button.Enabled = enabled;
+                button.Visible = enabled;
             }
         }
 
@@ -166,7 +161,7 @@ namespace SuperAdventure
             if (_keyBindings.ContainsKey(e.KeyCode)) _keyBindings[e.KeyCode].PerformClick();
         }
 
-        private void bindKeys()
+        private void BindKeys()
         {
             _keyBindings.Add(Keys.Escape, btnClose);
         }
@@ -174,10 +169,15 @@ namespace SuperAdventure
         private void BindUI()
         {
             lblExperiencePoints.DataBindings.Add("Text", _player, "ExperiencePointsDescription");
+            lblDefence.DataBindings.Add("Text", _player.Equipment, "Defence");
             lblStrength.DataBindings.Add("Text", _attributes, "Strength");
+            lblStrengthEquip.DataBindings.Add("Text", _player.Equipment, "StrengthIncreasedDescription");
             lblIntelligence.DataBindings.Add("Text", _attributes, "Intelligence");
+            lblIntelligenceEquip.DataBindings.Add("Text", _player.Equipment, "IntelligenceIncreasedDescription");
             lblDexterity.DataBindings.Add("Text", _attributes, "Dexterity");
+            lblDexterityEquip.DataBindings.Add("Text", _player.Equipment, "DexterityIncreasedDescription");
             lblVitality.DataBindings.Add("Text", _attributes, "Vitality");
+            lblVitalityEquip.DataBindings.Add("Text", _player.Equipment, "VitalityIncreasedDescription");
         }
     }
 }

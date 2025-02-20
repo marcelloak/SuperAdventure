@@ -48,6 +48,12 @@
             btnVitalityPlus = new Button();
             btnClose = new Button();
             btnApply = new Button();
+            lblVitalityEquip = new Label();
+            lblDexterityEquip = new Label();
+            lblIntelligenceEquip = new Label();
+            lblStrengthEquip = new Label();
+            lblDefence = new Label();
+            descDefence = new Label();
             SuspendLayout();
             // 
             // descExperiencePoints
@@ -70,7 +76,7 @@
             // descStrength
             // 
             descStrength.AutoSize = true;
-            descStrength.Location = new Point(31, 79);
+            descStrength.Location = new Point(31, 132);
             descStrength.Name = "descStrength";
             descStrength.Size = new Size(52, 15);
             descStrength.TabIndex = 2;
@@ -79,7 +85,7 @@
             // lblStrength
             // 
             lblStrength.AutoSize = true;
-            lblStrength.Location = new Point(167, 79);
+            lblStrength.Location = new Point(167, 132);
             lblStrength.Name = "lblStrength";
             lblStrength.Size = new Size(0, 15);
             lblStrength.TabIndex = 3;
@@ -87,7 +93,7 @@
             // descIntelligence
             // 
             descIntelligence.AutoSize = true;
-            descIntelligence.Location = new Point(31, 110);
+            descIntelligence.Location = new Point(31, 163);
             descIntelligence.Name = "descIntelligence";
             descIntelligence.Size = new Size(68, 15);
             descIntelligence.TabIndex = 4;
@@ -96,7 +102,7 @@
             // lblIntelligence
             // 
             lblIntelligence.AutoSize = true;
-            lblIntelligence.Location = new Point(167, 110);
+            lblIntelligence.Location = new Point(167, 163);
             lblIntelligence.Name = "lblIntelligence";
             lblIntelligence.Size = new Size(0, 15);
             lblIntelligence.TabIndex = 5;
@@ -104,7 +110,7 @@
             // descDexterity
             // 
             descDexterity.AutoSize = true;
-            descDexterity.Location = new Point(31, 138);
+            descDexterity.Location = new Point(31, 191);
             descDexterity.Name = "descDexterity";
             descDexterity.Size = new Size(53, 15);
             descDexterity.TabIndex = 6;
@@ -113,7 +119,7 @@
             // lblDexterity
             // 
             lblDexterity.AutoSize = true;
-            lblDexterity.Location = new Point(167, 138);
+            lblDexterity.Location = new Point(167, 191);
             lblDexterity.Name = "lblDexterity";
             lblDexterity.Size = new Size(0, 15);
             lblDexterity.TabIndex = 7;
@@ -121,7 +127,7 @@
             // descVitality
             // 
             descVitality.AutoSize = true;
-            descVitality.Location = new Point(31, 167);
+            descVitality.Location = new Point(31, 220);
             descVitality.Name = "descVitality";
             descVitality.Size = new Size(43, 15);
             descVitality.TabIndex = 8;
@@ -130,14 +136,14 @@
             // lblVitality
             // 
             lblVitality.AutoSize = true;
-            lblVitality.Location = new Point(167, 167);
+            lblVitality.Location = new Point(167, 220);
             lblVitality.Name = "lblVitality";
             lblVitality.Size = new Size(0, 15);
             lblVitality.TabIndex = 9;
             // 
             // btnStrengthMinus
             // 
-            btnStrengthMinus.Location = new Point(138, 75);
+            btnStrengthMinus.Location = new Point(138, 128);
             btnStrengthMinus.Name = "btnStrengthMinus";
             btnStrengthMinus.Size = new Size(23, 23);
             btnStrengthMinus.TabIndex = 10;
@@ -147,7 +153,7 @@
             // 
             // btnStrengthPlus
             // 
-            btnStrengthPlus.Location = new Point(211, 75);
+            btnStrengthPlus.Location = new Point(211, 128);
             btnStrengthPlus.Name = "btnStrengthPlus";
             btnStrengthPlus.Size = new Size(23, 23);
             btnStrengthPlus.TabIndex = 11;
@@ -157,7 +163,7 @@
             // 
             // btnIntelligenceMinus
             // 
-            btnIntelligenceMinus.Location = new Point(138, 106);
+            btnIntelligenceMinus.Location = new Point(138, 159);
             btnIntelligenceMinus.Name = "btnIntelligenceMinus";
             btnIntelligenceMinus.Size = new Size(23, 23);
             btnIntelligenceMinus.TabIndex = 12;
@@ -167,7 +173,7 @@
             // 
             // btnIntelligencePlus
             // 
-            btnIntelligencePlus.Location = new Point(211, 106);
+            btnIntelligencePlus.Location = new Point(211, 159);
             btnIntelligencePlus.Name = "btnIntelligencePlus";
             btnIntelligencePlus.Size = new Size(23, 23);
             btnIntelligencePlus.TabIndex = 13;
@@ -177,7 +183,7 @@
             // 
             // btnDexterityMinus
             // 
-            btnDexterityMinus.Location = new Point(138, 134);
+            btnDexterityMinus.Location = new Point(138, 187);
             btnDexterityMinus.Name = "btnDexterityMinus";
             btnDexterityMinus.Size = new Size(23, 23);
             btnDexterityMinus.TabIndex = 14;
@@ -187,7 +193,7 @@
             // 
             // btnDexterityPlus
             // 
-            btnDexterityPlus.Location = new Point(211, 134);
+            btnDexterityPlus.Location = new Point(211, 187);
             btnDexterityPlus.Name = "btnDexterityPlus";
             btnDexterityPlus.Size = new Size(23, 23);
             btnDexterityPlus.TabIndex = 15;
@@ -197,7 +203,7 @@
             // 
             // btnVitalityMinus
             // 
-            btnVitalityMinus.Location = new Point(138, 163);
+            btnVitalityMinus.Location = new Point(138, 216);
             btnVitalityMinus.Name = "btnVitalityMinus";
             btnVitalityMinus.Size = new Size(23, 23);
             btnVitalityMinus.TabIndex = 16;
@@ -207,7 +213,7 @@
             // 
             // btnVitalityPlus
             // 
-            btnVitalityPlus.Location = new Point(211, 163);
+            btnVitalityPlus.Location = new Point(211, 216);
             btnVitalityPlus.Name = "btnVitalityPlus";
             btnVitalityPlus.Size = new Size(23, 23);
             btnVitalityPlus.TabIndex = 17;
@@ -235,11 +241,66 @@
             btnApply.UseVisualStyleBackColor = true;
             btnApply.Click += btnApply_Click;
             // 
+            // lblVitalityEquip
+            // 
+            lblVitalityEquip.AutoSize = true;
+            lblVitalityEquip.Location = new Point(240, 220);
+            lblVitalityEquip.Name = "lblVitalityEquip";
+            lblVitalityEquip.Size = new Size(0, 15);
+            lblVitalityEquip.TabIndex = 23;
+            // 
+            // lblDexterityEquip
+            // 
+            lblDexterityEquip.AutoSize = true;
+            lblDexterityEquip.Location = new Point(240, 191);
+            lblDexterityEquip.Name = "lblDexterityEquip";
+            lblDexterityEquip.Size = new Size(0, 15);
+            lblDexterityEquip.TabIndex = 22;
+            // 
+            // lblIntelligenceEquip
+            // 
+            lblIntelligenceEquip.AutoSize = true;
+            lblIntelligenceEquip.Location = new Point(240, 163);
+            lblIntelligenceEquip.Name = "lblIntelligenceEquip";
+            lblIntelligenceEquip.Size = new Size(0, 15);
+            lblIntelligenceEquip.TabIndex = 21;
+            // 
+            // lblStrengthEquip
+            // 
+            lblStrengthEquip.AutoSize = true;
+            lblStrengthEquip.Location = new Point(240, 132);
+            lblStrengthEquip.Name = "lblStrengthEquip";
+            lblStrengthEquip.Size = new Size(0, 15);
+            lblStrengthEquip.TabIndex = 20;
+            // 
+            // lblDefence
+            // 
+            lblDefence.AutoSize = true;
+            lblDefence.Location = new Point(167, 63);
+            lblDefence.Name = "lblDefence";
+            lblDefence.Size = new Size(0, 15);
+            lblDefence.TabIndex = 25;
+            // 
+            // descDefence
+            // 
+            descDefence.AutoSize = true;
+            descDefence.Location = new Point(31, 63);
+            descDefence.Name = "descDefence";
+            descDefence.Size = new Size(53, 15);
+            descDefence.TabIndex = 24;
+            descDefence.Text = "Defence:";
+            // 
             // PlayerStats
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(284, 361);
+            Controls.Add(lblDefence);
+            Controls.Add(descDefence);
+            Controls.Add(lblVitalityEquip);
+            Controls.Add(lblDexterityEquip);
+            Controls.Add(lblIntelligenceEquip);
+            Controls.Add(lblStrengthEquip);
             Controls.Add(btnApply);
             Controls.Add(btnClose);
             Controls.Add(btnVitalityPlus);
@@ -290,5 +351,11 @@
         private Button btnVitalityPlus;
         private Button btnClose;
         private Button btnApply;
+        private Label lblVitalityEquip;
+        private Label lblDexterityEquip;
+        private Label lblIntelligenceEquip;
+        private Label lblStrengthEquip;
+        private Label lblDefence;
+        private Label descDefence;
     }
 }

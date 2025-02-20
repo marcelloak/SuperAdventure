@@ -14,7 +14,7 @@ namespace SuperAdventure
             InitializeComponent();
             _player = Player.CreateDefaultPlayer();
             _keyBindings = new Dictionary<Keys, Button>();
-            bindKeys();
+            BindKeys();
             bindUI();
             _player.MoveTo(_player.CurrentLocation);
         }
@@ -204,7 +204,7 @@ namespace SuperAdventure
             if (_keyBindings.ContainsKey(e.KeyCode)) _keyBindings[e.KeyCode].PerformClick();
         }
 
-        private void bindKeys()
+        private void BindKeys()
         {
             _keyBindings.Add(Keys.W, btnNorth);
             _keyBindings.Add(Keys.S, btnSouth);

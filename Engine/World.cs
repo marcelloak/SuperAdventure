@@ -10,7 +10,7 @@
         public static readonly List<Location> Locations = new List<Location>();
         public static readonly List<Vendor> Vendors = new List<Vendor>();
 
-        public static int currentID = 0;
+        public static int currentID = 1;
 
         public static int STATUS_ID_POISON;
         public static int STATUS_ID_SLEEP;
@@ -41,6 +41,7 @@
 
         public static int ITEM_ID_HEALING_POTION;
         public static int ITEM_ID_POISON;
+
         public static int ITEM_ID_HEAL_SCROLL;
         public static int ITEM_ID_FIREBALL_SCROLL;
         public static int ITEM_ID_POISON_SCROLL;
@@ -53,6 +54,8 @@
         public static int ITEM_ID_STOP_SCROLL;
         public static int ITEM_ID_PETRIFY_SCROLL;
         public static int ITEM_ID_DEATH_SCROLL;
+
+        public static int ITEM_ID_HELM;
 
         public static int ITEM_ID_RAT_TAIL;
         public static int ITEM_ID_PIECE_OF_FUR;
@@ -133,6 +136,7 @@
 
             ITEM_ID_HEALING_POTION = NextID();
             ITEM_ID_POISON = NextID();
+
             ITEM_ID_HEAL_SCROLL = NextID();
             ITEM_ID_FIREBALL_SCROLL = NextID();
             ITEM_ID_POISON_SCROLL = NextID();
@@ -145,6 +149,8 @@
             ITEM_ID_STOP_SCROLL = NextID();
             ITEM_ID_PETRIFY_SCROLL = NextID();
             ITEM_ID_DEATH_SCROLL = NextID();
+
+            ITEM_ID_HELM = NextID();
 
             ITEM_ID_RAT_TAIL = NextID();
             ITEM_ID_PIECE_OF_FUR = NextID();
@@ -255,16 +261,6 @@
             Items.Add(new Weapon(ITEM_ID_CLUB, "Club", "Clubs", 3, 10, 8, 80, 2));
 
             Items.Add(new HealingItem(ITEM_ID_HEALING_POTION, "Healing potion", "Healing potions", 5, 3));
-
-            Items.Add(new Item(ITEM_ID_RAT_TAIL, "Rat tail", "Rat tails", 1));
-            Items.Add(new Item(ITEM_ID_PIECE_OF_FUR, "Piece of fur", "Pieces of fur", 1));
-            Items.Add(new Item(ITEM_ID_SNAKE_FANG, "Snake fang", "Snake fangs", 1));
-            Items.Add(new Item(ITEM_ID_SNAKESKIN, "Snakeskin", "Snakeskins", 2));
-            Items.Add(new Item(ITEM_ID_SPIDER_FANG, "Spider fang", "Spider fangs", 1));
-            Items.Add(new Item(ITEM_ID_SPIDER_SILK, "Spider silk", "Spider silks", 1));
-
-            Items.Add(new Item(ITEM_ID_ADVENTURER_PASS, "Adventurer pass", "Adventurer passes", UNSELLABLE_ITEM_PRICE));
-
             StatusItem poison = new StatusItem(ITEM_ID_POISON, "Poison", "Poisons", 3);
             Status poisonStatus = StatusByID(STATUS_ID_POISON).NewInstanceOfStatus(1, 3);
             poison.StatusApplied = poisonStatus;
@@ -282,6 +278,20 @@
             Items.Add(new Scroll(ITEM_ID_STOP_SCROLL, SpellByID(SPELL_ID_STOP), 5));
             Items.Add(new Scroll(ITEM_ID_PETRIFY_SCROLL, SpellByID(SPELL_ID_PETRIFY), 5));
             Items.Add(new Scroll(ITEM_ID_DEATH_SCROLL, SpellByID(SPELL_ID_DEATH), 5));
+
+            Equipment helm = new Equipment(ITEM_ID_HELM, "Helm", "Helms", 5, 2);
+            Attributes helmAttributes = new Attributes(2, 2, 0, 0);
+            helm.AttributesIncreased = helmAttributes;
+            Items.Add(helm);
+
+            Items.Add(new Item(ITEM_ID_RAT_TAIL, "Rat tail", "Rat tails", 1));
+            Items.Add(new Item(ITEM_ID_PIECE_OF_FUR, "Piece of fur", "Pieces of fur", 1));
+            Items.Add(new Item(ITEM_ID_SNAKE_FANG, "Snake fang", "Snake fangs", 1));
+            Items.Add(new Item(ITEM_ID_SNAKESKIN, "Snakeskin", "Snakeskins", 2));
+            Items.Add(new Item(ITEM_ID_SPIDER_FANG, "Spider fang", "Spider fangs", 1));
+            Items.Add(new Item(ITEM_ID_SPIDER_SILK, "Spider silk", "Spider silks", 1));
+
+            Items.Add(new Item(ITEM_ID_ADVENTURER_PASS, "Adventurer pass", "Adventurer passes", UNSELLABLE_ITEM_PRICE));
         }
 
         private static void PopulateMonsters()
